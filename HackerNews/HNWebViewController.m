@@ -10,4 +10,17 @@
 
 @implementation HNWebViewController
 
+- (void)viewDidLoad {
+    [self.webView loadRequest:self.request];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.webView = nil; 
+}
+
+- (void)didReceiveMemoryWarning {
+    self.webView = nil;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 @end

@@ -1,0 +1,39 @@
+PODS:
+  - CocoaLumberjack (2.0.0-beta2):
+    - CocoaLumberjack/CLI
+    - CocoaLumberjack/Core
+    - CocoaLumberjack/Extensions
+  - CocoaLumberjack/CLI (2.0.0-beta2):
+    - CocoaLumberjack/Core
+  - CocoaLumberjack/Core (2.0.0-beta2)
+  - CocoaLumberjack/Extensions (2.0.0-beta2):
+    - CocoaLumberjack/Core
+  - Firebase (1.2.2)
+  - ReactiveCocoa (2.3.1):
+    - ReactiveCocoa/UI
+  - ReactiveCocoa/Core (2.3.1):
+    - ReactiveCocoa/no-arc
+  - ReactiveCocoa/no-arc (2.3.1)
+  - ReactiveCocoa/UI (2.3.1):
+    - ReactiveCocoa/Core
+  - Specta (0.2.1)
+  - WSMLogger (0.1.0):
+    - CocoaLumberjack
+  - WSMUtilities (0.0.3)
+
+DEPENDENCIES:
+  - Firebase (>= 1.2.2)
+  - ReactiveCocoa
+  - Specta
+  - WSMLogger
+  - WSMUtilities
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 956d3fb98fed498a13d56499f262c975ef431c98
+  Firebase: 1a8b62e7562c167c445b681493c4d33b51606df8
+  ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
+  Specta: 9141310f46b1f68b676650ff2854e1ed0b74163a
+  WSMLogger: a465b61ada79c02f5d6e8734d7e4ad6c330a6aa4
+  WSMUtilities: 65c4257a427a15fe10445ac03670ce345403dcf7
+
+COCOAPODS: 0.34.2

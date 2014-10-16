@@ -6,8 +6,28 @@
 //  Copyright (c) 2014 wrkstrm. All rights reserved.
 //
 
-#ifndef HackerNews_HackerNews_Prefix_pch
-#define HackerNews_HackerNews_Prefix_pch
+#import <Availability.h>
 
+#ifndef __IPHONE_7_0
+#warning "This project uses features only available in iOS SDK 7.0 and later."
+#endif
+
+#ifdef __OBJC__
+//First party
+#import <objc/runtime.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <SpriteKit/SpriteKit.h>
+
+//Third party
+#import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveCocoa/RACEXTScope.h>
+#import <CouchbaseLite/CouchbaseLite.h>
+#import <Firebase/Firebase.h>
+
+//My Party
+#import <WSMLogger/WSMLogger.h>
+#import <WSMUtilities/WSMUtilities.h>
+//#import "CBLDatabase+WSMUtilities.h"
 
 #endif

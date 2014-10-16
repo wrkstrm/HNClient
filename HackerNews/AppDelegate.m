@@ -14,10 +14,35 @@
 
 @implementation AppDelegate
 
++ (void)load {
+    WSMLogger *logger = WSMLogger.sharedInstance;
+    [DDLog addLogger:logger];
+    
+    // Customize the WSLogger
+    logger.formatStyle = kWSMLogFormatStyleQueue;
+    logger[kWSMLogFormatKeyFile] = @7;
+    logger[kWSMLogFormatKeyFunction] = @40;
+    
+    // Color the WSlogger. By default DDLog does not color VERBOSE or warn flags.
+    [logger setColorsEnabled:YES];
+    [logger setForegroundColor:SKColor.orangeColor
+               backgroundColor:SKColor.blackColor
+                       forFlag:LOG_FLAG_WARN];
+    
+    [logger setForegroundColor:SKColor.yellowColor
+               backgroundColor:SKColor.blackColor
+                       forFlag:LOG_FLAG_VERBOSE];
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     return YES;
+}
+
+- (Firebase *)hackerAPI {
+    return WSM_LAZY(_hackerAPI, [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
