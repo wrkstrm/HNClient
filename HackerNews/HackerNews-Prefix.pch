@@ -1,0 +1,13 @@
+//
+//  HackerNews-Prefix.pch
+//  HackerNews
+//
+//  Created by xes on 10/15/14.
+//  Copyright (c) 2014 wrkstrm. All rights reserved.
+//
+
+#ifndef HackerNews_HackerNews_Prefix_pch
+#define HackerNews_HackerNews_Prefix_pch
+
+
+#endif
