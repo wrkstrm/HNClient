@@ -56,6 +56,14 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    NSString *filePath = [NSBundle.mainBundle pathForResource:@"secrets"
+                                                       ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    NSDictionary *secrets = [NSJSONSerialization JSONObjectWithData:data
+                                                            options:kNilOptions
+                                                              error:nil];
+    //Analytics
+    [Flurry startSession:secrets[@"flurryKey"]];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

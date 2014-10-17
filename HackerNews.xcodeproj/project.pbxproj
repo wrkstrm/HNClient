@@ -25,6 +25,10 @@
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
 		6ED1070F19EE5BD200E1F669 /* HackerNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HackerNewsTests.m */; };
 		6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */; };
+		6EFB719619F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */; };
+		6EFB719719F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */; };
+		6EFB719919F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
+		6EFB719A19F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +71,9 @@
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
 		6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNWebViewController.h; sourceTree = "<group>"; };
 		6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNWebViewController.m; sourceTree = "<group>"; };
+		6EFB719419F1CC6D00830F79 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
+		6EFB719819F1CD3600830F79 /* secrets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secrets.json; sourceTree = "<group>"; };
 		84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +88,7 @@
 				6E11DA1219EE675D00A75579 /* libc++.dylib in Frameworks */,
 				6E11DA1119EE673E00A75579 /* CFNetwork.framework in Frameworks */,
 				6E11DA1019EE673400A75579 /* Security.framework in Frameworks */,
+				6EFB719619F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */,
 				6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */,
 				6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */,
 				6E11DA0919EE65BE00A75579 /* CouchbaseLite.framework in Frameworks */,
@@ -93,6 +101,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */,
+				6EFB719719F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +141,6 @@
 				6ED106FF19EE5BD200E1F669 /* Images.xcassets */,
 				6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */,
 				6ED106F219EE5BD200E1F669 /* Supporting Files */,
-				6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */,
 			);
 			path = HackerNews;
 			sourceTree = "<group>";
@@ -140,6 +148,8 @@
 		6ED106F219EE5BD200E1F669 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */,
+				6EFB719819F1CD3600830F79 /* secrets.json */,
 				6ED106F319EE5BD200E1F669 /* Info.plist */,
 				6ED106F419EE5BD200E1F669 /* main.m */,
 			);
@@ -163,6 +173,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		6EFB719319F1CC6D00830F79 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				6EFB719419F1CC6D00830F79 /* Flurry.h */,
+				6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */,
+			);
+			path = Flurry;
+			sourceTree = "<group>";
+		};
 		8D3D144C0167EB48B3DCB436 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +196,7 @@
 		A8F0BE3B291D393CF1C701C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6EFB719319F1CC6D00830F79 /* Flurry */,
 				6E11DA1519EE677600A75579 /* libsqlite3.dylib */,
 				6E11DA1319EE676600A75579 /* MobileCoreServices.framework */,
 				6E11DA0F19EE673400A75579 /* Security.framework */,
@@ -277,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6ED106FE19EE5BD200E1F669 /* Main.storyboard in Resources */,
+				6EFB719919F1CD3600830F79 /* secrets.json in Resources */,
 				6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */,
 				6ED1070019EE5BD200E1F669 /* Images.xcassets in Resources */,
 			);
@@ -286,6 +307,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EFB719A19F1CD3600830F79 /* secrets.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +516,10 @@
 				GCC_PREFIX_HEADER = "HackerNews/HackerNews-Prefix.pch";
 				INFOPLIST_FILE = HackerNews/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -512,6 +538,10 @@
 				GCC_PREFIX_HEADER = "HackerNews/HackerNews-Prefix.pch";
 				INFOPLIST_FILE = HackerNews/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -532,6 +562,10 @@
 				);
 				INFOPLIST_FILE = HackerNewsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HackerNews.app/HackerNews";
 			};
@@ -549,6 +583,10 @@
 				);
 				INFOPLIST_FILE = HackerNewsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HackerNews.app/HackerNews";
 			};

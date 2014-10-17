@@ -24,10 +24,10 @@
 #import <ReactiveCocoa/RACEXTScope.h>
 #import <CouchbaseLite/CouchbaseLite.h>
 #import <Firebase/Firebase.h>
+#import "Flurry.h"
 
 //My Party
 #import <WSMLogger/WSMLogger.h>
 #import <WSMUtilities/WSMUtilities.h>
-//#import "CBLDatabase+WSMUtilities.h"
 
 #endif

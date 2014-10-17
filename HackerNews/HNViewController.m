@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
+
+@property (nonatomic, strong) CBLDatabase *newsDatabase;
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
@@ -104,12 +106,18 @@
 
 #pragma mark - Lazy Property Instantiation
 
-- (CBLDocument *)topStoriesDocument {
-    return WSM_LAZY(_topStoriesDocument, ({
-        CBLDatabase *newsDatabase = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:nil];
-        [newsDatabase compact:nil];
-        [newsDatabase documentWithID:@"topStories"];
+- (CBLDatabase *)newsDatabase {
+    return WSM_LAZY(_newsDatabase, ({
+        NSError *error;
+        CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:&error];
+        WSMLog(error, @"Error initializing database: %@",error);
+        [db compact:nil];
+        db;
     }));
+}
+
+- (CBLDocument *)topStoriesDocument {
+    return WSM_LAZY(_topStoriesDocument, [self.newsDatabase documentWithID:@"topStories"]);
 }
 
 - (RACSubject *)topStoriesSubject {
@@ -172,17 +180,11 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
-}
-
 - (CBLDocument *)observeAndGetdocumentForItem:(NSNumber *)itemNumber {
-    CBLDatabase *newsDatabase = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:nil];
-    __block CBLDocument *storyDocument = [newsDatabase documentWithID:[itemNumber stringValue]];
-    
-    @weakify(self);
+    __block CBLDocument *storyDocument = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
+        @weakify(self);
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
             @strongify(self);
             CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
@@ -193,8 +195,22 @@
         }];
         base;
     }));
-    
     return storyDocument;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
+    NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
+    CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
+    [Flurry logEvent:document[@"type"]];
+    if ([segue.identifier isEqualToString:@"webViewSegue"]) {
+        HNWebViewController *controller = segue.destinationViewController;
+        NSURL *storyURL = [NSURL URLWithString:document[@"url"]];
+        controller.request =  [NSURLRequest requestWithURL:storyURL];
+    }
 }
 
 -(UIColor *)hackerOrange {
@@ -205,14 +221,4 @@
     return SKColorMakeRGB(245.0f, 245.0f, 238.0f);
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)sender {
-    if ([segue.identifier isEqualToString:@"webViewSegue"]) {
-        HNWebViewController *controller = segue.destinationViewController;
-        
-        CBLDocument *document = [self observeAndGetdocumentForItem:[self itemNumberForeIndexPath:sender]];
-        NSURL *storyURL = [NSURL URLWithString:document[@"url"]];
-        NSLog(@"URL: %@", storyURL);
-        controller.request =  [NSURLRequest requestWithURL:storyURL];
-    }
-}
 @end
