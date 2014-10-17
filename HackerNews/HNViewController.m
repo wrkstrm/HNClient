@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "HNViewController.h"
-#import "HNTopStories.h"
 #import "HNWebViewController.h"
 
 @interface HNViewController ()
