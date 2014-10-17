@@ -16,7 +16,7 @@
 @property (nonatomic, strong) Firebase *itemsAPI;
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
-@property (nonatomic, strong) NSMutableDictionary *firebaseDictionary;
+@property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 
 @end
 
@@ -32,8 +32,28 @@
     self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
     self.itemsAPI = [delegate.hackerAPI childByAppendingPath:@"item"];
     
+    [self removeOldObservations];
+}
+
+- (void)removeOldObservations {
+    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy reduce:^id(NSMutableArray *old, NSMutableArray *new) {
+        [old removeObjectsInArray:new];
+        return old;
+    }] map:^NSArray *(NSMutableArray *oldStories) {
+        NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
+                                                                      notFoundMarker:[NSNull null]] mutableCopy];
+        [self.observationDictionary removeObjectForKey:oldStories];
+        [staleObservations removeObject:[NSNull null]];
+        return staleObservations;
+    }] subscribeNext:^(NSMutableArray *oldObservations) {
+        for (Firebase *observation in oldObservations) {
+            [observation removeAllObservers];
+        }
+    }];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
     @weakify(self);
-    
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
         CBLUnsavedRevision *revision = [self.topStoriesDocument newRevision];
@@ -44,25 +64,6 @@
         [self updateTableView:previous current:current];
         [self.topStoriesSubject sendNext:current];
     }];
-    
-    [self removeOldObservations];
-}
-
-- (void)removeOldObservations {
-    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy
-                                                reduce:^id(NSMutableArray *old, NSMutableArray *new) {
-                                                    [old removeObjectsInArray:new];
-                                                    return old;
-                                                }] map:^NSArray *(NSMutableArray *oldStories) {
-                                                    NSMutableArray *staleObservations = [[self.firebaseDictionary objectsForKeys:oldStories
-                                                                                                                  notFoundMarker:[NSNull null]] mutableCopy];
-                                                    [staleObservations removeObject:[NSNull null]];
-                                                    return staleObservations;
-                                                }] subscribeNext:^(NSMutableArray *oldObservations) {
-                                                    for (Firebase *observation in oldObservations) {
-                                                        [observation removeAllObservers];
-                                                    }
-                                                }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -72,6 +73,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self.topStoriesSubject sendNext:nil];
+    [self.topStoriesAPI removeAllObservers];
 }
 
 #define newsSection 0
@@ -79,7 +81,7 @@
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
     NSMutableArray *newCells = @[].mutableCopy;
     NSMutableArray *changedCells = @[].mutableCopy;
-    [UIView animateWithDuration:2.5f animations:^{
+    [UIView animateWithDuration:1.0f animations:^{
         [self.tableView beginUpdates];
         for (NSInteger i = 0; i < current.count; i++) {
             BOOL previouslyContained = [previous containsObject:current[i]];
@@ -96,7 +98,7 @@
         [self.tableView endUpdates];
     } completion:^(BOOL finished) {
         [self.tableView reloadRowsAtIndexPaths:newCells withRowAnimation:UITableViewRowAnimationLeft];
-        [self.tableView reloadRowsAtIndexPaths:changedCells withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:changedCells withRowAnimation:UITableViewRowAnimationNone];
     }];
 }
 
@@ -116,8 +118,8 @@
 
 #pragma mark - TableView DataSource and Delegate methods
 
-- (NSMutableDictionary*)firebaseDictionary {
-    return WSM_LAZY(_firebaseDictionary, @{}.mutableCopy);
+- (NSMutableDictionary*)observationDictionary {
+    return WSM_LAZY(_observationDictionary, @{}.mutableCopy);
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -179,7 +181,7 @@
     __block CBLDocument *storyDocument = [newsDatabase documentWithID:[itemNumber stringValue]];
     
     @weakify(self);
-    WSM_LAZY(self.firebaseDictionary[itemNumber], ({
+    WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
             @strongify(self);
