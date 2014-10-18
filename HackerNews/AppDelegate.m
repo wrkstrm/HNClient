@@ -36,7 +36,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window.tintColor = SKColorMakeRGB(245.0f, 245.0f, 238.0f);
     return YES;
 }
 
@@ -64,7 +64,6 @@
                                                               error:nil];
     //Analytics
     [Flurry startSession:secrets[@"flurryKey"]];
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

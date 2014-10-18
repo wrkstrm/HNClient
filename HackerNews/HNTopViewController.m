@@ -7,10 +7,11 @@
 //
 
 #import "AppDelegate.h"
-#import "HNViewController.h"
+#import "HNTopViewController.h"
 #import "HNWebViewController.h"
+#import "HNTextViewController.h"
 
-@interface HNViewController ()
+@interface HNTopViewController ()
 
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
@@ -22,12 +23,10 @@
 
 @end
 
-@implementation HNViewController
+@implementation HNTopViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Hacker News Live";
-    self.navigationController.navigationBar.BarTintColor = self.hackerOrange;
     self.tableView.backgroundColor = self.hackerBeige;
     
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
@@ -43,7 +42,7 @@
         return old;
     }] map:^NSArray *(NSMutableArray *oldStories) {
         NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                      notFoundMarker:[NSNull null]] mutableCopy];
+                                                                         notFoundMarker:[NSNull null]] mutableCopy];
         [self.observationDictionary removeObjectForKey:oldStories];
         [staleObservations removeObject:[NSNull null]];
         return staleObservations;
@@ -55,6 +54,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    self.parentViewController.title = @"HN 100";
     @weakify(self);
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
@@ -74,7 +74,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.topStoriesSubject sendNext:nil];
+    [self.topStoriesSubject sendNext:@[].mutableCopy];
     [self.topStoriesAPI removeAllObservers];
 }
 
@@ -135,7 +135,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 44;
+    return 46;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -158,22 +158,22 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-    }
+    WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                          reuseIdentifier:cellIdentifier]);
+    
     NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
     NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
     
-    if (properties) {
-        cell.textLabel.text = properties[@"title"];
+    if (properties && ![properties[@"url"] isEqualToString:@""]) {
+        cell.textLabel.text = [NSString stringWithFormat:@"%li. %@", indexPath.row + 1,
+                               properties[@"title"]];
         NSInteger score = [properties[@"score"] integerValue];
         NSString *pointString = [NSString stringWithFormat:@"%li %@",
                                  (long)score, (score != 1) ? @"points":@"point"];
         NSString *username = [NSString stringWithFormat:@" by %@", properties[@"by"]];
-        
         cell.detailTextLabel.text = [pointString stringByAppendingString:username];
     } else {
-        cell.textLabel.text = @"Fetching Story...";
+        cell.textLabel.text = [NSString stringWithFormat:@"%li Fetching Story...", (long)indexPath.row];
         cell.detailTextLabel.text = @"0 points by rismay";
     }
     
@@ -199,17 +199,28 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+    NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
+    CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
+    if ([document[@"type"] isEqualToString:@"story"]) {
+        if (![document[@"url"] isEqualToString:@""]) {
+            [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+        } else if (![document[@"text"] isEqualToString:@""]) {
+            [self performSegueWithIdentifier:@"textViewSegue" sender:indexPath];
+        }
+    }
+    [Flurry logEvent:document[@"type"]];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
-    [Flurry logEvent:document[@"type"]];
     if ([segue.identifier isEqualToString:@"webViewSegue"]) {
         HNWebViewController *controller = segue.destinationViewController;
         NSURL *storyURL = [NSURL URLWithString:document[@"url"]];
         controller.request =  [NSURLRequest requestWithURL:storyURL];
+    } else if ([segue.identifier isEqualToString:@"textViewSegue"]) {
+        HNTextViewController *controller = segue.destinationViewController;
+        controller.text = document[@"text"];
     }
 }
 

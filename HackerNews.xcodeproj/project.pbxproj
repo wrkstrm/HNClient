@@ -17,9 +17,11 @@
 		6E11DA1219EE675D00A75579 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ED1071A19EE5DA900E1F669 /* libc++.dylib */; };
 		6E11DA1419EE676600A75579 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1319EE676600A75579 /* MobileCoreServices.framework */; };
 		6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
+		6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E397BD919F2680100697A8D /* HNTextViewController.m */; };
+		6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */; };
 		6ED106F519EE5BD200E1F669 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F419EE5BD200E1F669 /* main.m */; };
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
-		6ED106FB19EE5BD200E1F669 /* HNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNViewController.m */; };
+		6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */; };
 		6ED106FE19EE5BD200E1F669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FC19EE5BD200E1F669 /* Main.storyboard */; };
 		6ED1070019EE5BD200E1F669 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FF19EE5BD200E1F669 /* Images.xcassets */; };
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
@@ -52,13 +54,17 @@
 		6E11DA0F19EE673400A75579 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		6E11DA1319EE676600A75579 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		6E11DA1519EE677600A75579 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		6E397BD819F2680100697A8D /* HNTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNTextViewController.h; sourceTree = "<group>"; };
+		6E397BD919F2680100697A8D /* HNTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNTextViewController.m; sourceTree = "<group>"; };
+		6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNDynamicLogo.h; sourceTree = "<group>"; };
+		6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNDynamicLogo.m; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* HackerNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackerNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED106F319EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6ED106F419EE5BD200E1F669 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6ED106F619EE5BD200E1F669 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6ED106F719EE5BD200E1F669 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6ED106F919EE5BD200E1F669 /* HNViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNViewController.h; sourceTree = "<group>"; };
-		6ED106FA19EE5BD200E1F669 /* HNViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNViewController.m; sourceTree = "<group>"; };
+		6ED106F919EE5BD200E1F669 /* HNTopViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNTopViewController.h; sourceTree = "<group>"; };
+		6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNTopViewController.m; sourceTree = "<group>"; };
 		6ED106FD19EE5BD200E1F669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6ED106FF19EE5BD200E1F669 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6ED1070219EE5BD200E1F669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -108,6 +114,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6E397BD719F24B9F00697A8D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */,
+				6ED106FC19EE5BD200E1F669 /* Main.storyboard */,
+				6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */,
+				6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */,
+				6ED106FF19EE5BD200E1F669 /* Images.xcassets */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		6E3FE97119F1E9E40055964F /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				6ED106F919EE5BD200E1F669 /* HNTopViewController.h */,
+				6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */,
+				6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */,
+				6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */,
+				6E397BD819F2680100697A8D /* HNTextViewController.h */,
+				6E397BD919F2680100697A8D /* HNTextViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
 		6ED106E619EE5BD200E1F669 = {
 			isa = PBXGroup;
 			children = (
@@ -133,13 +164,8 @@
 			children = (
 				6ED106F619EE5BD200E1F669 /* AppDelegate.h */,
 				6ED106F719EE5BD200E1F669 /* AppDelegate.m */,
-				6ED106F919EE5BD200E1F669 /* HNViewController.h */,
-				6ED106FA19EE5BD200E1F669 /* HNViewController.m */,
-				6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */,
-				6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */,
-				6ED106FC19EE5BD200E1F669 /* Main.storyboard */,
-				6ED106FF19EE5BD200E1F669 /* Images.xcassets */,
-				6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */,
+				6E3FE97119F1E9E40055964F /* Controllers */,
+				6E397BD719F24B9F00697A8D /* Views */,
 				6ED106F219EE5BD200E1F669 /* Supporting Files */,
 			);
 			path = HackerNews;
@@ -381,8 +407,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6ED106FB19EE5BD200E1F669 /* HNViewController.m in Sources */,
+				6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */,
+				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
+				6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */,
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
 				6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */,
 			);
@@ -460,7 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -495,7 +523,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -515,6 +543,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HackerNews/HackerNews-Prefix.pch";
 				INFOPLIST_FILE = HackerNews/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -537,6 +566,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HackerNews/HackerNews-Prefix.pch";
 				INFOPLIST_FILE = HackerNews/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

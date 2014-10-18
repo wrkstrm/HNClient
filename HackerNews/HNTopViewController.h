@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HNViewController : UITableViewController
+@interface HNTopViewController : UITableViewController
 
 
 @end
