@@ -164,7 +164,7 @@
     NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
     NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
     
-    if (properties && ![properties[@"url"] isEqualToString:@""]) {
+    if (properties) {
         cell.textLabel.text = [NSString stringWithFormat:@"%li. %@", indexPath.row + 1,
                                properties[@"title"]];
         NSInteger score = [properties[@"score"] integerValue];
