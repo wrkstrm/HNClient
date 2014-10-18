@@ -83,25 +83,31 @@
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
     NSMutableArray *newCells = @[].mutableCopy;
     NSMutableArray *changedCells = @[].mutableCopy;
-    [UIView animateWithDuration:1.0f animations:^{
-        [self.tableView beginUpdates];
-        for (NSInteger i = 0; i < current.count; i++) {
-            BOOL previouslyContained = [previous containsObject:current[i]];
-            NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
-            if (previous.count < i || !previouslyContained) {
-                [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
-            } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
-                NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex inSection:newsSection];
-                NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
-                [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                [changedCells addObject:oldPath];
+    if (previous.count == 0) {
+        [self.tableView reloadData];
+    } else {
+        [UIView animateWithDuration:1.0f animations:^{
+            [self.tableView beginUpdates];
+            for (NSInteger i = 0; i < current.count; i++) {
+                BOOL previouslyContained = [previous containsObject:current[i]];
+                NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
+                if (!previouslyContained) {
+                    [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
+                } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
+                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex inSection:newsSection];
+                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
+                    [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
+                    [changedCells addObject:oldPath];
+                }
             }
-        }
-        [self.tableView endUpdates];
-    } completion:^(BOOL finished) {
-        [self.tableView reloadRowsAtIndexPaths:newCells withRowAnimation:UITableViewRowAnimationLeft];
-        [self.tableView reloadRowsAtIndexPaths:changedCells withRowAnimation:UITableViewRowAnimationNone];
-    }];
+            NSLog(@"New Cells: %@", newCells);
+            NSLog(@"Changed Cells: %@", changedCells);
+            [self.tableView endUpdates];
+        } completion:^(BOOL finished) {
+            [self.tableView reloadRowsAtIndexPaths:newCells withRowAnimation:UITableViewRowAnimationLeft];
+            [self.tableView reloadRowsAtIndexPaths:changedCells withRowAnimation:UITableViewRowAnimationNone];
+        }];
+    }
 }
 
 #pragma mark - Lazy Property Instantiation
@@ -165,7 +171,7 @@
     NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
     
     if (properties) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%li. %@", indexPath.row + 1,
+        cell.textLabel.text = [NSString stringWithFormat:@"%li. %@", (long)(indexPath.row + 1),
                                properties[@"title"]];
         NSInteger score = [properties[@"score"] integerValue];
         NSString *pointString = [NSString stringWithFormat:@"%li %@",
