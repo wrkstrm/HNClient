@@ -18,7 +18,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = self.hackerBeige;
     self.textView.backgroundColor = self.hackerBeige;
-    self.textView.attributedText = [[NSAttributedString alloc] initWithData:[self.text dataUsingEncoding:NSUnicodeStringEncoding]
+    NSString *htmlString = [NSString stringWithFormat:@"<style> body {font-family:\"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> %@ </body>", self.text];
+    self.textView.attributedText = [[NSAttributedString alloc] initWithData:[htmlString dataUsingEncoding:NSUnicodeStringEncoding]
                                                                     options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType}
                                                          documentAttributes:nil
                                                                       error:nil];

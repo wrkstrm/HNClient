@@ -7,6 +7,7 @@ target 'HackerNews' do
   pod 'WSMUtilities'
   pod 'WSMLogger'
   pod 'ReactiveCocoa'
+  pod 'DateTools'
   pod 'Firebase', '>= 1.2.2'
 end
 
@@ -15,6 +16,7 @@ target 'HackerNewsTests' do
   pod 'WSMLogger'
   pod 'ReactiveCocoa'
   pod 'Firebase', '>= 1.2.2'
+  pod 'DateTools'
   pod 'Specta'
 end
   
