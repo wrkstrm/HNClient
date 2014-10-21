@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="JcZ-Xh-Bi5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="JcZ-Xh-Bi5">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -138,16 +138,20 @@
                         <color key="backgroundColor" red="1" green="0.30588235289999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Nck-SS-lc0" firstAttribute="leading" secondItem="lB7-70-8XT" secondAttribute="leading" constant="20" symbolic="YES" id="00d-6g-BxT"/>
-                            <constraint firstAttribute="centerY" secondItem="Nck-SS-lc0" secondAttribute="centerY" id="1qG-zX-dje"/>
+                            <constraint firstAttribute="centerY" relation="lessThanOrEqual" secondItem="Nck-SS-lc0" secondAttribute="centerY" priority="900" constant="-56" id="1qG-zX-dje"/>
                             <constraint firstAttribute="trailing" secondItem="V6C-7Q-cDq" secondAttribute="trailing" id="3NW-xk-7jg"/>
                             <constraint firstItem="Nck-SS-lc0" firstAttribute="top" secondItem="V6C-7Q-cDq" secondAttribute="bottom" constant="8" id="9pO-yY-Chk"/>
                             <constraint firstItem="rMT-B4-i0M" firstAttribute="leading" secondItem="lB7-70-8XT" secondAttribute="leading" constant="20" symbolic="YES" id="AZ2-J0-pj7"/>
+                            <constraint firstItem="rMT-B4-i0M" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Nck-SS-lc0" secondAttribute="bottom" id="BKP-mY-c0u"/>
                             <constraint firstAttribute="centerX" secondItem="rMT-B4-i0M" secondAttribute="centerX" id="GBG-dN-jlL"/>
                             <constraint firstAttribute="centerX" secondItem="Nck-SS-lc0" secondAttribute="centerX" id="Ick-LD-uQS"/>
+                            <constraint firstAttribute="centerY" secondItem="V6C-7Q-cDq" secondAttribute="centerY" priority="700" constant="42" id="ItX-9r-7zs"/>
                             <constraint firstAttribute="trailing" secondItem="Nck-SS-lc0" secondAttribute="trailing" constant="20" id="UyM-58-uNf"/>
                             <constraint firstItem="jMD-2E-DjH" firstAttribute="top" secondItem="rMT-B4-i0M" secondAttribute="bottom" constant="8.5" id="Y73-qn-tiu"/>
+                            <constraint firstItem="Nck-SS-lc0" firstAttribute="top" secondItem="V6C-7Q-cDq" secondAttribute="bottom" constant="8" id="YAz-Kg-khK"/>
                             <constraint firstItem="V6C-7Q-cDq" firstAttribute="leading" secondItem="lB7-70-8XT" secondAttribute="leading" id="jAI-3T-PIs"/>
-                            <constraint firstAttribute="centerX" secondItem="Nck-SS-lc0" secondAttribute="centerX" id="oh2-ex-kz2"/>
+                            <constraint firstAttribute="centerX" secondItem="Nck-SS-lc0" secondAttribute="centerX" priority="900" id="oh2-ex-kz2"/>
+                            <constraint firstItem="V6C-7Q-cDq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="1gt-AR-eMx" secondAttribute="bottom" priority="880" id="xF1-Mx-93T"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="more" id="U8p-8S-X3r"/>
