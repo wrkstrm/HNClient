@@ -72,4 +72,5 @@
     UIGraphicsEndImageContext();
     return image;
 }
+
 @end
