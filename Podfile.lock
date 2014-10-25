@@ -1,14 +1,14 @@
 PODS:
-  - CocoaLumberjack (2.0.0-beta2):
-    - CocoaLumberjack/CLI
-    - CocoaLumberjack/Core
+  - CocoaLumberjack (2.0.0-beta3):
+    - CocoaLumberjack/Default
     - CocoaLumberjack/Extensions
-  - CocoaLumberjack/CLI (2.0.0-beta2):
+  - CocoaLumberjack/Core (2.0.0-beta3)
+  - CocoaLumberjack/Default (2.0.0-beta3):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Core (2.0.0-beta2)
-  - CocoaLumberjack/Extensions (2.0.0-beta2):
-    - CocoaLumberjack/Core
-  - Firebase (1.2.2)
+  - CocoaLumberjack/Extensions (2.0.0-beta3):
+    - CocoaLumberjack/Default
+  - DateTools (1.4.3)
+  - Firebase (1.2.3)
   - ReactiveCocoa (2.3.1):
     - ReactiveCocoa/UI
   - ReactiveCocoa/Core (2.3.1):
@@ -22,6 +22,7 @@ PODS:
   - WSMUtilities (0.0.3)
 
 DEPENDENCIES:
+  - DateTools
   - Firebase (>= 1.2.2)
   - ReactiveCocoa
   - Specta
@@ -29,11 +30,12 @@ DEPENDENCIES:
   - WSMUtilities
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: 956d3fb98fed498a13d56499f262c975ef431c98
-  Firebase: 1a8b62e7562c167c445b681493c4d33b51606df8
+  CocoaLumberjack: 55c22a2b8bde7a29c568ab4015b5874216524d70
+  DateTools: 7c2d233ea2d4bda3a717d0cd5f58da926a5998d0
+  Firebase: b396753207f45235159be6703fbf059e5cf72536
   ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
   Specta: 9141310f46b1f68b676650ff2854e1ed0b74163a
   WSMLogger: a465b61ada79c02f5d6e8734d7e4ad6c330a6aa4
   WSMUtilities: 65c4257a427a15fe10445ac03670ce345403dcf7
 
-COCOAPODS: 0.34.2
+COCOAPODS: 0.34.4

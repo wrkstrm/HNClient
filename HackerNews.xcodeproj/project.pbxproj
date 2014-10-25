@@ -19,6 +19,7 @@
 		6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
 		6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E397BD919F2680100697A8D /* HNTextViewController.m */; };
 		6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */; };
+		6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */; };
 		6ED106F519EE5BD200E1F669 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F419EE5BD200E1F669 /* main.m */; };
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
 		6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */; };
@@ -58,6 +59,8 @@
 		6E397BD919F2680100697A8D /* HNTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNTextViewController.m; sourceTree = "<group>"; };
 		6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNDynamicLogo.h; sourceTree = "<group>"; };
 		6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNDynamicLogo.m; sourceTree = "<group>"; };
+		6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+HNHeadline.h"; sourceTree = "<group>"; };
+		6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+HNHeadline.m"; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED106F319EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6ED106F419EE5BD200E1F669 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -121,6 +124,8 @@
 				6ED106FC19EE5BD200E1F669 /* Main.storyboard */,
 				6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */,
 				6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */,
+				6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */,
+				6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */,
 				6ED106FF19EE5BD200E1F669 /* Images.xcassets */,
 			);
 			name = Views;
@@ -250,6 +255,7 @@
 				6ED106EC19EE5BD200E1F669 /* Frameworks */,
 				6ED106ED19EE5BD200E1F669 /* Resources */,
 				FD1C5E65A8DB1E3AAF37183A /* Copy Pods Resources */,
+				6E730AA319FAFBE300E412C3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -355,6 +361,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		6E730AA319FAFBE300E412C3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\nif [ -n \"$(find \"$PROJECT_DIR\" \\! -path \"*xcuserdata*\" \\! -path \"*.git\" -newer \"$INFOPLIST_FILE\")\" ]; then\nversionNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"$INFOPLIST_FILE\")\nversionNumber=`echo $versionNumber +0.001|bc`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $versionNumber\" \"$INFOPLIST_FILE\"\n\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
+		};
 		B44070CEB5BC5B087B000C58 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -412,6 +431,7 @@
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
 				6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */,
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
+				6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */,
 				6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

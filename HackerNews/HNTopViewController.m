@@ -10,6 +10,8 @@
 #import "HNTopViewController.h"
 #import "HNWebViewController.h"
 #import "HNTextViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "UITableViewCell+HNHeadline.h"
 
 @interface HNTopViewController ()
 
@@ -21,13 +23,25 @@
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 
+@property (nonatomic, strong) NSMutableDictionary *rowHeights;
+
 @end
 
 @implementation HNTopViewController
 
+#pragma mark - Property Instantiation
+
+- (NSMutableDictionary *)rowHeights {
+    return WSM_LAZY(_rowHeights, @{}.mutableCopy);
+}
+
+#pragma mark - View Lifecycle Managment
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.backgroundColor = self.hackerBeige;
+//    self.tableView.estimatedRowHeight = 50; This is horrible don't use it!
+//    self.tableView.rowHeight = UITableViewAutomaticDimension; Seriously Apple....
     
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
@@ -41,10 +55,11 @@
         [old removeObjectsInArray:new];
         return old;
     }] map:^NSArray *(NSMutableArray *oldStories) {
+        NSNull *null = [NSNull null];
         NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                         notFoundMarker:[NSNull null]] mutableCopy];
+                                                                         notFoundMarker:null] mutableCopy];
         [self.observationDictionary removeObjectForKey:oldStories];
-        [staleObservations removeObject:[NSNull null]];
+        [staleObservations removeObject:null];
         return staleObservations;
     }] subscribeNext:^(NSMutableArray *oldObservations) {
         for (Firebase *observation in oldObservations) {
@@ -100,8 +115,6 @@
                     [changedCells addObject:oldPath];
                 }
             }
-            NSLog(@"New Cells: %@", newCells);
-            NSLog(@"Changed Cells: %@", changedCells);
             [self.tableView endUpdates];
         } completion:^(BOOL finished) {
             [self.tableView reloadRowsAtIndexPaths:newCells withRowAnimation:UITableViewRowAnimationLeft];
@@ -141,7 +154,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 46;
+    return 62;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -160,29 +173,16 @@
     cell.backgroundColor = self.hackerBeige;
 }
 
-#define cellIdentifier @"storyCell"
+#define CELL_IDENTIFIER @"storyCell"
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER];
     WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                          reuseIdentifier:cellIdentifier]);
+                                          reuseIdentifier:CELL_IDENTIFIER]);
     
     NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
     NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
-    
-    if (properties) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%li. %@", (long)(indexPath.row + 1),
-                               properties[@"title"]];
-        NSInteger score = [properties[@"score"] integerValue];
-        NSString *pointString = [NSString stringWithFormat:@"%li %@",
-                                 (long)score, (score != 1) ? @"points":@"point"];
-        NSString *username = [NSString stringWithFormat:@" by %@", properties[@"by"]];
-        cell.detailTextLabel.text = [pointString stringByAppendingString:username];
-    } else {
-        cell.textLabel.text = [NSString stringWithFormat:@"%li Fetching Story...", (long)indexPath.row];
-        cell.detailTextLabel.text = @"0 points by rismay";
-    }
-    
+    [cell prepareForHeadline:properties path:indexPath];
     return cell;
 }
 
