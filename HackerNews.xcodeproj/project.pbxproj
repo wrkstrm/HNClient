@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		50715148D34F3DD84DCBFE92 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */; };
 		57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */; };
-		6E11DA0919EE65BE00A75579 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0819EE65BE00A75579 /* CouchbaseLite.framework */; };
 		6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */; };
 		6E11DA1019EE673400A75579 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0F19EE673400A75579 /* Security.framework */; };
@@ -19,6 +18,8 @@
 		6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
 		6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E397BD919F2680100697A8D /* HNTextViewController.m */; };
 		6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */; };
+		6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
+		6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */; };
 		6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */; };
 		6ED106F519EE5BD200E1F669 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F419EE5BD200E1F669 /* main.m */; };
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
@@ -28,8 +29,6 @@
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
 		6ED1070F19EE5BD200E1F669 /* HackerNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HackerNewsTests.m */; };
 		6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */; };
-		6EFB719619F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */; };
-		6EFB719719F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */; };
 		6EFB719919F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 		6EFB719A19F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 /* End PBXBuildFile section */
@@ -49,7 +48,6 @@
 		48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		591A035AA7E80899E62C60B9 /* Pods-HackerNewsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6028C4209F00A205B7FFD67D /* Pods-HackerNewsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.release.xcconfig"; sourceTree = "<group>"; };
-		6E11DA0819EE65BE00A75579 /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CouchbaseLite.framework; sourceTree = "<group>"; };
 		6E11DA0B19EE672100A75579 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		6E11DA0F19EE673400A75579 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -59,6 +57,9 @@
 		6E397BD919F2680100697A8D /* HNTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNTextViewController.m; sourceTree = "<group>"; };
 		6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNDynamicLogo.h; sourceTree = "<group>"; };
 		6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNDynamicLogo.m; sourceTree = "<group>"; };
+		6E45657019FB23A100856F74 /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLite.framework; path = vendor/CouchbaseLite.framework; sourceTree = "<group>"; };
+		6E45657319FB23C100856F74 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
 		6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+HNHeadline.h"; sourceTree = "<group>"; };
 		6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+HNHeadline.m"; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,8 +81,6 @@
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
 		6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNWebViewController.h; sourceTree = "<group>"; };
 		6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNWebViewController.m; sourceTree = "<group>"; };
-		6EFB719419F1CC6D00830F79 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
 		6EFB719819F1CD3600830F79 /* secrets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secrets.json; sourceTree = "<group>"; };
 		84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
@@ -92,15 +91,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */,
 				6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */,
 				6E11DA1419EE676600A75579 /* MobileCoreServices.framework in Frameworks */,
 				6E11DA1219EE675D00A75579 /* libc++.dylib in Frameworks */,
 				6E11DA1119EE673E00A75579 /* CFNetwork.framework in Frameworks */,
+				6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */,
 				6E11DA1019EE673400A75579 /* Security.framework in Frameworks */,
-				6EFB719619F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */,
 				6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */,
 				6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */,
-				6E11DA0919EE65BE00A75579 /* CouchbaseLite.framework in Frameworks */,
 				50715148D34F3DD84DCBFE92 /* libPods-HackerNews.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,7 +109,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */,
-				6EFB719719F1CC6D00830F79 /* libFlurry_5.4.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +140,16 @@
 				6E397BD919F2680100697A8D /* HNTextViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		6E45657219FB23C100856F74 /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				6E45657319FB23C100856F74 /* Flurry.h */,
+				6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */,
+			);
+			name = Flurry;
+			path = vendor/Flurry;
 			sourceTree = "<group>";
 		};
 		6ED106E619EE5BD200E1F669 = {
@@ -204,15 +212,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		6EFB719319F1CC6D00830F79 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				6EFB719419F1CC6D00830F79 /* Flurry.h */,
-				6EFB719519F1CC6D00830F79 /* libFlurry_5.4.0.a */,
-			);
-			path = Flurry;
-			sourceTree = "<group>";
-		};
 		8D3D144C0167EB48B3DCB436 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,13 +226,13 @@
 		A8F0BE3B291D393CF1C701C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6EFB719319F1CC6D00830F79 /* Flurry */,
+				6E45657219FB23C100856F74 /* Flurry */,
+				6E45657019FB23A100856F74 /* CouchbaseLite.framework */,
 				6E11DA1519EE677600A75579 /* libsqlite3.dylib */,
 				6E11DA1319EE676600A75579 /* MobileCoreServices.framework */,
 				6E11DA0F19EE673400A75579 /* Security.framework */,
 				6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */,
 				6E11DA0B19EE672100A75579 /* libz.dylib */,
-				6E11DA0819EE65BE00A75579 /* CouchbaseLite.framework */,
 				6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */,
 				6ED1071A19EE5DA900E1F669 /* libc++.dylib */,
 				6ED1071819EE5D9F00E1F669 /* libicucore.dylib */,
@@ -558,6 +557,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -568,6 +568,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				PRODUCT_NAME = "Hacker News";
 			};
@@ -581,6 +582,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -591,6 +593,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				PRODUCT_NAME = "Hacker News";
 			};
