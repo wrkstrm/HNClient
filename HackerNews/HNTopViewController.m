@@ -68,21 +68,23 @@
 }
 
 - (void)removeOldObservations {
-    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy reduce:^id(NSMutableArray *old, NSMutableArray *new) {
-        [old removeObjectsInArray:new];
-        return old;
-    }] map:^NSArray *(NSMutableArray *oldStories) {
-        NSNull *null = [NSNull null];
-        NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                         notFoundMarker:null] mutableCopy];
-        [self.observationDictionary removeObjectForKey:oldStories];
-        [staleObservations removeObject:null];
-        return staleObservations;
-    }] subscribeNext:^(NSMutableArray *oldObservations) {
-        for (Firebase *observation in oldObservations) {
-            [observation removeAllObservers];
-        }
-    }];
+    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy
+                                                reduce:^id(NSMutableArray *old, NSMutableArray *new)
+       {
+           [old removeObjectsInArray:new];
+           return old;
+       }] map:^NSArray *(NSMutableArray *oldStories) {
+           NSNull *null = [NSNull null];
+           NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
+                                                                           notFoundMarker:null] mutableCopy];
+           [self.observationDictionary removeObjectForKey:oldStories];
+           [staleObservations removeObject:null];
+           return staleObservations;
+       }] subscribeNext:^(NSMutableArray *oldObservations) {
+           for (Firebase *observation in oldObservations) {
+               [observation removeAllObservers];
+           }
+       }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

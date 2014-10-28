@@ -27,10 +27,10 @@
         self.textLabel.numberOfLines = 3; //Not sure why 2 doesn't work.
         self.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [title appendString:properties[@"title"]];
-
+        
         self.textLabel.text = title;
         [self.textLabel sizeToFit];
-    
+        
         NSMutableString *detailText = @"".mutableCopy;
         NSInteger score = [properties[@"score"] integerValue];
         [detailText appendString:[NSString stringWithFormat:@"%li %@",
@@ -50,13 +50,16 @@
     }
     
     //Icon
+    UIImageView *favicon = nil;
     if (![icon isEqual:[NSNull null]]) {
-        UIImageView *favicon = [[UIImageView alloc] initWithImage:icon];
-        [favicon setFrame:CGRectMake(0, 0, 20, 20)];
-        self.accessoryView =  favicon;
-    } else {
-        self.accessoryView = nil;
+        favicon = [[UIImageView alloc] initWithImage:icon];
+    } else if (![properties[@"url"] isEqualToString:@""]) {
+        favicon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"web_black"]];
     }
+    
+    [favicon setFrame:CGRectMake(0, 0, 20, 20)];
+    self.accessoryView =  favicon;
+    
     [[self.rac_prepareForReuseSignal take:1] subscribeNext:^(id x) {
         [label removeFromSuperview];
     }];
