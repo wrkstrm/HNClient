@@ -11,7 +11,7 @@
 
 @implementation UITableViewCell (HNHeadline)
 
-- (void)prepareForHeadline:(NSDictionary *)properties path:(NSIndexPath *)path {
+- (void)prepareForHeadline:(NSDictionary *)properties icon:(UIImage *)icon path:(NSIndexPath *)path {
     //Create the number - ex: 1.
     UILabel *label =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     label.backgroundColor = [UIColor clearColor];
@@ -49,6 +49,14 @@
         self.detailTextLabel.text = @"0 points by rismay";
     }
     
+    //Icon
+    if (![icon isEqual:[NSNull null]]) {
+        UIImageView *favicon = [[UIImageView alloc] initWithImage:icon];
+        [favicon setFrame:CGRectMake(0, 0, 20, 20)];
+        self.accessoryView =  favicon;
+    } else {
+        self.accessoryView = nil;
+    }
     [[self.rac_prepareForReuseSignal take:1] subscribeNext:^(id x) {
         [label removeFromSuperview];
     }];

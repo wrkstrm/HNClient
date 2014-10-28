@@ -10,6 +10,6 @@
 
 @interface UITableViewCell (HNHeadline)
 
-- (void) prepareForHeadline:(NSDictionary *)properties path:(NSIndexPath *)path;
+- (void) prepareForHeadline:(NSDictionary *)properties icon:(UIImage *)ico path:(NSIndexPath *)path;
 
 @end

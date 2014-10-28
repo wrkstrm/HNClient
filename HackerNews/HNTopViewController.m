@@ -22,8 +22,7 @@
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
-
-@property (nonatomic, strong) NSMutableDictionary *rowHeights;
+@property (nonatomic, strong) NSMutableDictionary *faviconDictionary;
 
 @end
 
@@ -31,8 +30,30 @@
 
 #pragma mark - Property Instantiation
 
-- (NSMutableDictionary *)rowHeights {
-    return WSM_LAZY(_rowHeights, @{}.mutableCopy);
+- (NSMutableDictionary *)observationDictionary {
+    return WSM_LAZY(_observationDictionary, @{}.mutableCopy);
+}
+
+- (NSMutableDictionary *)faviconDictionary {
+    return WSM_LAZY(_faviconDictionary, @{}.mutableCopy);
+}
+
+- (CBLDatabase *)newsDatabase {
+    return WSM_LAZY(_newsDatabase, ({
+        NSError *error;
+        CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:&error];
+        WSMLog(error, @"Error initializing database: %@",error);
+        [db compact:nil];
+        db;
+    }));
+}
+
+- (CBLDocument *)topStoriesDocument {
+    return WSM_LAZY(_topStoriesDocument, [self.newsDatabase documentWithID:@"topStories"]);
+}
+
+- (RACSubject *)topStoriesSubject {
+    return WSM_LAZY(_topStoriesSubject, [RACSubject subject]);
 }
 
 #pragma mark - View Lifecycle Managment
@@ -40,13 +61,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.backgroundColor = self.hackerBeige;
-//    self.tableView.estimatedRowHeight = 50; This is horrible don't use it!
-//    self.tableView.rowHeight = UITableViewAutomaticDimension; Seriously Apple....
-    
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
     self.itemsAPI = [delegate.hackerAPI childByAppendingPath:@"item"];
-    
     [self removeOldObservations];
 }
 
@@ -123,31 +140,7 @@
     }
 }
 
-#pragma mark - Lazy Property Instantiation
-
-- (CBLDatabase *)newsDatabase {
-    return WSM_LAZY(_newsDatabase, ({
-        NSError *error;
-        CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:&error];
-        WSMLog(error, @"Error initializing database: %@",error);
-        [db compact:nil];
-        db;
-    }));
-}
-
-- (CBLDocument *)topStoriesDocument {
-    return WSM_LAZY(_topStoriesDocument, [self.newsDatabase documentWithID:@"topStories"]);
-}
-
-- (RACSubject *)topStoriesSubject {
-    return WSM_LAZY(_topStoriesSubject, [RACSubject subject]);
-}
-
 #pragma mark - TableView DataSource and Delegate methods
-
-- (NSMutableDictionary*)observationDictionary {
-    return WSM_LAZY(_observationDictionary, @{}.mutableCopy);
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -182,7 +175,9 @@
     
     NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
     NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
-    [cell prepareForHeadline:properties path:indexPath];
+    NSString *faviconURL = [self faviconURL:properties[@"url"]];
+    
+    [cell prepareForHeadline:properties icon:self.faviconDictionary[faviconURL] path:indexPath];
     return cell;
 }
 
@@ -196,12 +191,34 @@
             CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
             [documentRevision setUserProperties:snapshot.value];
             [documentRevision save:nil];
+            [self cacheFaviconForItem:itemNumber url:snapshot.value[@"url"]];
             [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
                                   withRowAnimation:UITableViewRowAnimationNone];
         }];
         base;
     }));
     return storyDocument;
+}
+
+- (void)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *faviconURL = [self faviconURL:urlString];
+        WSM_LAZY(self.faviconDictionary[faviconURL], ({
+            NSData *myData= [NSData dataWithContentsOfURL:[NSURL URLWithString:faviconURL]];
+            UIImage *image = [[UIImage alloc] initWithData:myData];
+            WSM_DISPATCH_AFTER(0.01, {
+                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
+                                      withRowAnimation:UITableViewRowAnimationNone];
+            });
+            image ?: [NSNull null];
+        }));
+    });
+}
+
+- (NSString *)faviconURL:(NSString *)urlString {
+    NSURL *url = [NSURL URLWithString:urlString];
+    return [[NSString stringWithFormat:@"%@://%@", url.scheme, url.host]
+            stringByAppendingString:@"/favicon.ico"];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
