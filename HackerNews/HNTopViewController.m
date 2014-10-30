@@ -23,6 +23,7 @@
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 @property (nonatomic, strong) NSMutableDictionary *faviconDictionary;
+@property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
 
 @end
 
@@ -36,6 +37,10 @@
 
 - (NSMutableDictionary *)faviconDictionary {
     return WSM_LAZY(_faviconDictionary, @{}.mutableCopy);
+}
+
+- (NSMutableDictionary *)rowHeightDictionary {
+    return WSM_LAZY(_rowHeightDictionary, @{}.mutableCopy);
 }
 
 - (CBLDatabase *)newsDatabase {
@@ -76,7 +81,7 @@
        }] map:^NSArray *(NSMutableArray *oldStories) {
            NSNull *null = [NSNull null];
            NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                           notFoundMarker:null] mutableCopy];
+                                                                            notFoundMarker:null] mutableCopy];
            [self.observationDictionary removeObjectForKey:oldStories];
            [staleObservations removeObject:null];
            return staleObservations;
@@ -103,8 +108,9 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows
-                          withRowAnimation:UITableViewRowAnimationNone];
+    for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
+        [self observeAndGetDocumentForItem:[self itemNumberForIndexPath:path]];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -128,7 +134,8 @@
                 if (!previouslyContained) {
                     [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
                 } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
-                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex inSection:newsSection];
+                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+                                                              inSection:newsSection];
                     NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
                     [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
                     [changedCells addObject:oldPath];
@@ -136,8 +143,10 @@
             }
             [self.tableView endUpdates];
         } completion:^(BOOL finished) {
-            [self.tableView reloadRowsAtIndexPaths:newCells withRowAnimation:UITableViewRowAnimationLeft];
-            [self.tableView reloadRowsAtIndexPaths:changedCells withRowAnimation:UITableViewRowAnimationNone];
+            [self.tableView reloadRowsAtIndexPaths:newCells
+                                  withRowAnimation:UITableViewRowAnimationLeft];
+            [self.tableView reloadRowsAtIndexPaths:changedCells
+                                  withRowAnimation:UITableViewRowAnimationNone];
         }];
     }
 }
@@ -149,14 +158,17 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 62;
+    CBLDocument *document = [self observeAndGetDocumentForItem:[self itemNumberForIndexPath:indexPath]];
+    NSNumber *rowHeight = WSM_LAZY(self.rowHeightDictionary[[self itemNumberForIndexPath:indexPath]],
+                                   @([UITableViewCell getCellHeightForDocument:document view:self.view]));
+    return [rowHeight floatValue];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.topStoriesDocument[@"stories"] count];
 }
 
-- (NSNumber *)itemNumberForeIndexPath:(NSIndexPath *)path {
+- (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path {
     return self.topStoriesDocument[@"stories"][path.row];
 }
 - (NSIndexPath *)indexPathForItemNumber:(NSNumber *)itemNumber {
@@ -175,16 +187,30 @@
     WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:CELL_IDENTIFIER]);
     
-    NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
-    NSDictionary *properties = [[self observeAndGetdocumentForItem:itemNumber] userProperties];
-    NSString *faviconURL = [self faviconURL:properties[@"url"]];
+    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
+    NSDictionary *properties = [[self observeAndGetDocumentForItem:itemNumber] userProperties];
+    NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:properties[@"url"]];
     
     [cell prepareForHeadline:properties icon:self.faviconDictionary[faviconURL] path:indexPath];
     return cell;
 }
 
-- (CBLDocument *)observeAndGetdocumentForItem:(NSNumber *)itemNumber {
+- (CBLDocument *)observeAndGetDocumentForItem:(NSNumber *)itemNumber {
     __block CBLDocument *storyDocument = [self.newsDatabase documentWithID:[itemNumber stringValue]];
+    if (!storyDocument.properties) {
+        CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
+        [documentRevision setUserProperties:@{@"by":@"rismay",
+                                              @"id":@0,
+                                              @"kids":@[],
+                                              @"score":@0,
+                                              @"text":@"",
+                                              @"time":@0,
+                                              @"title":@"Fetching Story...",
+                                              @"type":@"story",
+                                              @"url":@""
+                                              }];
+        [documentRevision save:nil];
+    }
     WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
         @weakify(self);
@@ -193,38 +219,62 @@
             CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
             [documentRevision setUserProperties:snapshot.value];
             [documentRevision save:nil];
-            [self cacheFaviconForItem:itemNumber url:snapshot.value[@"url"]];
-            [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
-                                  withRowAnimation:UITableViewRowAnimationNone];
+            //Get Favicon
+            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:snapshot.value[@"url"]];
+            CGFloat newRowHeight = [UITableViewCell getCellHeightForDocument:storyDocument
+                                                                        view:self.view];
+            CGFloat oldRowHeight = [self.rowHeightDictionary[itemNumber] floatValue];
+            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            [cell prepareForHeadline:storyDocument.properties
+                                icon:self.faviconDictionary[faviconURL]
+                                path:indexPath];
+            if (newRowHeight != oldRowHeight) {
+                //Reloading rows, even just 1 is naive. So we have to get the cell and configue it.
+                NSLog(@"This gets called a lot...");
+                self.rowHeightDictionary[itemNumber] = @(newRowHeight);
+                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
+            }
         }];
         base;
     }));
     return storyDocument;
 }
 
-- (void)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
+- (NSString *)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
+    NSString *faviconURL = [self faviconURL:urlString];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *faviconURL = [self faviconURL:urlString];
         WSM_LAZY(self.faviconDictionary[faviconURL], ({
-            NSData *myData= [NSData dataWithContentsOfURL:[NSURL URLWithString:faviconURL]];
-            UIImage *image = [[UIImage alloc] initWithData:myData];
-            WSM_DISPATCH_AFTER(0.01, {
-                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
-                                      withRowAnimation:UITableViewRowAnimationNone];
+            NSURL *nativeFavicon = [NSURL URLWithString:
+                                    [faviconURL stringByAppendingString:@"/favicon.ico"]];
+            UIImage *faviconImage = [UIImage imageWithData:
+                                     [NSData dataWithContentsOfURL:nativeFavicon]];
+            WSM_LAZY(faviconImage, ({
+                NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
+                                         @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
+                [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:googleFavicon]];
+            }));
+            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [cell prepareForHeadline:storyDocument.properties
+                                    icon:faviconImage
+                                    path:indexPath];
             });
-            image ?: [NSNull null];
+            faviconImage ?: [NSNull null];
         }));
     });
+    return faviconURL;
 }
 
 - (NSString *)faviconURL:(NSString *)urlString {
     NSURL *url = [NSURL URLWithString:urlString];
-    return [[NSString stringWithFormat:@"%@://%@", url.scheme, url.host]
-            stringByAppendingString:@"/favicon.ico"];
+    return [NSString stringWithFormat:@"%@://%@", url.scheme, url.host];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
+    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if ([document[@"type"] isEqualToString:@"story"]) {
         if (![document[@"url"] isEqualToString:@""]) {
@@ -233,11 +283,12 @@
             [self performSegueWithIdentifier:@"textViewSegue" sender:indexPath];
         }
     }
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [Flurry logEvent:document[@"type"]];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
-    NSNumber *itemNumber = [self itemNumberForeIndexPath:indexPath];
+    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if ([segue.identifier isEqualToString:@"webViewSegue"]) {
         HNWebViewController *controller = segue.destinationViewController;

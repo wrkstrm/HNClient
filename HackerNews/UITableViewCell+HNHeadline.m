@@ -15,16 +15,21 @@
     //Create the number - ex: 1.
     UILabel *label =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     label.backgroundColor = [UIColor clearColor];
-    label.text = [NSString stringWithFormat:@"%li.", (long)path.row + 1];
-    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    label.text = @(path.row + 1).stringValue;
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     [label sizeToFit];
+    label.tag = 1;
+    self.imageView.image = nil;
+    for (UIView *view in self.imageView.subviews) {
+        [view removeFromSuperview];
+    }
     self.imageView.image = [self imageWithColor:[UIColor clearColor]];
     [self.imageView addSubview: label];
     label.center = CGPointMake(0.5f, 0.5f);
     if (properties) {
         //Headline
         NSMutableString *title = @"".mutableCopy;
-        self.textLabel.numberOfLines = 3; //Not sure why 2 doesn't work.
+        self.textLabel.numberOfLines = 0;
         self.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [title appendString:properties[@"title"]];
         
@@ -43,6 +48,7 @@
         NSInteger comments = [properties[@"kids"] count];
         [detailText appendString:[NSString stringWithFormat:@"%li %@",
                                   (long)comments, (comments != 1) ? @"comments": @"comment"]];
+        self.detailTextLabel.numberOfLines = 0;
         self.detailTextLabel.text = detailText;
     } else {
         self.textLabel.text = @"Fetching Story...";
@@ -51,22 +57,19 @@
     
     //Icon
     UIImageView *favicon = nil;
-    if (![icon isEqual:[NSNull null]]) {
+    if (icon && ![icon isEqual:[NSNull null]]) {
         favicon = [[UIImageView alloc] initWithImage:icon];
-    } else if (![properties[@"url"] isEqualToString:@""]) {
+    } else if ([properties[@"type"] isEqualToString:@"story"]) {
         favicon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"web_black"]];
     }
     
-    [favicon setFrame:CGRectMake(0, 0, 20, 20)];
-    self.accessoryView =  favicon;
-    
-    [[self.rac_prepareForReuseSignal take:1] subscribeNext:^(id x) {
-        [label removeFromSuperview];
-    }];
+    CGFloat faviconSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+    [favicon setFrame:CGRectMake(0, 0, faviconSize, faviconSize)];
+    self.accessoryView = favicon;
 }
 
 - (UIImage *) imageWithView:(UIView *)view {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque,  [[UIScreen mainScreen] scale]);
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, [[UIScreen mainScreen] scale]);
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
     UIImage * snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -82,6 +85,52 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
+}
+
++ (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView {
+    CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 40;
+    CGFloat titleHeight = [UITableViewCell getTitleHeight:document[@"title"] forWidth:labelWidth];
+    CGFloat infoHeight = [UITableViewCell getInfoHeight:document forWidth:labelWidth];
+    CGFloat final = ceil(titleHeight + infoHeight);
+    return final;
+}
+
++ (CGFloat)getTitleHeight:(NSString *)title forWidth:(CGFloat)labelWidth {
+    NSMutableParagraphStyle *paragrapthStyle = [NSParagraphStyle defaultParagraphStyle].mutableCopy;
+    paragrapthStyle.alignment = NSTextAlignmentRight;
+    UIFont *perferredFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    NSAttributedString *questionText = [[NSAttributedString alloc] initWithString:title
+                                                                       attributes:@{NSParagraphStyleAttributeName:paragrapthStyle,
+                                                                                    NSFontAttributeName:perferredFont}];
+    CGSize labelConstraint = CGSizeMake(labelWidth, CGFLOAT_MAX);
+    return CGRectGetHeight([questionText boundingRectWithSize:labelConstraint
+                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                      context:nil]) + perferredFont.pointSize;
+}
+
++ (CGFloat)getInfoHeight:(CBLDocument *)document forWidth:(CGFloat)labelWidth {
+    NSMutableString *text = @"".mutableCopy;
+    NSInteger score = [document[@"score"] integerValue];
+    [text appendString:[NSString stringWithFormat:@"%li %@",
+                              (long)score, (score != 1) ? @"points":@"point"]];
+    [text appendString:[NSString stringWithFormat:@" by %@ ", document[@"by"]]];
+    NSString *timeAgo = [[NSDate dateWithTimeIntervalSince1970:[document[@"time"]
+                                                                floatValue]] shortTimeAgoSinceNow];
+    [text appendString:timeAgo];
+    [text appendString:@" ago | "];
+    NSInteger comments = [document[@"kids"] count];
+    [text appendString:[NSString stringWithFormat:@"%li %@",
+                              (long)comments, (comments != 1) ? @"comments": @"comment"]];
+    CGSize labelConstraint = CGSizeMake(labelWidth, CGFLOAT_MAX);
+    NSMutableParagraphStyle *paragrapthStyle = [NSParagraphStyle defaultParagraphStyle].mutableCopy;
+    paragrapthStyle.alignment = NSTextAlignmentRight;
+    UIFont *perferredFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    NSAttributedString *detailText = [[NSAttributedString alloc] initWithString:text
+                                                                       attributes:@{NSParagraphStyleAttributeName:paragrapthStyle,
+                                                                                    NSFontAttributeName:perferredFont}];
+    return CGRectGetHeight([detailText boundingRectWithSize:labelConstraint
+                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                      context:nil]) + perferredFont.pointSize;
 }
 
 @end
