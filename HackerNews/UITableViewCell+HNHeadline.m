@@ -11,7 +11,7 @@
 
 @implementation UITableViewCell (HNHeadline)
 
-- (void)prepareForHeadline:(NSDictionary *)properties icon:(UIImage *)icon path:(NSIndexPath *)path {
+- (void)prepareForHeadline:(NSDictionary *)properties iconData:(NSData *)iconData path:(NSIndexPath *)path {
     //Create the number - ex: 1.
     UILabel *label =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     label.backgroundColor = [UIColor clearColor];
@@ -57,9 +57,10 @@
     
     //Icon
     UIImageView *favicon = nil;
-    if (icon && ![icon isEqual:[NSNull null]]) {
-        favicon = [[UIImageView alloc] initWithImage:icon];
-    } else if ([properties[@"type"] isEqualToString:@"story"]) {
+    if (iconData && ![iconData isEqual:[NSNull null]]) {
+        favicon = [[UIImageView alloc] initWithImage:[UIImage imageWithData:iconData]];
+    } else if ([properties[@"type"] isEqualToString:@"story"] &&
+               ![properties[@"url"] isEqualToString:@""]) {
         favicon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"web_black"]];
     }
     

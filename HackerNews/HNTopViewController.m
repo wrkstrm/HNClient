@@ -12,6 +12,7 @@
 #import "HNTextViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UITableViewCell+HNHeadline.h"
+#import "NSCache+WSMUtilities.h"
 
 @interface HNTopViewController ()
 
@@ -22,8 +23,9 @@
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
-@property (nonatomic, strong) NSMutableDictionary *faviconDictionary;
 @property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
+
+@property (nonatomic, strong) NSCache *faviconCache;
 
 @end
 
@@ -35,12 +37,13 @@
     return WSM_LAZY(_observationDictionary, @{}.mutableCopy);
 }
 
-- (NSMutableDictionary *)faviconDictionary {
-    return WSM_LAZY(_faviconDictionary, @{}.mutableCopy);
-}
-
 - (NSMutableDictionary *)rowHeightDictionary {
     return WSM_LAZY(_rowHeightDictionary, @{}.mutableCopy);
+}
+
+
+- (NSCache *)faviconCache {
+    return WSM_LAZY(_faviconCache, NSCache.new);
 }
 
 - (CBLDatabase *)newsDatabase {
@@ -191,7 +194,7 @@
     NSDictionary *properties = [[self observeAndGetDocumentForItem:itemNumber] userProperties];
     NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:properties[@"url"]];
     
-    [cell prepareForHeadline:properties icon:self.faviconDictionary[faviconURL] path:indexPath];
+    [cell prepareForHeadline:properties iconData:self.faviconCache[faviconURL] path:indexPath];
     return cell;
 }
 
@@ -227,7 +230,7 @@
             NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             [cell prepareForHeadline:storyDocument.properties
-                                icon:self.faviconDictionary[faviconURL]
+                            iconData:self.faviconCache[faviconURL]
                                 path:indexPath];
             if (newRowHeight != oldRowHeight) {
                 //Reloading rows, even just 1 is naive. So we have to get the cell and configue it.
@@ -243,27 +246,26 @@
 - (NSString *)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
     NSString *faviconURL = [self schemeAndHostFromURLString:urlString];
     if (faviconURL) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            WSM_LAZY(self.faviconDictionary[faviconURL], ({
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+            WSM_LAZY(self.faviconCache[faviconURL], ({
                 NSURL *nativeFavicon = [NSURL URLWithString:
                                         [faviconURL stringByAppendingString:@"/favicon.ico"]];
-                UIImage *faviconImage = [UIImage imageWithData:
-                                         [NSData dataWithContentsOfURL:nativeFavicon]];
+                NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
+                UIImage *faviconImage = [UIImage imageWithData:faviconData];
                 if (!faviconImage) {
                     NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
                                                                  @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
-                    faviconImage = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:googleFavicon]];
+                    faviconData = [NSPurgeableData dataWithContentsOfURL:googleFavicon];
                 }
-                
                 NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
                 CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [cell prepareForHeadline:storyDocument.properties
-                                        icon:faviconImage
+                                    iconData:faviconData
                                         path:indexPath];
                 });
-                faviconImage ?: [NSNull null];
+                faviconData ?: [NSNull null];
             }));
         });
     }

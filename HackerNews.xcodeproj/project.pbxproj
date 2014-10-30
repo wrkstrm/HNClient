@@ -28,6 +28,7 @@
 		6ED1070019EE5BD200E1F669 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FF19EE5BD200E1F669 /* Images.xcassets */; };
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
 		6ED1070F19EE5BD200E1F669 /* HackerNewsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HackerNewsTests.m */; };
+		6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */; };
 		6EDE0D8D1A00115800606558 /* web_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6EDE0D8C1A00115800606558 /* web_black@2x.png */; };
 		6EDE0D8F1A00116F00606558 /* web_black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6EDE0D8E1A00116F00606558 /* web_black@3x.png */; };
 		6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EEAEFA419EF6B8C00CFD62E /* HNWebViewController.m */; };
@@ -81,6 +82,8 @@
 		6ED1071A19EE5DA900E1F669 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
+		6EDC46061A02C5A3005E92D0 /* NSCache+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCache+WSMUtilities.h"; sourceTree = "<group>"; };
+		6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCache+WSMUtilities.m"; sourceTree = "<group>"; };
 		6EDE0D8C1A00115800606558 /* web_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "web_black@2x.png"; sourceTree = "<group>"; };
 		6EDE0D8E1A00116F00606558 /* web_black@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "web_black@3x.png"; sourceTree = "<group>"; };
 		6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNWebViewController.h; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 		6ED106F219EE5BD200E1F669 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6EDC46061A02C5A3005E92D0 /* NSCache+WSMUtilities.h */,
+				6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */,
 				6EDE0D8C1A00115800606558 /* web_black@2x.png */,
 				6EDE0D8E1A00116F00606558 /* web_black@3x.png */,
 				6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */,
@@ -437,6 +442,7 @@
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
 				6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */,
+				6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */,
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
 				6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */,
 				6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */,
