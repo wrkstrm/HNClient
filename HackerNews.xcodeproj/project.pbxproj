@@ -379,7 +379,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nif [ -n \"$(find \"$PROJECT_DIR\" \\! -path \"*xcuserdata*\" \\! -path \"*.git\" -newer \"$INFOPLIST_FILE\")\" ]; then\nversionNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"$INFOPLIST_FILE\")\nversionNumber=`echo $versionNumber +0.001|bc`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $versionNumber\" \"$INFOPLIST_FILE\"\n\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
+			shellScript = "#!/bin/bash\nif [ -n \"$(find \"$PROJECT_DIR\" \\! -path \"*xcuserdata*\" \\! -path \"*.git\" -newer \"$INFOPLIST_FILE\")\" ]; then\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
 		};
 		B44070CEB5BC5B087B000C58 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
