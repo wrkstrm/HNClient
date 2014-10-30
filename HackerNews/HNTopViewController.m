@@ -14,7 +14,7 @@
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"
 
-@interface HNTopViewController ()
+@interface HNTopViewController () <UINavigationControllerDelegate>
 
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
@@ -285,9 +285,17 @@
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if ([document[@"type"] isEqualToString:@"story"]) {
         if (![document[@"url"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+//            [self.splitViewController performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+            HNWebViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HNWebViewController"];
+            NSURL *storyURL = [NSURL URLWithString:document[@"url"]];
+            controller.request =  [NSURLRequest requestWithURL:storyURL];
+            [self.splitViewController showDetailViewController:controller sender:indexPath];
+            WSM_DISPATCH_AFTER(2.0f, ({
+                NSLog(@"New Controllers: %@",[self.splitViewController.viewControllers[0] viewControllers]);
+            }));
+
         } else if (![document[@"text"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"textViewSegue" sender:indexPath];
+//            [self performSegueWithIdentifier:@"textViewSegue" sender:indexPath];
         }
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -306,6 +314,15 @@
         controller.text = document[@"text"];
     }
 }
+
+#pragma mark - NavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    
+}
+
+#pragma mark - Convinience
 
 -(UIColor *)hackerOrange {
     return SKColorMakeRGB(255.0f, 102.0f, 0.0f);

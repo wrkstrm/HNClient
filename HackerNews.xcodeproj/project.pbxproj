@@ -21,6 +21,7 @@
 		6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
 		6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */; };
 		6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */; };
+		6EC5E9421A02D8B900992C6B /* HNSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EC5E9411A02D8B900992C6B /* HNSplitViewController.m */; };
 		6ED106F519EE5BD200E1F669 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F419EE5BD200E1F669 /* main.m */; };
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
 		6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */; };
@@ -65,6 +66,8 @@
 		6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
 		6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+HNHeadline.h"; sourceTree = "<group>"; };
 		6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+HNHeadline.m"; sourceTree = "<group>"; };
+		6EC5E9401A02D8B900992C6B /* HNSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNSplitViewController.h; sourceTree = "<group>"; };
+		6EC5E9411A02D8B900992C6B /* HNSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNSplitViewController.m; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED106F319EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6ED106F419EE5BD200E1F669 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -139,6 +142,8 @@
 		6E3FE97119F1E9E40055964F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6EC5E9401A02D8B900992C6B /* HNSplitViewController.h */,
+				6EC5E9411A02D8B900992C6B /* HNSplitViewController.m */,
 				6ED106F919EE5BD200E1F669 /* HNTopViewController.h */,
 				6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */,
 				6EEAEFA319EF6B8C00CFD62E /* HNWebViewController.h */,
@@ -446,6 +451,7 @@
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
 				6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */,
 				6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */,
+				6EC5E9421A02D8B900992C6B /* HNSplitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
