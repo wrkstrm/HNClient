@@ -37,6 +37,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window.tintColor = SKColorMakeRGB(245.0f, 245.0f, 238.0f);
+    NSString *filePath = [NSBundle.mainBundle pathForResource:@"secrets"
+                                                       ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    NSDictionary *secrets = [NSJSONSerialization JSONObjectWithData:data
+                                                            options:kNilOptions
+                                                              error:nil];
+    //Analytics
+    [Flurry startSession:secrets[@"flurryKey"]];
     return YES;
 }
 
@@ -56,14 +64,6 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    NSString *filePath = [NSBundle.mainBundle pathForResource:@"secrets"
-                                                       ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSDictionary *secrets = [NSJSONSerialization JSONObjectWithData:data
-                                                            options:kNilOptions
-                                                              error:nil];
-    //Analytics
-    [Flurry startSession:secrets[@"flurryKey"]];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
