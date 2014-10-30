@@ -241,35 +241,41 @@
 }
 
 - (NSString *)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
-    NSString *faviconURL = [self faviconURL:urlString];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        WSM_LAZY(self.faviconDictionary[faviconURL], ({
-            NSURL *nativeFavicon = [NSURL URLWithString:
-                                    [faviconURL stringByAppendingString:@"/favicon.ico"]];
-            UIImage *faviconImage = [UIImage imageWithData:
-                                     [NSData dataWithContentsOfURL:nativeFavicon]];
-            WSM_LAZY(faviconImage, ({
-                NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
-                                         @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
-                [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:googleFavicon]];
+    NSString *faviconURL = [self schemeAndHostFromURLString:urlString];
+    if (faviconURL) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            WSM_LAZY(self.faviconDictionary[faviconURL], ({
+                NSURL *nativeFavicon = [NSURL URLWithString:
+                                        [faviconURL stringByAppendingString:@"/favicon.ico"]];
+                UIImage *faviconImage = [UIImage imageWithData:
+                                         [NSData dataWithContentsOfURL:nativeFavicon]];
+                if (!faviconImage) {
+                    NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
+                                                                 @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
+                    faviconImage = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:googleFavicon]];
+                }
+                
+                NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+                CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [cell prepareForHeadline:storyDocument.properties
+                                        icon:faviconImage
+                                        path:indexPath];
+                });
+                faviconImage ?: [NSNull null];
             }));
-            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [cell prepareForHeadline:storyDocument.properties
-                                    icon:faviconImage
-                                    path:indexPath];
-            });
-            faviconImage ?: [NSNull null];
-        }));
-    });
+        });
+    }
     return faviconURL;
 }
 
-- (NSString *)faviconURL:(NSString *)urlString {
+- (NSString *)schemeAndHostFromURLString:(NSString *)urlString {
     NSURL *url = [NSURL URLWithString:urlString];
-    return [NSString stringWithFormat:@"%@://%@", url.scheme, url.host];
+    if (url.scheme && url.host) {
+        return [NSString stringWithFormat:@"%@://%@", url.scheme, url.host];
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
