@@ -49,8 +49,8 @@
 }
 
 - (Firebase *)hackerAPI {
-    return WSM_LAZY(_hackerAPI, [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
-    
+    return WSM_LAZY(_hackerAPI,
+                    [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

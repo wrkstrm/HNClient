@@ -231,7 +231,6 @@
                                 path:indexPath];
             if (newRowHeight != oldRowHeight) {
                 //Reloading rows, even just 1 is naive. So we have to get the cell and configue it.
-                NSLog(@"This gets called a lot...");
                 self.rowHeightDictionary[itemNumber] = @(newRowHeight);
                 [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
             }
