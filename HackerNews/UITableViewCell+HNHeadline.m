@@ -89,7 +89,7 @@
 }
 
 + (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView {
-    CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 40;
+    CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 50;
     CGFloat titleHeight = [UITableViewCell getTitleHeight:document[@"title"] forWidth:labelWidth];
     CGFloat infoHeight = [UITableViewCell getInfoHeight:document forWidth:labelWidth];
     CGFloat final = ceil(titleHeight + infoHeight);

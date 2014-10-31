@@ -247,7 +247,7 @@
     NSString *faviconURL = [self schemeAndHostFromURLString:urlString];
     if (faviconURL) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-            WSM_LAZY(self.faviconCache[faviconURL], ({
+            if (!self.faviconCache[faviconURL]) {
                 NSURL *nativeFavicon = [NSURL URLWithString:
                                         [faviconURL stringByAppendingString:@"/favicon.ico"]];
                 NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
@@ -265,8 +265,10 @@
                                     iconData:faviconData
                                         path:indexPath];
                 });
-                faviconData ?: [NSNull null];
-            }));
+                if (faviconData) {
+                    self.faviconCache[faviconURL] = faviconData;
+                }
+            }
         });
     }
     return faviconURL;

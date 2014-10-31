@@ -116,7 +116,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="A native Hacker News client. " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="rMT-B4-i0M">
-                                <rect key="frame" x="16" y="450" width="568" height="28.5"/>
+                                <rect key="frame" x="16" y="450" width="568" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28.5" id="lxj-Pi-YK4"/>
                                 </constraints>
@@ -196,7 +196,7 @@
         <!--Navigation Controller-->
         <scene sceneID="70V-2J-SbZ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JcZ-Xh-Bi5" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" hidesBarsOnSwipe="YES" hidesBarsWhenKeyboardAppears="YES" hidesBarsWhenVerticallyCompact="YES" id="JcZ-Xh-Bi5" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="A9B-p8-1L1">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
