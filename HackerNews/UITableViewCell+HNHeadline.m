@@ -87,15 +87,15 @@
                                                                                     NSFontAttributeName:perferredFont}];
     CGSize labelConstraint = CGSizeMake(labelWidth, CGFLOAT_MAX);
     return CGRectGetHeight([questionText boundingRectWithSize:labelConstraint
-                                      options:NSStringDrawingUsesLineFragmentOrigin
-                                      context:nil]) + perferredFont.pointSize;
+                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                      context:nil]) + perferredFont.pointSize;
 }
 
 + (CGFloat)getInfoHeight:(CBLDocument *)document forWidth:(CGFloat)labelWidth {
     NSMutableString *text = @"".mutableCopy;
     NSInteger score = [document[@"score"] integerValue];
     [text appendString:[NSString stringWithFormat:@"%li %@",
-                              (long)score, (score != 1) ? @"points":@"point"]];
+                        (long)score, (score != 1) ? @"points":@"point"]];
     [text appendString:[NSString stringWithFormat:@" by %@ ", document[@"by"]]];
     NSString *timeAgo = [[NSDate dateWithTimeIntervalSince1970:[document[@"time"]
                                                                 floatValue]] shortTimeAgoSinceNow];
@@ -103,17 +103,17 @@
     [text appendString:@" ago | "];
     NSInteger comments = [document[@"kids"] count];
     [text appendString:[NSString stringWithFormat:@"%li %@",
-                              (long)comments, (comments != 1) ? @"comments": @"comment"]];
+                        (long)comments, (comments != 1) ? @"comments": @"comment"]];
     CGSize labelConstraint = CGSizeMake(labelWidth, CGFLOAT_MAX);
     NSMutableParagraphStyle *paragrapthStyle = [NSParagraphStyle defaultParagraphStyle].mutableCopy;
     paragrapthStyle.alignment = NSTextAlignmentRight;
     UIFont *perferredFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     NSAttributedString *detailText = [[NSAttributedString alloc] initWithString:text
-                                                                       attributes:@{NSParagraphStyleAttributeName:paragrapthStyle,
-                                                                                    NSFontAttributeName:perferredFont}];
+                                                                     attributes:@{NSParagraphStyleAttributeName:paragrapthStyle,
+                                                                                  NSFontAttributeName:perferredFont}];
     return CGRectGetHeight([detailText boundingRectWithSize:labelConstraint
-                                                      options:NSStringDrawingUsesLineFragmentOrigin
-                                                      context:nil]) + perferredFont.pointSize;
+                                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                                    context:nil]) + perferredFont.pointSize;
 }
 
 @end
