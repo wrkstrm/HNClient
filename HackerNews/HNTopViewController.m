@@ -14,6 +14,12 @@
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"
 
+typedef NS_ENUM(NSInteger, HNSortStyle) {
+    kHNSortStyleRank,
+    kHNSortStylePoints,
+    kHNSortStyleComments
+};
+
 @interface HNTopViewController ()
 
 @property (nonatomic, strong) Firebase *topStoriesAPI;
@@ -26,6 +32,9 @@
 @property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
 
 @property (nonatomic, strong) NSCache *faviconCache;
+
+@property (nonatomic) HNSortStyle sortStyle;
+@property (nonatomic) NSMutableArray *currentSortedTopStories;
 
 @end
 
@@ -41,7 +50,6 @@
     return WSM_LAZY(_rowHeightDictionary, @{}.mutableCopy);
 }
 
-
 - (NSCache *)faviconCache {
     return WSM_LAZY(_faviconCache, NSCache.new);
 }
@@ -54,6 +62,11 @@
         [db compact:nil];
         db;
     }));
+}
+
+- (NSMutableArray*)currentSortedTopStories {
+    return WSM_LAZY(_currentSortedTopStories,
+                    [self arrayWithCurrentSortFilter:self.topStoriesDocument[@"stories"]]);
 }
 
 - (CBLDocument *)topStoriesDocument {
@@ -85,7 +98,7 @@
            NSNull *null = [NSNull null];
            NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
                                                                             notFoundMarker:null] mutableCopy];
-           [self.observationDictionary removeObjectForKey:oldStories];
+           [self.observationDictionary removeObjectsForKeys:oldStories];
            [staleObservations removeObject:null];
            return staleObservations;
        }] subscribeNext:^(NSMutableArray *oldObservations) {
@@ -96,7 +109,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    self.parentViewController.title = @"HN 100";
+    [self formatTitleView];
     @weakify(self);
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
@@ -105,8 +118,10 @@
         NSArray *previous = revision[@"stories"];
         revision[@"stories"] = snapshot.value;
         [revision save:nil];
-        [self updateTableView:previous current:current];
-        [self.topStoriesSubject sendNext:current];
+        NSMutableArray *previousSorted = [self arrayWithCurrentSortFilter:previous];
+        self.currentSortedTopStories = [self arrayWithCurrentSortFilter:current];
+        [self updateTableView:previousSorted current:self.currentSortedTopStories];
+        [self.topStoriesSubject sendNext:self.currentSortedTopStories];
     }];
 }
 
@@ -117,6 +132,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    self.parentViewController.navigationItem.titleView = nil;
     [self.topStoriesSubject sendNext:@[].mutableCopy];
     [self.topStoriesAPI removeAllObservers];
 }
@@ -129,28 +145,90 @@
     if (previous.count == 0) {
         [self.tableView reloadData];
     } else {
-        [UIView animateWithDuration:1.0f animations:^{
-            [self.tableView beginUpdates];
-            for (NSInteger i = 0; i < current.count; i++) {
-                BOOL previouslyContained = [previous containsObject:current[i]];
-                NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
-                if (!previouslyContained) {
-                    [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
-                } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
-                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
-                                                              inSection:newsSection];
-                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
-                    [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                    [changedCells addObject:oldPath];
-                }
+        [self.tableView beginUpdates];
+        for (NSInteger i = 0; i < current.count; i++) {
+            BOOL previouslyContained = [previous containsObject:current[i]];
+            NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
+            if (!previouslyContained) {
+                [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
+            } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
+                NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+                                                          inSection:newsSection];
+                NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
+                [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
+                [changedCells addObject:oldPath];
             }
-            [self.tableView endUpdates];
-        } completion:^(BOOL finished) {
-            [self.tableView reloadRowsAtIndexPaths:newCells
-                                  withRowAnimation:UITableViewRowAnimationLeft];
-            [self.tableView reloadRowsAtIndexPaths:changedCells
-                                  withRowAnimation:UITableViewRowAnimationNone];
-        }];
+        }
+        [self.tableView endUpdates];
+        for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
+            NSNumber *itemNumber = [self itemNumberForIndexPath:path];
+            CBLDocument *document = [self observeAndGetDocumentForItem:itemNumber];
+            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:document[@"url"]];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
+            [cell prepareForHeadline:document.properties iconData:self.faviconCache[faviconURL] path:path];
+        }
+    }
+}
+
+#define Lifecycle Helpers
+
+- (void)formatTitleView {
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Points", @""),
+                                                                                       NSLocalizedString(@"Rank", @""),
+                                                                                       NSLocalizedString(@"Comments", @"")
+                                                                                       ]];
+    segmentedControl.selectedSegmentIndex = 1;
+    segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    segmentedControl.frame = CGRectMake(0, 0, 200.0f, 30.0f);
+    [segmentedControl addTarget:self action:@selector(sortCategory:) forControlEvents:UIControlEventValueChanged];
+    
+    self.parentViewController.navigationItem.titleView = segmentedControl;
+}
+
+- (void)sortCategory:(UISegmentedControl *)sortSegment {
+    NSArray *previousSorted = self.currentSortedTopStories;
+    switch (sortSegment.selectedSegmentIndex) {
+        case 0: {
+            self.sortStyle = kHNSortStylePoints;
+        } break;
+        case 1: {
+            self.sortStyle = kHNSortStyleRank;
+        } break;
+        case 2: {
+            self.sortStyle = kHNSortStyleComments;
+        } break;
+    }
+    self.currentSortedTopStories = [self arrayWithCurrentSortFilter:previousSorted];
+    [self updateTableView:previousSorted current:self.currentSortedTopStories];
+}
+
+- (NSMutableArray *)arrayWithCurrentSortFilter:(NSArray *)unsortedArray {
+    switch (self.sortStyle) {
+        case kHNSortStylePoints: {
+            NSMutableArray *sortedArray = [unsortedArray sortedArrayUsingComparator:
+                                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                                               CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
+                                               CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
+                                               NSInteger score1 = [document1[@"score"] integerValue];
+                                               NSInteger score2 = [document2[@"score"] integerValue];
+                                               WSM_COMPARATOR(score1 > score2);
+                                           }].mutableCopy;
+            return sortedArray;
+        } break;
+        case kHNSortStyleComments: {
+            NSMutableArray *sortedArray = [unsortedArray sortedArrayUsingComparator:
+                                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                                               CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
+                                               CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
+                                               NSInteger comments1 = [document1[@"kids"] count];
+                                               NSInteger comments2 = [document2[@"kids"] count];
+                                               WSM_COMPARATOR(comments1 > comments2);
+                                           }].mutableCopy;
+            return sortedArray;
+        } break;
+        default: {
+            return [self.topStoriesDocument[@"stories"] mutableCopy];
+        } break;
     }
 }
 
@@ -161,31 +239,35 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CBLDocument *document = [self observeAndGetDocumentForItem:[self itemNumberForIndexPath:indexPath]];
-    NSNumber *rowHeight = WSM_LAZY(self.rowHeightDictionary[[self itemNumberForIndexPath:indexPath]],
-                                   @([UITableViewCell getCellHeightForDocument:document view:self.view]));
+    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
+    CBLDocument *document = [self observeAndGetDocumentForItem:itemNumber];
+    NSNumber *rowHeight = WSM_LAZY(self.rowHeightDictionary[itemNumber],
+                                   @([UITableViewCell getCellHeightForDocument:document
+                                                                          view:self.view]));
     return [rowHeight floatValue];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.topStoriesDocument[@"stories"] count];
+    return [self.currentSortedTopStories count];
 }
 
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path {
-    return self.topStoriesDocument[@"stories"][path.row];
+    return self.currentSortedTopStories[path.row];
 }
 - (NSIndexPath *)indexPathForItemNumber:(NSNumber *)itemNumber {
-    return [NSIndexPath indexPathForRow:[self.topStoriesDocument[@"stories"] indexOfObject:itemNumber]
+    return [NSIndexPath indexPathForRow:[self.currentSortedTopStories indexOfObject:itemNumber]
                               inSection:newsSection];;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = self.hackerBeige;
 }
 
 #define CELL_IDENTIFIER @"storyCell"
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER];
     WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                           reuseIdentifier:CELL_IDENTIFIER]);
@@ -223,7 +305,7 @@
             [documentRevision setUserProperties:snapshot.value];
             [documentRevision save:nil];
             //Get Favicon
-            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:snapshot.value[@"url"]];
+            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:storyDocument[@"url"]];
             CGFloat newRowHeight = [UITableViewCell getCellHeightForDocument:storyDocument
                                                                         view:self.view];
             CGFloat oldRowHeight = [self.rowHeightDictionary[itemNumber] floatValue];
@@ -245,30 +327,28 @@
 
 - (NSString *)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
     NSString *faviconURL = [self schemeAndHostFromURLString:urlString];
-    if (faviconURL) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-            if (!self.faviconCache[faviconURL]) {
-                NSURL *nativeFavicon = [NSURL URLWithString:
-                                        [faviconURL stringByAppendingString:@"/favicon.ico"]];
-                NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
-                UIImage *faviconImage = [UIImage imageWithData:faviconData];
-                if (!faviconImage) {
-                    NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
-                                                                 @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
-                    faviconData = [NSPurgeableData dataWithContentsOfURL:googleFavicon];
-                }
-                NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
-                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-                CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [cell prepareForHeadline:storyDocument.properties
-                                    iconData:faviconData
-                                        path:indexPath];
-                });
-                if (faviconData) {
-                    self.faviconCache[faviconURL] = faviconData;
-                }
+    if (faviconURL && !self.faviconCache[faviconURL]) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+            NSURL *nativeFavicon = [NSURL URLWithString:
+                                    [faviconURL stringByAppendingString:@"/favicon.ico"]];
+            NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
+            UIImage *faviconImage = [UIImage imageWithData:faviconData];
+            if (!faviconImage) {
+                NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
+                                                             @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
+                faviconData = [NSPurgeableData dataWithContentsOfURL:googleFavicon];
             }
+            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
+            if (faviconData) {
+                self.faviconCache[faviconURL] = faviconData;
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [cell prepareForHeadline:storyDocument.properties
+                                iconData:faviconData
+                                    path:indexPath];
+            });
         });
     }
     return faviconURL;
@@ -296,6 +376,12 @@
     [Flurry logEvent:document[@"type"]];
 }
 
+- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
+              withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    self.rowHeightDictionary = nil;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
@@ -315,6 +401,10 @@
 
 -(UIColor *)hackerBeige {
     return SKColorMakeRGB(245.0f, 245.0f, 238.0f);
+}
+
+- (void)didReceiveMemoryWarning {
+    [Flurry logEvent:@"MemoryWarning"];
 }
 
 @end
