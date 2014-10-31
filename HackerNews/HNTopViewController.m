@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"
+#import "UIView+WSMUtilities.h"
 
 typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleRank,
@@ -181,7 +182,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     segmentedControl.frame = CGRectMake(0, 0, 200.0f, 30.0f);
     [segmentedControl addTarget:self action:@selector(sortCategory:) forControlEvents:UIControlEventValueChanged];
-    
     self.parentViewController.navigationItem.titleView = segmentedControl;
 }
 
@@ -319,6 +319,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                 self.rowHeightDictionary[itemNumber] = @(newRowHeight);
                 [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
             }
+            
+            [cell.textLabel startShimmering];
+            [cell.detailTextLabel startShimmering];
+            WSM_DISPATCH_AFTER(1.0, ({
+                [cell.textLabel stopShimmering];
+                [cell.detailTextLabel stopShimmering];
+            }));
         }];
         base;
     }));
