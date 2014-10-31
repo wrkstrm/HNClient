@@ -10,6 +10,12 @@
 
 @interface UIView (WSMUtilities)
 
+- (UIImage *) imageWithView:(UIView *)view;
+
+- (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
+
+- (void)shimmerFor:(NSTimeInterval)timeInterval;
+
 - (void)startShimmering; 
 
 - (void)stopShimmering;

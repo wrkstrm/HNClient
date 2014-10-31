@@ -10,7 +10,33 @@
 
 @implementation UIView (WSMUtilities)
 
-- (void)startShimmering {
+- (UIImage *) imageWithView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, [[UIScreen mainScreen] scale]);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage * snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return snapshotImage;
+}
+
+- (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size {
+    CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+- (void)shimmerFor:(NSTimeInterval)timeInterval {
+    [self startShimmeringAtInterval:timeInterval];
+    WSM_DISPATCH_AFTER(timeInterval, {
+        [self stopShimmering];
+    });
+}
+
+- (void)startShimmeringAtInterval:(NSTimeInterval)duration {
     id light = (id)[UIColor colorWithWhite:0 alpha:0.25].CGColor;
     id dark  = (id)[UIColor blackColor].CGColor;
     

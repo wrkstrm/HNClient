@@ -320,12 +320,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                 [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
             }
             
-            [cell.textLabel startShimmering];
-            [cell.detailTextLabel startShimmering];
-            WSM_DISPATCH_AFTER(1.0, ({
-                [cell.textLabel stopShimmering];
-                [cell.detailTextLabel stopShimmering];
-            }));
+            [cell.textLabel shimmerFor:1.0f];
+            [cell.detailTextLabel shimmerFor:1.0f];
         }];
         base;
     }));

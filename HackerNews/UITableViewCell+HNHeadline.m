@@ -8,6 +8,7 @@
 
 #import "UITableViewCell+HNHeadline.h"
 #import <DateTools/DateTools.h>
+#import "UIView+WSMUtilities.h"
 
 @implementation UITableViewCell (HNHeadline)
 
@@ -23,7 +24,7 @@
     for (UIView *view in self.imageView.subviews) {
         [view removeFromSuperview];
     }
-    self.imageView.image = [self imageWithColor:[UIColor clearColor]];
+    self.imageView.image = [self imageWithColor:[UIColor clearColor] size:CGSizeMake(1.0f, 1.0f)];
     [self.imageView addSubview: label];
     label.center = CGPointMake(0.5f, 0.5f);
     if (properties) {
@@ -67,25 +68,6 @@
     CGFloat faviconSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
     [favicon setFrame:CGRectMake(0, 0, faviconSize, faviconSize)];
     self.accessoryView = favicon;
-}
-
-- (UIImage *) imageWithView:(UIView *)view {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, [[UIScreen mainScreen] scale]);
-    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
-    UIImage * snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return snapshotImage;
-}
-
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
 }
 
 + (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView {
