@@ -87,6 +87,14 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
     self.itemsAPI = [delegate.hackerAPI childByAppendingPath:@"item"];
+    
+    [[[NSNotificationCenter.defaultCenter
+       rac_addObserverForName:UIContentSizeCategoryDidChangeNotification object:nil]
+      takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
+        self.rowHeightDictionary = nil;
+        [self.tableView reloadData];
+    }];
+    
     [self removeOldObservations];
 }
 
@@ -142,7 +150,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
     NSMutableArray *newCells = @[].mutableCopy;
     NSMutableArray *changedCells = @[].mutableCopy;
-    if (previous.count == 0) {
+    if ([self.tableView numberOfRowsInSection:0] == 0) {
         [self.tableView reloadData];
     } else {
         [self.tableView beginUpdates];
@@ -334,13 +342,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                                              @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
                 faviconData = [NSPurgeableData dataWithContentsOfURL:googleFavicon];
             }
-            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
-            if (faviconData) {
-                self.faviconCache[faviconURL] = faviconData;
-            }
             dispatch_async(dispatch_get_main_queue(), ^{
+                if (faviconData) {
+                    self.faviconCache[faviconURL] = faviconData;
+                }
+                NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+                CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
                 [cell prepareForHeadline:storyDocument.properties
                                 iconData:faviconData
                                     path:indexPath];
@@ -374,8 +382,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
               withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    self.rowHeightDictionary = nil;
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        self.rowHeightDictionary = nil;
+        [self.tableView reloadData];
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {}];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
