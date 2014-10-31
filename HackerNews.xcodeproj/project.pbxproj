@@ -17,6 +17,7 @@
 		6E11DA1419EE676600A75579 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1319EE676600A75579 /* MobileCoreServices.framework */; };
 		6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
 		6E124FBF1A035CAA00BF9ED5 /* UIView+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */; };
+		6E124FC21A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */; };
 		6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E397BD919F2680100697A8D /* HNTextViewController.m */; };
 		6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3FE96F19F1E5EE0055964F /* HNDynamicLogo.m */; };
 		6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
@@ -59,6 +60,8 @@
 		6E11DA1519EE677600A75579 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		6E124FBD1A035CAA00BF9ED5 /* UIView+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WSMUtilities.h"; sourceTree = "<group>"; };
 		6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WSMUtilities.m"; sourceTree = "<group>"; };
+		6E124FC01A03678F00BF9ED5 /* CBLDocument+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBLDocument+WSMUtilities.h"; sourceTree = "<group>"; };
+		6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBLDocument+WSMUtilities.m"; sourceTree = "<group>"; };
 		6E397BD819F2680100697A8D /* HNTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNTextViewController.h; sourceTree = "<group>"; };
 		6E397BD919F2680100697A8D /* HNTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNTextViewController.m; sourceTree = "<group>"; };
 		6E3FE96E19F1E5EE0055964F /* HNDynamicLogo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNDynamicLogo.h; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 			children = (
 				6EDC46061A02C5A3005E92D0 /* NSCache+WSMUtilities.h */,
 				6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */,
+				6E124FC01A03678F00BF9ED5 /* CBLDocument+WSMUtilities.h */,
+				6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */,
 				6E124FBD1A035CAA00BF9ED5 /* UIView+WSMUtilities.h */,
 				6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */,
 				6EDE0D8C1A00115800606558 /* web_black@2x.png */,
@@ -452,6 +457,7 @@
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
 				6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */,
 				6EEAEFA519EF6B8C00CFD62E /* HNWebViewController.m in Sources */,
+				6E124FC21A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

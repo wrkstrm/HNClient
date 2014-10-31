@@ -14,6 +14,7 @@
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"
 #import "UIView+WSMUtilities.h"
+#import "CBLDocument+WSMUtilities.h"
 
 typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleRank,
@@ -114,11 +115,9 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     @weakify(self);
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
-        CBLUnsavedRevision *revision = [self.topStoriesDocument newRevision];
+        NSArray *previous = self.topStoriesDocument[@"stories"];
+        [self.topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error:nil];
         NSArray *current = snapshot.value;
-        NSArray *previous = revision[@"stories"];
-        revision[@"stories"] = snapshot.value;
-        [revision save:nil];
         NSMutableArray *previousSorted = [self arrayWithCurrentSortFilter:previous];
         self.currentSortedTopStories = [self arrayWithCurrentSortFilter:current];
         [self updateTableView:previousSorted current:self.currentSortedTopStories];
@@ -273,7 +272,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                           reuseIdentifier:CELL_IDENTIFIER]);
     
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    NSDictionary *properties = [[self observeAndGetDocumentForItem:itemNumber] userProperties];
+    NSDictionary *properties = [[self observeAndGetDocumentForItem:itemNumber] properties];
     NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:properties[@"url"]];
     
     [cell prepareForHeadline:properties iconData:self.faviconCache[faviconURL] path:indexPath];
@@ -283,27 +282,22 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (CBLDocument *)observeAndGetDocumentForItem:(NSNumber *)itemNumber {
     __block CBLDocument *storyDocument = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if (!storyDocument.properties) {
-        CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
-        [documentRevision setUserProperties:@{@"by":@"rismay",
-                                              @"id":@0,
-                                              @"kids":@[],
-                                              @"score":@0,
-                                              @"text":@"",
-                                              @"time":@0,
-                                              @"title":@"Fetching Story...",
-                                              @"type":@"story",
-                                              @"url":@""
-                                              }];
-        [documentRevision save:nil];
+        [storyDocument mergeUserProperties:@{@"by":@"rismay",
+                                             @"id":@0,
+                                             @"kids":@[],
+                                             @"score":@0,
+                                             @"text":@"",
+                                             @"time":@0,
+                                             @"title":@"Fetching Story...",
+                                             @"type":@"story",
+                                             @"url":@""} error:nil];
     }
     WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
         @weakify(self);
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
             @strongify(self);
-            CBLUnsavedRevision *documentRevision = [storyDocument newRevision];
-            [documentRevision setUserProperties:snapshot.value];
-            [documentRevision save:nil];
+            [storyDocument mergeUserProperties:snapshot.value error:nil];
             //Get Favicon
             NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:storyDocument[@"url"]];
             CGFloat newRowHeight = [UITableViewCell getCellHeightForDocument:storyDocument
@@ -319,7 +313,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                 self.rowHeightDictionary[itemNumber] = @(newRowHeight);
                 [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
             }
-            
             [cell.textLabel shimmerFor:1.0f];
             [cell.detailTextLabel shimmerFor:1.0f];
         }];
