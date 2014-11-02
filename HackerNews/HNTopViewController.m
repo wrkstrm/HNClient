@@ -108,28 +108,11 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     [self removeOldObservations];
 }
 
-- (void)removeOldObservations {
-    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy
-                                                reduce:^id(NSMutableArray *old, NSMutableArray *new)
-       {
-           [old removeObjectsInArray:new];
-           return old;
-       }] map:^NSArray *(NSMutableArray *oldStories) {
-           NSNull *null = [NSNull null];
-           NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                            notFoundMarker:null] mutableCopy];
-           [self.observationDictionary removeObjectsForKeys:oldStories];
-           [staleObservations removeObject:null];
-           return staleObservations;
-       }] subscribeNext:^(NSMutableArray *oldObservations) {
-           for (Firebase *observation in oldObservations) {
-               [observation removeAllObservers];
-           }
-       }];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [self formatTitleView];
+    self.parentViewController.navigationController.hidesBarsOnSwipe = NO;
+    self.parentViewController.navigationController.hidesBarsOnTap = NO;
+    
     @weakify(self);
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
@@ -153,6 +136,26 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     self.parentViewController.navigationItem.titleView = nil;
     [self.topStoriesSubject sendNext:@[].mutableCopy];
     [self.topStoriesAPI removeAllObservers];
+}
+
+- (void)removeOldObservations {
+    [[[self.topStoriesSubject combinePreviousWithStart:@[].mutableCopy
+                                                reduce:^id(NSMutableArray *old, NSMutableArray *new)
+       {
+           [old removeObjectsInArray:new];
+           return old;
+       }] map:^NSArray *(NSMutableArray *oldStories) {
+           NSNull *null = [NSNull null];
+           NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
+                                                                            notFoundMarker:null] mutableCopy];
+           [self.observationDictionary removeObjectsForKeys:oldStories];
+           [staleObservations removeObject:null];
+           return staleObservations;
+       }] subscribeNext:^(NSMutableArray *oldObservations) {
+           for (Firebase *observation in oldObservations) {
+               [observation removeAllObservers];
+           }
+       }];
 }
 
 #define newsSection 0
