@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 @property (nonatomic) HNSortStyle sortStyle;
 @property (nonatomic) NSMutableArray *currentSortedTopStories;
 
+@property (nonatomic, strong) NSOperationQueue *queue;
+
 @end
 
 @implementation HNTopViewController
@@ -54,6 +56,14 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (NSCache *)faviconCache {
     return WSM_LAZY(_faviconCache, NSCache.new);
+}
+
+- (NSOperationQueue *)queue {
+    return WSM_LAZY(_queue, ({
+        NSOperationQueue *q = [[NSOperationQueue alloc] init];
+        q.maxConcurrentOperationCount = 1;
+        q;
+    }));
 }
 
 - (CBLDatabase *)newsDatabase {
@@ -332,7 +342,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (NSString *)cacheFaviconForItem:(NSNumber *)itemNumber url:(NSString *)urlString {
     NSString *faviconURL = [self schemeAndHostFromURLString:urlString];
     if (faviconURL && !self.faviconCache[faviconURL]) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+        [self.queue addOperationWithBlock:^{
             NSURL *nativeFavicon = [NSURL URLWithString:
                                     [faviconURL stringByAppendingString:@"/favicon.ico"]];
             NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
@@ -353,7 +363,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                 iconData:faviconData
                                     path:indexPath];
             });
-        });
+        }];
     }
     return faviconURL;
 }
