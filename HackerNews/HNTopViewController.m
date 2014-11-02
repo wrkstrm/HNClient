@@ -183,8 +183,13 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
             CBLDocument *document = [self observeAndGetDocumentForItem:itemNumber];
             NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:document[@"url"]];
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
-            [cell prepareForHeadline:document.properties iconData:self.faviconCache[faviconURL] path:path];
+            [cell prepareForHeadline:document.properties iconData:self.faviconCache[faviconURL]
+                                path:path];
         }
+        WSM_DISPATCH_AFTER(1.0f, {
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
+                          withRowAnimation:UITableViewRowAnimationNone];
+        });
     }
 }
 
@@ -195,7 +200,17 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
                                                                                        NSLocalizedString(@"Rank", @""),
                                                                                        NSLocalizedString(@"Comments", @"")
                                                                                        ]];
-    segmentedControl.selectedSegmentIndex = 1;
+    switch (self.sortStyle) {
+        case kHNSortStyleComments:
+            segmentedControl.selectedSegmentIndex = 2;
+            break;
+        case kHNSortStylePoints:
+            segmentedControl.selectedSegmentIndex = 0;
+            break;
+        default:
+            segmentedControl.selectedSegmentIndex = 1;
+            break;
+    }
     segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     segmentedControl.frame = CGRectMake(0, 0, 200.0f, 30.0f);
     [segmentedControl addTarget:self action:@selector(sortCategory:) forControlEvents:UIControlEventValueChanged];
@@ -326,13 +341,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             [cell prepareForHeadline:storyDocument.properties
                             iconData:self.faviconCache[faviconURL]
                                 path:indexPath];
-            if (newRowHeight != oldRowHeight) {
+            if (cell && newRowHeight != oldRowHeight) {
                 //Reloading rows, even just 1 is naive. So we have to get the cell and configue it.
                 self.rowHeightDictionary[itemNumber] = @(newRowHeight);
-                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]] withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
+                                      withRowAnimation:UITableViewRowAnimationNone];
             }
-            [cell.textLabel shimmerFor:1.0f];
-            [cell.detailTextLabel shimmerFor:1.0f];
+            if (cell) {
+                [cell.textLabel shimmerFor:1.0f];
+            }
         }];
         base;
     }));
