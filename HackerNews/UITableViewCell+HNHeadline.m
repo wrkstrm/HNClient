@@ -71,7 +71,7 @@
 }
 
 + (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView {
-    CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 50;
+    CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 55;
     CGFloat titleHeight = [UITableViewCell getTitleHeight:document[@"title"] forWidth:labelWidth];
     CGFloat infoHeight = [UITableViewCell getInfoHeight:document forWidth:labelWidth];
     CGFloat final = ceil(titleHeight + infoHeight);
@@ -113,7 +113,7 @@
                                                                                   NSFontAttributeName:perferredFont}];
     return CGRectGetHeight([detailText boundingRectWithSize:labelConstraint
                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                    context:nil]) + perferredFont.pointSize;
+                                                    context:nil]) * 2.5;
 }
 
 @end
