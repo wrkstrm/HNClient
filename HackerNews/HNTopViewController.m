@@ -381,9 +381,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if ([document[@"type"] isEqualToString:@"story"]) {
         if (![document[@"url"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"webViewSegue" sender:indexPath];
+            HNWebViewController *controller = [self.storyboard
+                                               instantiateViewControllerWithIdentifier:@"HNWebViewController"];
+            controller.title = document[@"title"];
+            controller.requestURL =  [NSURL URLWithString:document[@"url"]];
+            [self.parentViewController.navigationController pushViewController:controller animated:YES];
         } else if (![document[@"text"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"textViewSegue" sender:indexPath];
+            [self performSegueWithIdentifier:@"textViewSegue" sender:document[@"text"]];
         }
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -398,16 +402,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {}];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSIndexPath *)indexPath {
-    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
-    if ([segue.identifier isEqualToString:@"webViewSegue"]) {
-        HNWebViewController *controller = segue.destinationViewController;
-        NSURL *storyURL = [NSURL URLWithString:document[@"url"]];
-        controller.request =  [NSURLRequest requestWithURL:storyURL];
-    } else if ([segue.identifier isEqualToString:@"textViewSegue"]) {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSString *)sender {
+    if ([segue.identifier isEqualToString:@"textViewSegue"]) {
         HNTextViewController *controller = segue.destinationViewController;
-        controller.text = document[@"text"];
+        controller.text = sender;
     }
 }
 
