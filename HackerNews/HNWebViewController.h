@@ -11,6 +11,6 @@
 @interface HNWebViewController : UIViewController
 
 @property(nonatomic, weak) IBOutlet UIWebView *webView;
-@property(nonatomic, strong) NSURLRequest *request;
+@property(nonatomic, strong) NSURL *requestURL;
 
 @end
