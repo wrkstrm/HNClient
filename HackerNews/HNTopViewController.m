@@ -8,13 +8,14 @@
 
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
-#import "HNWebViewController.h"
 #import "HNTextViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"
 #import "UIView+WSMUtilities.h"
 #import "CBLDocument+WSMUtilities.h"
+
+#import "HackerNews-Swift.h"
 
 typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleRank,
@@ -401,10 +402,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
     if ([document[@"type"] isEqualToString:@"story"]) {
         if (![document[@"url"] isEqualToString:@""]) {
-            HNWebViewController *controller = [self.storyboard
+            WebViewController *controller = [self.storyboard
                                                instantiateViewControllerWithIdentifier:@"HNWebViewController"];
             controller.title = document[@"title"];
-            controller.requestURL =  [NSURL URLWithString:document[@"url"]];
+            controller.urlString = document[@"url"];
             [self.parentViewController.navigationController pushViewController:controller animated:YES];
         } else if (![document[@"text"] isEqualToString:@""]) {
             [self performSegueWithIdentifier:@"textViewSegue" sender:document[@"text"]];

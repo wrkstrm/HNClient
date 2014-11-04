@@ -35,7 +35,6 @@
         [title appendString:properties[@"title"]];
         
         self.textLabel.text = title;
-        [self.textLabel sizeToFit];
         
         NSMutableString *detailText = @"".mutableCopy;
         NSInteger score = [properties[@"score"] integerValue];
@@ -55,7 +54,8 @@
         self.textLabel.text = @"Fetching Story...";
         self.detailTextLabel.text = @"0 points by rismay";
     }
-    
+    [self.textLabel sizeToFit];
+    [self.detailTextLabel sizeToFit];
     //Icon
     UIImageView *favicon = nil;
     if (iconData && ![iconData isEqual:[NSNull null]]) {
