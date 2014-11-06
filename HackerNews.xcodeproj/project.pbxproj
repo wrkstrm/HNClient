@@ -24,7 +24,6 @@
 		6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */; };
 		6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */; };
 		6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970741A095B8A00EFD4E2 /* WebViewController.swift */; };
-		6EA970A71A0963A800EFD4E2 /* WebbyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970A61A0963A800EFD4E2 /* WebbyViewController.swift */; };
 		6ED106F519EE5BD200E1F669 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F419EE5BD200E1F669 /* main.m */; };
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
 		6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */; };
@@ -74,7 +73,6 @@
 		6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+HNHeadline.m"; sourceTree = "<group>"; };
 		6EA970731A095B8A00EFD4E2 /* HackerNews-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Bridging-Header.h"; sourceTree = "<group>"; };
 		6EA970741A095B8A00EFD4E2 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
-		6EA970A61A0963A800EFD4E2 /* WebbyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebbyViewController.swift; path = ../WebbyViewController.swift; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED106F319EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6ED106F419EE5BD200E1F669 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -152,7 +150,6 @@
 				6EA970741A095B8A00EFD4E2 /* WebViewController.swift */,
 				6E397BD819F2680100697A8D /* HNTextViewController.h */,
 				6E397BD919F2680100697A8D /* HNTextViewController.m */,
-				6EA970A61A0963A800EFD4E2 /* WebbyViewController.swift */,
 				6EA970731A095B8A00EFD4E2 /* HackerNews-Bridging-Header.h */,
 			);
 			name = Controllers;
@@ -455,7 +452,6 @@
 				6E3FE97019F1E5EE0055964F /* HNDynamicLogo.m in Sources */,
 				6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */,
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
-				6EA970A71A0963A800EFD4E2 /* WebbyViewController.swift in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
 				6E397BDA19F2680100697A8D /* HNTextViewController.m in Sources */,
 				6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */,

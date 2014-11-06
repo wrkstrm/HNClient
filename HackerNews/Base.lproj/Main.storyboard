@@ -162,13 +162,13 @@
         <!--Web View Controller-->
         <scene sceneID="cb6-ee-pnC">
             <objects>
-                <viewController storyboardIdentifier="HNWebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Dy9-Ca-IHe" customClass="WebViewController" customModule="Hacker_News" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HNWebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Dy9-Ca-IHe" customClass="WebViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="OI1-Gr-EuK"/>
                         <viewControllerLayoutGuide type="bottom" id="F9o-yw-5tm"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="1RV-ce-Kk1">
-                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView multipleTouchEnabled="YES" contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gpo-KV-q8C">
@@ -185,6 +185,13 @@
                             <constraint firstItem="gpo-KV-q8C" firstAttribute="top" secondItem="1RV-ce-Kk1" secondAttribute="top" id="WOU-sB-eWq"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="vDT-oX-H8T">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="2UI-tp-MVI">
+                            <connections>
+                                <action selector="actionTapped:" destination="Dy9-Ca-IHe" id="cFb-Qw-jhG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="webView" destination="gpo-KV-q8C" id="jvT-uU-epT"/>

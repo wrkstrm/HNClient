@@ -150,6 +150,9 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
            NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
                                                                             notFoundMarker:null] mutableCopy];
            [self.observationDictionary removeObjectsForKeys:oldStories];
+           for (NSNumber *number in oldStories) {
+               [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:nil];
+           }
            [staleObservations removeObject:null];
            return staleObservations;
        }] subscribeNext:^(NSMutableArray *oldObservations) {
@@ -404,8 +407,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         if (![document[@"url"] isEqualToString:@""]) {
             WebViewController *controller = [self.storyboard
                                                instantiateViewControllerWithIdentifier:@"HNWebViewController"];
-            controller.title = document[@"title"];
-            controller.urlString = document[@"url"];
+            controller.document = document;
             [self.parentViewController.navigationController pushViewController:controller animated:YES];
         } else if (![document[@"text"] isEqualToString:@""]) {
             [self performSegueWithIdentifier:@"textViewSegue" sender:document[@"text"]];
