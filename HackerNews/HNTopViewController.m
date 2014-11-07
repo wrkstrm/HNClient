@@ -63,6 +63,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     return WSM_LAZY(_queue, ({
         NSOperationQueue *q = [[NSOperationQueue alloc] init];
         q.maxConcurrentOperationCount = 1;
+        q.qualityOfService = NSQualityOfServiceUserInitiated;
         q;
     }));
 }
@@ -71,7 +72,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     return WSM_LAZY(_newsDatabase, ({
         NSError *error;
         CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:&error];
-        WSMLog(error, @"Error initializing database: %@",error);
+        WSMLog(error, @"Error initializing database: %@", error);
         [db compact:nil];
         db;
     }));
@@ -79,7 +80,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (NSMutableArray*)currentSortedTopStories {
     return WSM_LAZY(_currentSortedTopStories,
-                    [self arrayWithCurrentSortFilter:self.topStoriesDocument[@"stories"]]);
+                    [self arrayWithCurrentSortFilter]);
 }
 
 - (CBLDocument *)topStoriesDocument {
@@ -117,11 +118,9 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     @weakify(self);
     [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
-        NSArray *previous = self.topStoriesDocument[@"stories"];
+        NSMutableArray *previousSorted = [self arrayWithCurrentSortFilter];
         [self.topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error:nil];
-        NSArray *current = snapshot.value;
-        NSMutableArray *previousSorted = [self arrayWithCurrentSortFilter:previous];
-        self.currentSortedTopStories = [self arrayWithCurrentSortFilter:current];
+        self.currentSortedTopStories = [self arrayWithCurrentSortFilter];
         [self updateTableView:previousSorted current:self.currentSortedTopStories];
         [self.topStoriesSubject sendNext:self.currentSortedTopStories];
     }];
@@ -229,22 +228,24 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     switch (sortSegment.selectedSegmentIndex) {
         case 0: {
             self.sortStyle = kHNSortStylePoints;
+            self.currentSortedTopStories = nil;
         } break;
         case 1: {
             self.sortStyle = kHNSortStyleRank;
+            self.currentSortedTopStories = nil;
         } break;
         case 2: {
             self.sortStyle = kHNSortStyleComments;
+            self.currentSortedTopStories = nil;
         } break;
     }
-    self.currentSortedTopStories = [self arrayWithCurrentSortFilter:previousSorted];
     [self updateTableView:previousSorted current:self.currentSortedTopStories];
 }
 
-- (NSMutableArray *)arrayWithCurrentSortFilter:(NSArray *)unsortedArray {
+- (NSMutableArray *)arrayWithCurrentSortFilter {
     switch (self.sortStyle) {
         case kHNSortStylePoints: {
-            NSMutableArray *sortedArray = [unsortedArray sortedArrayUsingComparator:
+            NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
                                                CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
                                                CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
@@ -255,7 +256,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
             return sortedArray;
         } break;
         case kHNSortStyleComments: {
-            NSMutableArray *sortedArray = [unsortedArray sortedArrayUsingComparator:
+            NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
                                                CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
                                                CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
@@ -406,7 +407,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([document[@"type"] isEqualToString:@"story"]) {
         if (![document[@"url"] isEqualToString:@""]) {
             WebViewController *controller = [self.storyboard
-                                               instantiateViewControllerWithIdentifier:@"HNWebViewController"];
+                                             instantiateViewControllerWithIdentifier:@"HNWebViewController"];
             controller.document = document;
             [self.parentViewController.navigationController pushViewController:controller animated:YES];
         } else if (![document[@"text"] isEqualToString:@""]) {
