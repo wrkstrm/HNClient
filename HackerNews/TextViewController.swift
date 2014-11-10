@@ -24,7 +24,6 @@ class TextViewController: UIViewController {
         let htmlString = "<style> body {font-family:\"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> \(text) </body>"
         let optionsDictionary = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
         textView.attributedText = NSAttributedString(data: htmlString.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion:true)!, options: optionsDictionary, documentAttributes: nil, error: nil)
-        
     }
     
     func hackerBeige() -> UIColor  {

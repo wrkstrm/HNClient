@@ -12,14 +12,14 @@ class TopViewController: HNTopViewController {
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
-        self.tableView.backgroundColor = self.hackerBeige()
+        tableView.backgroundColor = self.hackerBeige()
         super.viewDidLoad()
     }
     
     // MARK: - TableView Delegate Methods
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.currentSortedTopStories.count
+        return currentSortedTopStories.count
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,

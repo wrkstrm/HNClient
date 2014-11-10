@@ -21,19 +21,18 @@ class WebViewController : UIViewController, UIWebViewDelegate {
         if let urlString = self.document?.properties["url"] as? String {
             let url = NSURL(string: urlString)
             let urlRequest = NSURLRequest(URL: url!)
-            self.webView.loadRequest(urlRequest)
+            webView.loadRequest(urlRequest)
         }
         
-        if let title = self.document?.properties["title"] as? String {
-            self.title = title
-        }
-        self.webView.delegate = self
+        self.title = document!.properties["title"] as? String
+        
+        webView.delegate = self
         super.viewDidLoad()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.hidesBarsOnSwipe = true
+        navigationController?.hidesBarsOnSwipe = true
     }
 
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest,
@@ -44,8 +43,8 @@ class WebViewController : UIViewController, UIWebViewDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         Flurry.logEvent("MemoryWarning")
-        self.webView = nil
-        self.navigationController?.popViewControllerAnimated(true)
+        webView = nil
+        navigationController?.popViewControllerAnimated(true)
     }
     
     @IBAction func actionTapped(sender: UIBarButtonItem) {

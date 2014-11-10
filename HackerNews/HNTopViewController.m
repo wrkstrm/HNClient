@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
-#import "HNTextViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UITableViewCell+HNHeadline.h"
 #import "NSCache+WSMUtilities.h"

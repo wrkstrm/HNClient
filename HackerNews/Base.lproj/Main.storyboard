@@ -124,7 +124,7 @@
                                 <color key="textColor" red="0.95686274510000002" green="0.95686274510000002" blue="0.92156862750000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="HN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6C-7Q-cDq" customClass="HNDynamicLogo">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="HN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6C-7Q-cDq" customClass="DynamicLogo" customModule="HackerNews" customModuleProvider="target">
                                 <rect key="frame" x="16" y="127" width="568" height="149"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="149" id="Pdv-y9-JSe"/>
