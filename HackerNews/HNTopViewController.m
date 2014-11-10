@@ -16,26 +16,9 @@
 
 #import "HackerNews-Swift.h"
 
-typedef NS_ENUM(NSInteger, HNSortStyle) {
-    kHNSortStyleRank,
-    kHNSortStylePoints,
-    kHNSortStyleComments
-};
-
 @interface HNTopViewController ()
 
-@property (nonatomic, strong) Firebase *topStoriesAPI;
-@property (nonatomic, strong) Firebase *itemsAPI;
-
-@property (nonatomic, strong) CBLDatabase *newsDatabase;
-@property (nonatomic, strong) CBLDocument *topStoriesDocument;
-@property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
-
-@property (nonatomic, strong) NSCache *faviconCache;
-
-@property (nonatomic) HNSortStyle sortStyle;
-
 @property (nonatomic, strong) NSOperationQueue *queue;
 
 @end
@@ -76,8 +59,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 }
 
 - (NSMutableArray*)currentSortedTopStories {
-    return WSM_LAZY(_currentSortedTopStories,
-                    [self arrayWithCurrentSortFilter]);
+    return WSM_LAZY(_currentSortedTopStories, [self arrayWithCurrentSortFilter]);
 }
 
 - (CBLDocument *)topStoriesDocument {
@@ -90,48 +72,9 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 #pragma mark - View Lifecycle Managment
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-    self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
-    self.itemsAPI = [delegate.hackerAPI childByAppendingPath:@"item"];
-    
-    [[[NSNotificationCenter.defaultCenter
-       rac_addObserverForName:UIContentSizeCategoryDidChangeNotification object:nil]
-      takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        self.rowHeightDictionary = nil;
-        [self.tableView reloadData];
-    }];
-    
-    [self removeOldObservations];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [self formatTitleView];
-    self.parentViewController.navigationController.hidesBarsOnSwipe = NO;
-    self.parentViewController.navigationController.hidesBarsOnTap = NO;
-    
-    @weakify(self);
-    [self.topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        @strongify(self);
-        NSMutableArray *previousSorted = [self arrayWithCurrentSortFilter];
-        [self.topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error:nil];
-        self.currentSortedTopStories = [self arrayWithCurrentSortFilter];
-        [self updateTableView:previousSorted current:self.currentSortedTopStories];
-        [self.topStoriesSubject sendNext:self.currentSortedTopStories];
-    }];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
-        [self observeAndGetDocumentForItem:[self itemNumberForIndexPath:path]];
-    }
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
-    self.parentViewController.navigationItem.titleView = nil;
+    [super viewWillDisappear:animated];
     [self.topStoriesSubject sendNext:@[].mutableCopy];
-    [self.topStoriesAPI removeAllObservers];
 }
 
 - (void)removeOldObservations {
@@ -197,47 +140,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 #define Lifecycle Helpers
 
-- (void)formatTitleView {
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Points", @""),
-                                                                                       NSLocalizedString(@"Rank", @""),
-                                                                                       NSLocalizedString(@"Comments", @"")
-                                                                                       ]];
-    switch (self.sortStyle) {
-        case kHNSortStyleComments:
-            segmentedControl.selectedSegmentIndex = 2;
-            break;
-        case kHNSortStylePoints:
-            segmentedControl.selectedSegmentIndex = 0;
-            break;
-        default:
-            segmentedControl.selectedSegmentIndex = 1;
-            break;
-    }
-    segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    segmentedControl.frame = CGRectMake(0, 0, 200.0f, 30.0f);
-    [segmentedControl addTarget:self action:@selector(sortCategory:) forControlEvents:UIControlEventValueChanged];
-    self.parentViewController.navigationItem.titleView = segmentedControl;
-}
-
-- (void)sortCategory:(UISegmentedControl *)sortSegment {
-    NSArray *previousSorted = self.currentSortedTopStories;
-    switch (sortSegment.selectedSegmentIndex) {
-        case 0: {
-            self.sortStyle = kHNSortStylePoints;
-            self.currentSortedTopStories = nil;
-        } break;
-        case 1: {
-            self.sortStyle = kHNSortStyleRank;
-            self.currentSortedTopStories = nil;
-        } break;
-        case 2: {
-            self.sortStyle = kHNSortStyleComments;
-            self.currentSortedTopStories = nil;
-        } break;
-    }
-    [self updateTableView:previousSorted current:self.currentSortedTopStories];
-}
-
 - (NSMutableArray *)arrayWithCurrentSortFilter {
     switch (self.sortStyle) {
         case kHNSortStylePoints: {
@@ -270,10 +172,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 #pragma mark - TableView DataSource and Delegate methods
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
     CBLDocument *document = [self observeAndGetDocumentForItem:itemNumber];
@@ -283,32 +181,13 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     return [rowHeight floatValue];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.currentSortedTopStories count];
-}
-
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path {
     return self.currentSortedTopStories[path.row];
 }
+
 - (NSIndexPath *)indexPathForItemNumber:(NSNumber *)itemNumber {
     return [NSIndexPath indexPathForRow:[self.currentSortedTopStories indexOfObject:itemNumber]
                               inSection:newsSection];;
-}
-
-#define CELL_IDENTIFIER @"storyCell"
-
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER];
-    WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                          reuseIdentifier:CELL_IDENTIFIER]);
-    
-    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    NSDictionary *properties = [[self observeAndGetDocumentForItem:itemNumber] properties];
-    NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:properties[@"url"]];
-    
-    [cell prepareForHeadline:properties iconData:self.faviconCache[faviconURL] path:indexPath];
-    return cell;
 }
 
 - (CBLDocument *)observeAndGetDocumentForItem:(NSNumber *)itemNumber {
@@ -390,23 +269,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
         return [NSString stringWithFormat:@"%@://%@", url.scheme, url.host];
     }
     return nil;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    CBLDocument *document = [self.newsDatabase documentWithID:[itemNumber stringValue]];
-    if ([document[@"type"] isEqualToString:@"story"]) {
-        if (![document[@"url"] isEqualToString:@""]) {
-            WebViewController *controller = [self.storyboard
-                                             instantiateViewControllerWithIdentifier:@"HNWebViewController"];
-            controller.document = document;
-            [self.parentViewController.navigationController pushViewController:controller animated:YES];
-        } else if (![document[@"text"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"textViewSegue" sender:document];
-        }
-    }
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [Flurry logEvent:document[@"type"]];
 }
 
 @end

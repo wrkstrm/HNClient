@@ -11,14 +11,13 @@ import Foundation
 class DynamicLogo: UILabel {
     
     override init(frame: CGRect) {
-    
         super.init(frame: frame)
-            self.commonInit()
+        self.commonInit()
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-                self.commonInit()
+        self.commonInit()
     }
     
     func commonInit() {
@@ -44,7 +43,7 @@ class DynamicLogo: UILabel {
         addMotionEffect(horizontal)
         addMotionEffect(vertical)
     }
-
+    
     func hackerOrange() -> UIColor {
         return SKColorMakeRGB(255.0, 102.0, 0.0)
     }
