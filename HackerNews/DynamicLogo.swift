@@ -37,7 +37,7 @@ class DynamicLogo: UILabel {
         horizontal.maximumRelativeValue = 12
         
         let vertical = UIInterpolatingMotionEffect(keyPath: "layer.shadowOffset.height",
-            type: UIInterpolatingMotionEffectType.TiltAlongHorizontalAxis)
+            type: UIInterpolatingMotionEffectType.TiltAlongVerticalAxis)
         vertical.minimumRelativeValue = -12
         vertical.maximumRelativeValue = 14
         

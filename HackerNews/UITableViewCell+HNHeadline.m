@@ -65,7 +65,7 @@
         favicon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"web_black"]];
     }
     
-    CGFloat faviconSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+    CGFloat faviconSize = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline].pointSize + 1;
     [favicon setFrame:CGRectMake(0, 0, faviconSize, faviconSize)];
     self.accessoryView = favicon;
 }
@@ -113,7 +113,7 @@
                                                                                   NSFontAttributeName:perferredFont}];
     return CGRectGetHeight([detailText boundingRectWithSize:labelConstraint
                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                    context:nil]) * 2.5;
+                                                    context:nil]) * 2.3;
 }
 
 @end

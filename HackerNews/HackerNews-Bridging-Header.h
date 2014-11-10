@@ -19,4 +19,10 @@
 #import <WSMLogger/WSMLogger.h>
 #import <WSMUtilities/WSMUtilities.h>
 
+#import "AppDelegate.h"
 #import "HNTopViewController.h"
+
+#import "NSCache+WSMUtilities.h"
+#import "UITableViewCell+HNHeadline.h"
+
+#import "CBLDocument+WSMUtilities.h"
