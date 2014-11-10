@@ -8,7 +8,7 @@
         <!--Top 100-->
         <scene sceneID="AXJ-ku-FmN">
             <objects>
-                <tableViewController id="Y6L-lO-XS4" customClass="HNTopViewController" sceneMemberID="viewController">
+                <tableViewController id="Y6L-lO-XS4" customClass="TopViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="udF-nf-WXy" userLabel="TableView">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -64,7 +64,7 @@
         <!--Item-->
         <scene sceneID="v2N-1y-Siz">
             <objects>
-                <viewController storyboardIdentifier="HNTextViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8uF-cq-GL7" customClass="HNTextViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HNTextViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8uF-cq-GL7" customClass="TextViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="idG-bS-THa"/>
                         <viewControllerLayoutGuide type="bottom" id="JJA-xU-753"/>

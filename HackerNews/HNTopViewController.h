@@ -10,6 +10,8 @@
 
 @interface HNTopViewController : UITableViewController
 
+@property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
+@property (nonatomic) NSMutableArray *currentSortedTopStories;
 
 @end
 

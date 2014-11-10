@@ -32,12 +32,10 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
-@property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
 
 @property (nonatomic, strong) NSCache *faviconCache;
 
 @property (nonatomic) HNSortStyle sortStyle;
-@property (nonatomic) NSMutableArray *currentSortedTopStories;
 
 @property (nonatomic, strong) NSOperationQueue *queue;
 
@@ -95,7 +93,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tableView.backgroundColor = self.hackerBeige;
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.topStoriesAPI = [delegate.hackerAPI childByAppendingPath:@"topstories"];
     self.itemsAPI = [delegate.hackerAPI childByAppendingPath:@"item"];
@@ -299,11 +296,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
                               inSection:newsSection];;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath {
-    cell.backgroundColor = self.hackerBeige;
-}
-
 #define CELL_IDENTIFIER @"storyCell"
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -411,38 +403,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             controller.document = document;
             [self.parentViewController.navigationController pushViewController:controller animated:YES];
         } else if (![document[@"text"] isEqualToString:@""]) {
-            [self performSegueWithIdentifier:@"textViewSegue" sender:document[@"text"]];
+            [self performSegueWithIdentifier:@"textViewSegue" sender:document];
         }
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [Flurry logEvent:document[@"type"]];
-}
-
-- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
-              withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        self.rowHeightDictionary = nil;
-        [self.tableView reloadData];
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {}];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSString *)sender {
-    if ([segue.identifier isEqualToString:@"textViewSegue"]) {
-        HNTextViewController *controller = segue.destinationViewController;
-        controller.text = sender;
-    }
-}
-
--(UIColor *)hackerOrange {
-    return SKColorMakeRGB(255.0f, 102.0f, 0.0f);
-}
-
--(UIColor *)hackerBeige {
-    return SKColorMakeRGB(245.0f, 245.0f, 238.0f);
-}
-
-- (void)didReceiveMemoryWarning {
-    [Flurry logEvent:@"MemoryWarning"];
 }
 
 @end
