@@ -125,11 +125,23 @@
         [self.tableView endUpdates];
         for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
             NSNumber *itemNumber = [self itemNumberForIndexPath:path];
-            CBLDocument *document = [self observeAndGetDocumentForItem:itemNumber];
-            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:document[@"url"]];
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
-            [cell prepareForHeadline:document.properties iconData:self.faviconCache[faviconURL]
-                                path:path];
+            CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
+            NSString *faviconURL = [self cacheFaviconForItem:itemNumber url:storyDocument[@"url"]];
+            CGFloat newRowHeight = [UITableViewCell getCellHeightForDocument:storyDocument
+                                                                        view:self.view];
+            CGFloat oldRowHeight = [self.rowHeightDictionary[itemNumber] floatValue];
+            NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            
+            if (cell && newRowHeight != oldRowHeight) {
+                self.rowHeightDictionary[itemNumber] = @(newRowHeight);
+                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
+                                      withRowAnimation:UITableViewRowAnimationNone];
+            } else {
+                [cell prepareForHeadline:storyDocument.properties
+                                iconData:self.faviconCache[faviconURL]
+                                    path:indexPath];
+            }
         }
         WSM_DISPATCH_AFTER(1.0f, {
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
@@ -216,14 +228,16 @@
             CGFloat oldRowHeight = [self.rowHeightDictionary[itemNumber] floatValue];
             NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            [cell prepareForHeadline:storyDocument.properties
-                            iconData:self.faviconCache[faviconURL]
-                                path:indexPath];
+            
+            //Reloading rows, even just 1 is naive. So we have to get the cell and configue it if we can. 
             if (cell && newRowHeight != oldRowHeight) {
-                //Reloading rows, even just 1 is naive. So we have to get the cell and configue it.
                 self.rowHeightDictionary[itemNumber] = @(newRowHeight);
                 [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
                                       withRowAnimation:UITableViewRowAnimationNone];
+            } else {
+                [cell prepareForHeadline:storyDocument.properties
+                                iconData:self.faviconCache[faviconURL]
+                                    path:indexPath];
             }
             if (cell) {
                 [cell.textLabel shimmerFor:1.0f];
