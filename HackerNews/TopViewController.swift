@@ -70,7 +70,7 @@ class TopViewController: HNTopViewController {
         }
         segmentedControl.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         segmentedControl.frame = CGRectMake(0, 0, 200, 30)
-        segmentedControl .addTarget(self, action: "sortCategory:",
+        segmentedControl.addTarget(self, action: "sortCategory:",
             forControlEvents: UIControlEvents.ValueChanged)
         parentViewController?.navigationItem.titleView = segmentedControl
     }

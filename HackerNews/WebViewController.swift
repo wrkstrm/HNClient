@@ -8,25 +8,60 @@
 
 import Foundation
 import UIKit
+import WebKit
 
-class WebViewController : UIViewController, UIWebViewDelegate {
+class WebViewController : UIViewController, WKNavigationDelegate {
     var document:CBLDocument?
-    @IBOutlet var webView:UIWebView!
+    var webView:WKWebView! = WKWebView()
+    
+    @IBOutlet var toolbar: UIToolbar!
+    @IBOutlet var backButton: UIBarButtonItem!
+    @IBOutlet var forwardButton: UIBarButtonItem!
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder:aDecoder)
     }
     
+    //MARK:- View Lifecyle
+    
     override func viewDidLoad() {
+        self.title = document!.properties["title"] as String!
+        
+        view.insertSubview(webView, belowSubview: toolbar)
+        webView.frame = view.frame
+        webView.sizeToFit()
+        webView.navigationDelegate = self
+        
         if let urlString = self.document?.properties["url"] as? String {
             let url = NSURL(string: urlString)
             let urlRequest = NSURLRequest(URL: url!)
             webView.loadRequest(urlRequest)
         }
         
-        self.title = document!.properties["title"] as? String
+        weak var that = self;
+        webView.rac_valuesForKeyPath("canGoForward", observer: self)
+            .takeUntil(rac_willDeallocSignal())
+            .subscribeNext { (enabled) -> Void in
+                let bool = (enabled as NSNumber).boolValue
+                that?.forwardButton.enabled = bool
+        }
         
-        webView.delegate = self
+        webView.rac_valuesForKeyPath("canGoBack", observer: self)
+            .takeUntil(rac_willDeallocSignal())
+            .subscribeNext { (enabled) -> Void in
+                let bool = (enabled as NSNumber).boolValue
+                that?.backButton.enabled = bool
+        }
+        
+        webView.rac_valuesForKeyPath("estimatedProgress", observer: self)
+            .takeUntil(rac_willDeallocSignal())
+            .subscribeNext { (progress) -> Void in
+                if  progress as Float == 1 {
+                    that?.toolbar.stopShimmering()
+                } else if that?.toolbar.layer.mask == nil {
+                    that?.toolbar.startShimmeringAtInterval(1.0)
+                }
+        }
         super.viewDidLoad()
     }
     
@@ -34,17 +69,29 @@ class WebViewController : UIViewController, UIWebViewDelegate {
         super.viewWillAppear(animated)
         navigationController?.hidesBarsOnSwipe = true
     }
-
+    
+    //MARK:- Lifecycle Helpers
+    
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
-        return true;
+            return true;
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        Flurry.logEvent("MemoryWarning")
-        webView = nil
-        navigationController?.popViewControllerAnimated(true)
+    func hackerBeige() -> UIColor  {
+        return SKColorMakeRGB(245.0, 245.0, 238.0)
+    }
+    
+    //MARK:- IBActions
+    @IBAction func backButtonTapped(sender: UIBarButtonItem) {
+        webView.goBack()
+    }
+    
+    @IBAction func forwardButtonTapped(sender: UIBarButtonItem) {
+        webView.goForward()
+    }
+    
+    @IBAction func refreshTapped(sender: UIBarButtonItem) {
+        webView.reload()
     }
     
     @IBAction func actionTapped(sender: UIBarButtonItem) {
@@ -55,7 +102,7 @@ class WebViewController : UIViewController, UIWebViewDelegate {
             let url = NSURL(string: urlString)
             itemsToShare.addObject(url!)
         }
-
+        
         let activityController = UIActivityViewController(activityItems:itemsToShare,
             applicationActivities: nil)
         let excludeActivities = [UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypePostToVimeo, UIActivityTypePostToFlickr, UIActivityTypeAirDrop]
@@ -63,7 +110,11 @@ class WebViewController : UIViewController, UIWebViewDelegate {
         self.presentViewController(activityController, animated: true) { () -> Void in }
     }
     
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
-        println("Error : \(error)")
+    //MARK:- Memory
+    
+    override func didReceiveMemoryWarning() {
+        println("Memory!")
+        super.didReceiveMemoryWarning()
+        Flurry.logEvent("MemoryWarning")
     }
 }

@@ -16,6 +16,8 @@
 
 - (void)shimmerFor:(NSTimeInterval)timeInterval;
 
+- (void)startShimmeringAtInterval:(NSTimeInterval)duration;
+
 - (void)stopShimmering;
 
 @end
