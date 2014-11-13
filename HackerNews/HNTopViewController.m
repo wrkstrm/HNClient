@@ -52,6 +52,7 @@
     return WSM_LAZY(_newsDatabase, ({
         NSError *error;
         CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:@"hackernews" error:&error];
+        db.maxRevTreeDepth = 1;
         WSMLog(error, @"Error initializing database: %@", error);
         [db compact:nil];
         db;
@@ -69,7 +70,6 @@
 - (CBLDocument *)hiddenStoriesDocument {
     return WSM_LAZY(_hiddenStoriesDocument, [self.newsDatabase documentWithID:@"hiddenStories"]);
 }
-
 
 - (RACSubject *)topStoriesSubject {
     return WSM_LAZY(_topStoriesSubject, [RACSubject subject]);
@@ -118,14 +118,21 @@
         for (NSInteger i = 0; i < current.count; i++) {
             BOOL previouslyContained = [previous containsObject:current[i]];
             NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
-            if (!previouslyContained) {
-                [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
-            } else if (previouslyContained && ![current[i] isEqualToNumber:previous[i]]) {
-                NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+            if (previous.count <= i) {
+                NSIndexPath *newCell = [NSIndexPath indexPathForRow:i
                                                           inSection:newsSection];
-                NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
-                [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                [changedCells addObject:oldPath];
+                [self.tableView insertRowsAtIndexPaths:@[newCell]
+                                      withRowAnimation:UITableViewRowAnimationTop];
+            } else if (!previouslyContained) {
+                [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
+            } else if (previouslyContained) {
+                if (![current[i] isEqualToNumber:previous[i]]) {
+                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+                                                              inSection:newsSection];
+                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
+                    [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
+                    [changedCells addObject:oldPath];
+                }
             }
         }
         [self.tableView endUpdates];
@@ -149,10 +156,6 @@
                                     path:indexPath];
             }
         }
-        //        WSM_DISPATCH_AFTER(1.0f, {
-        //            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
-        //                          withRowAnimation:UITableViewRowAnimationNone];
-        //        });
     }
 }
 
@@ -187,16 +190,18 @@
         } break;
         default: sortedArray = [self.topStoriesDocument[@"stories"] mutableCopy]; break;
     }
-    
-    NSMutableArray *filteredArray = [sortedArray.rac_sequence filter:^BOOL(NSNumber *story) {
-        return ![self.hiddenStoriesDocument[@"stories"] containsObject:story];
-    }].array.mutableCopy;
-    NSLog(@"Filtered Array: %lu", (unsigned long)filteredArray.count);
-    return filteredArray;
+    [sortedArray filterUsingPredicate:[NSPredicate predicateWithBlock:^
+                                       BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
+                                           return ![self.hiddenStoriesDocument[@"stories"] containsObject:storyNumber];
+                                       }]];
+    return sortedArray;
 }
 
-
 #pragma mark - TableView DataSource and Delegate methods
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.currentSortedTopStories.count;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
@@ -205,6 +210,47 @@
                                    @([UITableViewCell getCellHeightForDocument:document
                                                                           view:self.view]));
     return [rowHeight floatValue];
+}
+
+- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *rowActions = @[];
+    
+    UITableViewRowAction *hide = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                                                    title:@"Hide"
+                                                                  handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+                                  {
+                                      [Flurry logEvent:@"Hide"];
+                                      NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
+                                      NSArray *array = self.hiddenStoriesDocument[@"stories"] ?: @[];
+                                      if (array) {
+                                          array = [array arrayByAddingObject:itemNumber];
+                                      } else {
+                                          array = @[itemNumber];
+                                      }
+                                      [self.hiddenStoriesDocument mergeUserProperties:@{@"stories":array}
+                                                                                error:nil];
+                                      
+                                      [self.tableView beginUpdates];
+                                      [self.tableView deleteRowsAtIndexPaths:@[indexPath]
+                                                            withRowAnimation:UITableViewRowAnimationNone];
+                                      self.currentSortedTopStories = [self arrayWithCurrentSortFilter];
+                                      [self.tableView endUpdates];
+                                      for (NSInteger i = indexPath.row; i<self.currentSortedTopStories.count; i++) {
+                                          NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:0];
+                                          NSNumber *number = [self itemNumberForIndexPath:path];
+                                          CBLDocument *document = [self observeAndGetDocumentForItem:number];
+                                          NSString *faviconKey = [self cacheFaviconForItem:number
+                                                                                       url:document[@"url"]];
+                                          UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
+                                          [cell prepareForHeadline:document.properties
+                                                          iconData:self.faviconCache[faviconKey]
+                                                              path:path];
+                                      }
+                                  }];
+    
+    hide.backgroundColor = [WSMColorPalette colorGradient:kWSMGradientBlack forIndex:0 ofCount:0 reversed:NO];
+    rowActions = [rowActions arrayByAddingObject:hide];
+    return rowActions;
 }
 
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path {

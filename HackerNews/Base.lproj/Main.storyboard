@@ -30,6 +30,7 @@
                     <tabBarItem key="tabBarItem" badgeValue="100" systemItem="mostViewed" id="zcU-jH-nx8"/>
                     <navigationItem key="navigationItem" title="Top 100" id="Dpe-Jn-bc8"/>
                     <connections>
+                        <outlet property="topStoriesBarItem" destination="zcU-jH-nx8" id="fg2-yQ-ltP"/>
                         <segue destination="Dy9-Ca-IHe" kind="show" identifier="webViewSegue" id="WDK-DC-QIk"/>
                         <segue destination="8uF-cq-GL7" kind="show" identifier="textViewSegue" id="lkm-UZ-TK4"/>
                     </connections>
