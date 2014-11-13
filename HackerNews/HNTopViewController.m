@@ -66,6 +66,11 @@
     return WSM_LAZY(_topStoriesDocument, [self.newsDatabase documentWithID:@"topStories"]);
 }
 
+- (CBLDocument *)hiddenStoriesDocument {
+    return WSM_LAZY(_hiddenStoriesDocument, [self.newsDatabase documentWithID:@"hiddenStories"]);
+}
+
+
 - (RACSubject *)topStoriesSubject {
     return WSM_LAZY(_topStoriesSubject, [RACSubject subject]);
 }
@@ -154,38 +159,42 @@
 #define Lifecycle Helpers
 
 - (NSMutableArray *)arrayWithCurrentSortFilter {
+    NSMutableArray *sortedArray;
     switch (self.sortStyle) {
         case kHNSortStylePoints: {
-            NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
-                                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                                               CBLDocument *document1 = [self.newsDatabase
-                                                                         documentWithID:[obj1 stringValue]];
-                                               CBLDocument *document2 = [self.newsDatabase
-                                                                         documentWithID:[obj2 stringValue]];
-                                               NSInteger score1 = [document1[@"score"] integerValue];
-                                               NSInteger score2 = [document2[@"score"] integerValue];
-                                               WSM_COMPARATOR(score1 > score2);
-                                           }].mutableCopy;
-            return sortedArray;
+            sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
+                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                               CBLDocument *document1 = [self.newsDatabase
+                                                         documentWithID:[obj1 stringValue]];
+                               CBLDocument *document2 = [self.newsDatabase
+                                                         documentWithID:[obj2 stringValue]];
+                               NSInteger score1 = [document1[@"score"] integerValue];
+                               NSInteger score2 = [document2[@"score"] integerValue];
+                               WSM_COMPARATOR(score1 > score2);
+                           }].mutableCopy;
         } break;
         case kHNSortStyleComments: {
-            NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
-                                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                                               CBLDocument *document1 = [self.newsDatabase
-                                                                         documentWithID:[obj1 stringValue]];
-                                               CBLDocument *document2 = [self.newsDatabase
-                                                                         documentWithID:[obj2 stringValue]];
-                                               NSInteger comments1 = [document1[@"kids"] count];
-                                               NSInteger comments2 = [document2[@"kids"] count];
-                                               WSM_COMPARATOR(comments1 > comments2);
-                                           }].mutableCopy;
-            return sortedArray;
+            sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
+                           ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                               CBLDocument *document1 = [self.newsDatabase
+                                                         documentWithID:[obj1 stringValue]];
+                               CBLDocument *document2 = [self.newsDatabase
+                                                         documentWithID:[obj2 stringValue]];
+                               NSInteger comments1 = [document1[@"kids"] count];
+                               NSInteger comments2 = [document2[@"kids"] count];
+                               WSM_COMPARATOR(comments1 > comments2);
+                           }].mutableCopy;
         } break;
-        default: {
-            return [self.topStoriesDocument[@"stories"] mutableCopy];
-        } break;
+        default: sortedArray = [self.topStoriesDocument[@"stories"] mutableCopy]; break;
     }
+    
+    NSMutableArray *filteredArray = [sortedArray.rac_sequence filter:^BOOL(NSNumber *story) {
+        return ![self.hiddenStoriesDocument[@"stories"] containsObject:story];
+    }].array.mutableCopy;
+    NSLog(@"Filtered Array: %lu", (unsigned long)filteredArray.count);
+    return filteredArray;
 }
+
 
 #pragma mark - TableView DataSource and Delegate methods
 
@@ -263,8 +272,9 @@
             NSPurgeableData *faviconData = [NSPurgeableData dataWithContentsOfURL:nativeFavicon];
             UIImage *faviconImage = [UIImage imageWithData:faviconData];
             if (!faviconImage) {
-                NSURL *googleFavicon = [NSURL URLWithString:[NSString stringWithFormat:
-                                                             @"http://www.google.com/s2/favicons?domain=%@", faviconURL]];
+                NSString *urlString = [NSString stringWithFormat:
+                                       @"http://www.google.com/s2/favicons?domain=%@", faviconURL];
+                NSURL *googleFavicon = [NSURL URLWithString:urlString];
                 faviconData = [NSPurgeableData dataWithContentsOfURL:googleFavicon];
             }
             dispatch_async(dispatch_get_main_queue(), ^{
