@@ -15,8 +15,8 @@ class TopViewController: HNTopViewController {
     override func viewDidLoad() {
         tableView.backgroundColor = self.hackerBeige()
         let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-        self.topStoriesAPI = delegate.hackerAPI .childByAppendingPath("topstories")
-        self.itemsAPI = delegate.hackerAPI .childByAppendingPath("item")
+        self.topStoriesAPI = delegate.hackerAPI.childByAppendingPath("topstories")
+        self.itemsAPI = delegate.hackerAPI.childByAppendingPath("item")
         weak var this = self
         NSNotificationCenter.defaultCenter()
             .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -99,7 +99,8 @@ class TopViewController: HNTopViewController {
     
     let CELL_IDENTIFIER = "storyCell"
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView,
+        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
         if (cell == nil) {
             cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
@@ -109,19 +110,23 @@ class TopViewController: HNTopViewController {
         let itemNumber = itemNumberForIndexPath(indexPath)
         let properties = observeAndGetDocumentForItem(itemNumber).properties
         let faviconURL = cacheFaviconForItem(itemNumber, url:properties["url"] as NSString?)
-        cell?.prepareForHeadline(properties, iconData:faviconCache[faviconURL] as NSData?, path: indexPath)
+        cell?.prepareForHeadline(properties,
+            iconData:faviconCache[faviconURL] as NSData?, path: indexPath)
         return cell!
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView,
+        didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let itemNumber = itemNumberForIndexPath(indexPath)
         let document = newsDatabase.documentWithID(itemNumber.stringValue)
         if  document["type"] as NSString == "story" {
             if !(document["url"] as NSString == "")  {
-                let controller = storyboard?.instantiateViewControllerWithIdentifier("HNWebViewController") as WebViewController
+                let controller = storyboard?
+                    .instantiateViewControllerWithIdentifier("WebViewController")
+                    as WebViewController
                 controller.document = document
-                parentViewController?.navigationController?.pushViewController(controller,
-                    animated: true)
+                parentViewController?.navigationController?
+                    .pushViewController(controller, animated: true)
             } else if !(document["text"] as NSString == "") {
                 performSegueWithIdentifier("textViewSegue", sender: document)
             }

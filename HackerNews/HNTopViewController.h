@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 @property (nonatomic) HNSortStyle sortStyle;
 
 @property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
-@property (nonatomic) NSMutableArray *currentSortedTopStories;
+@property (nonatomic, strong) NSMutableArray *currentSortedTopStories;
 
 @property (nonatomic, strong) NSCache *faviconCache;
 

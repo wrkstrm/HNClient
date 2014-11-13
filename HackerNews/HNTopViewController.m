@@ -85,8 +85,9 @@
            return old;
        }] map:^NSArray *(NSMutableArray *oldStories) {
            NSNull *null = [NSNull null];
-           NSMutableArray *staleObservations = [[self.observationDictionary objectsForKeys:oldStories
-                                                                            notFoundMarker:null] mutableCopy];
+           NSMutableArray *staleObservations = [[self.observationDictionary
+                                                 objectsForKeys:oldStories
+                                                 notFoundMarker:null] mutableCopy];
            [self.observationDictionary removeObjectsForKeys:oldStories];
            for (NSNumber *number in oldStories) {
                [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:nil];
@@ -143,10 +144,10 @@
                                     path:indexPath];
             }
         }
-        WSM_DISPATCH_AFTER(1.0f, {
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
-                          withRowAnimation:UITableViewRowAnimationNone];
-        });
+        //        WSM_DISPATCH_AFTER(1.0f, {
+        //            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]
+        //                          withRowAnimation:UITableViewRowAnimationNone];
+        //        });
     }
 }
 
@@ -157,8 +158,10 @@
         case kHNSortStylePoints: {
             NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                                               CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
-                                               CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
+                                               CBLDocument *document1 = [self.newsDatabase
+                                                                         documentWithID:[obj1 stringValue]];
+                                               CBLDocument *document2 = [self.newsDatabase
+                                                                         documentWithID:[obj2 stringValue]];
                                                NSInteger score1 = [document1[@"score"] integerValue];
                                                NSInteger score2 = [document2[@"score"] integerValue];
                                                WSM_COMPARATOR(score1 > score2);
@@ -168,8 +171,10 @@
         case kHNSortStyleComments: {
             NSMutableArray *sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                                               CBLDocument *document1 = [self.newsDatabase documentWithID:[obj1 stringValue]];
-                                               CBLDocument *document2 = [self.newsDatabase documentWithID:[obj2 stringValue]];
+                                               CBLDocument *document1 = [self.newsDatabase
+                                                                         documentWithID:[obj1 stringValue]];
+                                               CBLDocument *document2 = [self.newsDatabase
+                                                                         documentWithID:[obj2 stringValue]];
                                                NSInteger comments1 = [document1[@"kids"] count];
                                                NSInteger comments2 = [document2[@"kids"] count];
                                                WSM_COMPARATOR(comments1 > comments2);
@@ -213,7 +218,8 @@
                                              @"time":@0,
                                              @"title":@"Fetching Story...",
                                              @"type":@"story",
-                                             @"url":@""} error:nil];
+                                             @"url":@""}
+                                     error:nil];
     }
     WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
@@ -229,17 +235,17 @@
             NSIndexPath *indexPath = [self indexPathForItemNumber:itemNumber];
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             
-            //Reloading rows, even just 1 is naive. So we have to get the cell and configue it if we can. 
-            if (cell && newRowHeight != oldRowHeight) {
-                self.rowHeightDictionary[itemNumber] = @(newRowHeight);
-                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
-                                      withRowAnimation:UITableViewRowAnimationNone];
-            } else {
-                [cell prepareForHeadline:storyDocument.properties
-                                iconData:self.faviconCache[faviconURL]
-                                    path:indexPath];
-            }
+            //Reloading rows, even just 1 is naive. So we have to get the cell and configue it if we can.
             if (cell) {
+                if (newRowHeight == oldRowHeight) {
+                    [cell prepareForHeadline:storyDocument.properties
+                                    iconData:self.faviconCache[faviconURL]
+                                        path:indexPath];
+                } else {
+                    self.rowHeightDictionary[itemNumber] = @(newRowHeight);
+                    [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:itemNumber]]
+                                          withRowAnimation:UITableViewRowAnimationNone];
+                }
                 [cell.textLabel shimmerFor:1.0f];
             }
         }];

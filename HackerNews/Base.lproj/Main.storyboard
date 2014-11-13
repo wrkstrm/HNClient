@@ -162,7 +162,7 @@
         <!--Web View Controller-->
         <scene sceneID="cb6-ee-pnC">
             <objects>
-                <viewController storyboardIdentifier="HNWebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Dy9-Ca-IHe" customClass="WebViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Dy9-Ca-IHe" customClass="WebViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="OI1-Gr-EuK"/>
                         <viewControllerLayoutGuide type="bottom" id="F9o-yw-5tm"/>
