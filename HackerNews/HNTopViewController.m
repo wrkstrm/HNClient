@@ -135,6 +135,16 @@
                 }
             }
         }
+        if (previous.count > current.count) {
+            NSMutableArray *extraRows = @[].mutableCopy;
+            for (NSInteger i = previous.count - 1; i < previous.count; i++) {
+                NSIndexPath *extraRow = [NSIndexPath indexPathForRow:i
+                                                           inSection:newsSection];
+                [extraRows addObject:extraRow];
+            }
+            [self.tableView deleteRowsAtIndexPaths:extraRows
+                                  withRowAnimation:UITableViewRowAnimationNone];
+        }
         [self.tableView endUpdates];
         for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
             NSNumber *itemNumber = [self itemNumberForIndexPath:path];
