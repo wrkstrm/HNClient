@@ -88,7 +88,7 @@
     CGSize labelConstraint = CGSizeMake(labelWidth, CGFLOAT_MAX);
     return CGRectGetHeight([questionText boundingRectWithSize:labelConstraint
                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                      context:nil]) + perferredFont.pointSize;
+                                                      context:nil]) + perferredFont.pointSize * 1.1;
 }
 
 + (CGFloat)getInfoHeight:(CBLDocument *)document forWidth:(CGFloat)labelWidth {

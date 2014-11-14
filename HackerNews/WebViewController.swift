@@ -25,19 +25,18 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     //MARK:- View Lifecyle
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         self.title = document!.properties["title"] as String!
-        
         view.insertSubview(webView, belowSubview: toolbar)
-        webView.frame = view.frame
-        webView.sizeToFit()
+        webView.frame = CGRectMake(0, 0,
+            CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
+        webView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
         webView.navigationDelegate = self
-        
         if let urlString = self.document?.properties["url"] as? String {
             let url = NSURL(string: urlString)
             let urlRequest = NSURLRequest(URL: url!)
             webView.loadRequest(urlRequest)
         }
-        
         weak var that = self;
         webView.rac_valuesForKeyPath("canGoForward", observer: self)
             .takeUntil(rac_willDeallocSignal())
@@ -45,14 +44,12 @@ class WebViewController : UIViewController, WKNavigationDelegate {
                 let bool = (enabled as NSNumber).boolValue
                 that?.forwardButton.enabled = bool
         }
-        
         webView.rac_valuesForKeyPath("canGoBack", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (enabled) -> Void in
                 let bool = (enabled as NSNumber).boolValue
                 that?.backButton.enabled = bool
         }
-        
         webView.rac_valuesForKeyPath("estimatedProgress", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (progress) -> Void in
@@ -62,7 +59,6 @@ class WebViewController : UIViewController, WKNavigationDelegate {
                     that?.toolbar.startShimmeringAtInterval(1.0)
                 }
         }
-        super.viewDidLoad()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -82,6 +78,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     }
     
     //MARK:- IBActions
+    
     @IBAction func backButtonTapped(sender: UIBarButtonItem) {
         webView.goBack()
     }

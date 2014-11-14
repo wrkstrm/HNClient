@@ -9,6 +9,7 @@
 import Foundation
 
 class TopViewController: HNTopViewController {
+    @IBOutlet var topStoriesBarItem: UITabBarItem!
     
     //MARK:- View Lifecycle
     
@@ -24,6 +25,13 @@ class TopViewController: HNTopViewController {
                 this?.rowHeightDictionary = nil
                 this?.tableView.reloadData()
             })
+        rac_valuesForKeyPath("currentSortedTopStories", observer: self)
+            .takeUntil(rac_willDeallocSignal())
+            .subscribeNext { (stories) -> Void in
+                if let s = stories as NSMutableArray! {
+                    this?.topStoriesBarItem.badgeValue = "\(s.count)"
+                }
+        }
         removeOldObservations()
         super.viewDidLoad()
     }
@@ -34,7 +42,7 @@ class TopViewController: HNTopViewController {
         parentViewController?.navigationController?.hidesBarsOnTap = false
         weak var this = self
         self.topStoriesAPI.observeEventType(FEventType.Value, withBlock: { (snapshot) -> Void in
-            var previousSorted = this?.arrayWithCurrentSortFilter()
+            var previousSorted = this?.currentSortedTopStories
             if let stories = snapshot.value as NSArray! {
                 this?.topStoriesDocument.mergeUserProperties(["stories":stories], error: nil)
                 this?.currentSortedTopStories = this?.arrayWithCurrentSortFilter()
@@ -57,7 +65,6 @@ class TopViewController: HNTopViewController {
         self.topStoriesAPI.removeAllObservers()
         super.viewWillDisappear(animated)
     }
-    
     
     //MARK:- Lifecycle Helpers
     
@@ -93,49 +100,62 @@ class TopViewController: HNTopViewController {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentSortedTopStories.count
-    }
-    
     let CELL_IDENTIFIER = "storyCell"
     
     override func tableView(tableView: UITableView,
         cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
-        if (cell == nil) {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
-                reuseIdentifier: CELL_IDENTIFIER)
-        }
-        
-        let itemNumber = itemNumberForIndexPath(indexPath)
-        let properties = observeAndGetDocumentForItem(itemNumber).properties
-        let faviconURL = cacheFaviconForItem(itemNumber, url:properties["url"] as NSString?)
-        cell?.prepareForHeadline(properties,
-            iconData:faviconCache[faviconURL] as NSData?, path: indexPath)
-        return cell!
+            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
+            if (cell == nil) {
+                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
+                    reuseIdentifier: CELL_IDENTIFIER)
+            }
+            
+            let itemNumber = itemNumberForIndexPath(indexPath)
+            let properties = observeAndGetDocumentForItem(itemNumber).properties
+            let faviconURL = cacheFaviconForItem(itemNumber, url:properties["url"] as NSString?)
+            cell?.prepareForHeadline(properties,
+                iconData:faviconCache[faviconURL] as NSData?, path: indexPath)
+            return cell!
     }
     
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let itemNumber = itemNumberForIndexPath(indexPath)
-        let document = newsDatabase.documentWithID(itemNumber.stringValue)
-        if  document["type"] as NSString == "story" {
-            if !(document["url"] as NSString == "")  {
-                let controller = storyboard?
-                    .instantiateViewControllerWithIdentifier("WebViewController")
-                    as WebViewController
-                controller.document = document
-                parentViewController?.navigationController?
-                    .pushViewController(controller, animated: true)
-            } else if !(document["text"] as NSString == "") {
-                performSegueWithIdentifier("textViewSegue", sender: document)
+            let itemNumber = itemNumberForIndexPath(indexPath)
+            let document = newsDatabase.documentWithID(itemNumber.stringValue)
+            if  document["type"] as NSString == "story" {
+                if !(document["url"] as NSString == "")  {
+                    let controller = storyboard?
+                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        as WebViewController
+                    controller.document = document
+                    parentViewController?.navigationController?
+                        .pushViewController(controller, animated: true)
+                } else if !(document["text"] as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: document)
+                }
+            } else if  document["type"] as NSString == "job" {
+                if !(document["text"] as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: document)
+                } else if !(document["url"] as NSString == "")  {
+                    let controller = storyboard?
+                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        as WebViewController
+                    controller.document = document
+                    parentViewController?.navigationController?
+                        .pushViewController(controller, animated: true)
+                }
             }
-        }
+            
+            tableView .deselectRowAtIndexPath(indexPath, animated: true);
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
         forRowAtIndexPath indexPath: NSIndexPath) {
             cell.backgroundColor = hackerBeige()
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle
+        editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
     }
     
     //MARK:- Rotation

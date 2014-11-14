@@ -26,6 +26,8 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 @property (nonatomic) HNSortStyle sortStyle;
 
+@property (nonatomic, strong) CBLDocument *hiddenStoriesDocument;
+
 @property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
 @property (nonatomic, strong) NSMutableArray *currentSortedTopStories;
 
