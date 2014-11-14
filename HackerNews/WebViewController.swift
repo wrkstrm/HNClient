@@ -25,11 +25,12 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     //MARK:- View Lifecyle
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         self.title = document!.properties["title"] as String!
         view.insertSubview(webView, belowSubview: toolbar)
         webView.frame = CGRectMake(0, 0,
             CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
-        webView.sizeToFit()
+        webView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
         webView.navigationDelegate = self
         if let urlString = self.document?.properties["url"] as? String {
             let url = NSURL(string: urlString)
@@ -58,7 +59,6 @@ class WebViewController : UIViewController, WKNavigationDelegate {
                     that?.toolbar.startShimmeringAtInterval(1.0)
                 }
         }
-        super.viewDidLoad()
     }
     
     override func viewWillAppear(animated: Bool) {
