@@ -133,7 +133,20 @@ class TopViewController: HNTopViewController {
                 } else if !(document["text"] as NSString == "") {
                     performSegueWithIdentifier("textViewSegue", sender: document)
                 }
+            } else if  document["type"] as NSString == "job" {
+                if !(document["text"] as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: document)
+                } else if !(document["url"] as NSString == "")  {
+                    let controller = storyboard?
+                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        as WebViewController
+                    controller.document = document
+                    parentViewController?.navigationController?
+                        .pushViewController(controller, animated: true)
+                }
             }
+            
+            tableView .deselectRowAtIndexPath(indexPath, animated: true);
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
