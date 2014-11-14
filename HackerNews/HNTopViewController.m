@@ -245,6 +245,7 @@
                                                             withRowAnimation:UITableViewRowAnimationNone];
                                       self.currentSortedTopStories = [self arrayWithCurrentSortFilter];
                                       [self.tableView endUpdates];
+                                      [self.topStoriesSubject sendNext:self.currentSortedTopStories];
                                       for (NSInteger i = indexPath.row; i<self.currentSortedTopStories.count; i++) {
                                           NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:0];
                                           NSNumber *number = [self itemNumberForIndexPath:path];
