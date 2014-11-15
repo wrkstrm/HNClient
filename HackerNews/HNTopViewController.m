@@ -115,6 +115,7 @@
         previous.count > current.count) {
         [self.tableView reloadData];
     } else {
+        [Flurry logEvent:@"beginUpdates"];
         [self.tableView beginUpdates];
         for (NSInteger i = 0; i < current.count; i++) {
             BOOL previouslyContained = [previous containsObject:current[i]];
@@ -137,6 +138,7 @@
             }
         }
         [self.tableView endUpdates];
+        [Flurry logEvent:@"endUpdates"];
         for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
             NSNumber *itemNumber = [self itemNumberForIndexPath:path];
             CBLDocument *storyDocument = [self observeAndGetDocumentForItem:itemNumber];
