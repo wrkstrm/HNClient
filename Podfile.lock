@@ -1,11 +1,11 @@
 PODS:
-  - CocoaLumberjack (2.0.0-beta4):
+  - CocoaLumberjack (2.0.0-beta3):
     - CocoaLumberjack/Default
     - CocoaLumberjack/Extensions
-  - CocoaLumberjack/Core (2.0.0-beta4)
-  - CocoaLumberjack/Default (2.0.0-beta4):
+  - CocoaLumberjack/Core (2.0.0-beta3)
+  - CocoaLumberjack/Default (2.0.0-beta3):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.0.0-beta4):
+  - CocoaLumberjack/Extensions (2.0.0-beta3):
     - CocoaLumberjack/Default
   - DateTools (1.4.3)
   - Firebase (2.0.2)
@@ -21,6 +21,7 @@ PODS:
   - WSMUtilities (0.0.3)
 
 DEPENDENCIES:
+  - CocoaLumberjack (= 2.0.0-beta3)
   - DateTools
   - Firebase (>= 1.2.2)
   - ReactiveCocoa
@@ -28,7 +29,7 @@ DEPENDENCIES:
   - WSMUtilities
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: 24153b24b17d853d7182b22b128971fb98e8cb18
+  CocoaLumberjack: 55c22a2b8bde7a29c568ab4015b5874216524d70
   DateTools: 7c2d233ea2d4bda3a717d0cd5f58da926a5998d0
   Firebase: 793a4581e4f4d9cb1e156cab89ca367f3d02b473
   ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462

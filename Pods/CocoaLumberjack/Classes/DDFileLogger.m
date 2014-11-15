@@ -44,8 +44,8 @@
 BOOL doesAppRunInBackground(void);
 #endif
 
-unsigned long long const kDDDefaultLogMaxFileSize      = 1024 * 1024;      // 1 MB
-NSTimeInterval     const kDDDefaultLogRollingFrequency = 60 * 60 * 24;     // 24 Hours
+unsigned long long const kDDDefaultLogMaxFileSize      = 1024 * 1024;      //  1 MB
+NSTimeInterval     const kDDDefaultLogRollingFrequency = 60 * 60 * 24;     // 26 Hours
 NSUInteger         const kDDDefaultLogMaxNumLogFiles   = 5;                // 5 Files
 unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20 MB
 
@@ -73,7 +73,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 @synthesize logFilesDiskQuota = _logFilesDiskQuota;
 
 
-- (instancetype)init {
+- (id)init {
     return [self initWithLogsDirectory:nil];
 }
 
@@ -133,8 +133,8 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
-    NSNumber *old = change[NSKeyValueChangeOldKey];
-    NSNumber *new = change[NSKeyValueChangeNewKey];
+    NSNumber *old = [change objectForKey:NSKeyValueChangeOldKey];
+    NSNumber *new = [change objectForKey:NSKeyValueChangeNewKey];
 
     if ([old isEqual:new]) {
         // No change in value - don't bother with any processing.
@@ -197,7 +197,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         // So in most cases, we do not want to consider this file for deletion.
 
         if (sortedLogFileInfos.count > 0) {
-            DDLogFileInfo *logFileInfo = sortedLogFileInfos[0];
+            DDLogFileInfo *logFileInfo = [sortedLogFileInfos objectAtIndex:0];
 
             if (!logFileInfo.isArchived) {
                 // Don't delete active file.
@@ -236,7 +236,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 #else
     NSString *appName = [[NSProcessInfo processInfo] processName];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? paths[0] : NSTemporaryDirectory();
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
     NSString *logsDirectory = [[basePath stringByAppendingPathComponent:@"Logs"] stringByAppendingPathComponent:appName];
 
 #endif
@@ -313,13 +313,14 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
                                        threadDictionary];
     NSString *dateFormat = @"yyyy'-'MM'-'dd' 'HH'-'mm'";
     NSString *key = [NSString stringWithFormat:@"logFileDateFormatter.%@", dateFormat];
-    NSDateFormatter *dateFormatter = dictionary[key];
+    NSDateFormatter *dateFormatter = [dictionary objectForKey:key];
 
     if (dateFormatter == nil) {
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:dateFormat];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        dictionary[key] = dateFormatter;
+        [dictionary setObject:dateFormatter
+                       forKey:key];
     }
 
     return dateFormatter;
@@ -552,7 +553,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
 @implementation DDLogFileFormatterDefault
 
-- (instancetype)init {
+- (id)init {
     return [self initWithDateFormatter:nil];
 }
 
@@ -571,9 +572,9 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 }
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-    NSString *dateAndTime = [_dateFormatter stringFromDate:(logMessage->_timestamp)];
+    NSString *dateAndTime = [_dateFormatter stringFromDate:(logMessage->timestamp)];
 
-    return [NSString stringWithFormat:@"%@  %@", dateAndTime, logMessage->_message];
+    return [NSString stringWithFormat:@"%@  %@", dateAndTime, logMessage->logMsg];
 }
 
 @end
@@ -603,7 +604,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
 @implementation DDFileLogger
 
-- (instancetype)init {
+- (id)init {
     DDLogFileManagerDefault *defaultLogFileManager = [[DDLogFileManagerDefault alloc] init];
 
     return [self initWithLogFileManager:defaultLogFileManager];
@@ -617,7 +618,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
         logFileManager = aLogFileManager;
 
-        self.logFormatter = [DDLogFileFormatterDefault new];
+        formatter = [[DDLogFileFormatterDefault alloc] init];
     }
 
     return self;
@@ -667,7 +668,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 
     dispatch_sync(globalLoggingQueue, ^{
-        dispatch_sync(self.loggerQueue, block);
+        dispatch_sync(loggerQueue, block);
     });
 
     return result;
@@ -697,7 +698,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 
     dispatch_async(globalLoggingQueue, ^{
-        dispatch_async(self.loggerQueue, block);
+        dispatch_async(loggerQueue, block);
     });
 }
 
@@ -724,7 +725,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 
     dispatch_sync(globalLoggingQueue, ^{
-        dispatch_sync(self.loggerQueue, block);
+        dispatch_sync(loggerQueue, block);
     });
 
     return result;
@@ -754,7 +755,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 
     dispatch_async(globalLoggingQueue, ^{
-        dispatch_async(self.loggerQueue, block);
+        dispatch_async(loggerQueue, block);
     });
 }
 
@@ -784,7 +785,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     NSLogVerbose(@"DDFileLogger: logFileCreationDate: %@", logFileCreationDate);
     NSLogVerbose(@"DDFileLogger: logFileRollingDate : %@", logFileRollingDate);
 
-    _rollingTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.loggerQueue);
+    _rollingTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, loggerQueue);
 
     dispatch_source_set_event_handler(_rollingTimer, ^{ @autoreleasepool {
                                                            [self maybeRollLogFileDueToAge];
@@ -834,7 +835,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         NSAssert(![self isOnGlobalLoggingQueue], @"Core architecture requirement failure");
 
         dispatch_async(globalLoggingQueue, ^{
-            dispatch_async(self.loggerQueue, block);
+            dispatch_async(loggerQueue, block);
         });
     }
 }
@@ -913,7 +914,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         NSArray *sortedLogFileInfos = [logFileManager sortedLogFileInfos];
 
         if ([sortedLogFileInfos count] > 0) {
-            DDLogFileInfo *mostRecentLogFileInfo = sortedLogFileInfos[0];
+            DDLogFileInfo *mostRecentLogFileInfo = [sortedLogFileInfos objectAtIndex:0];
 
             BOOL shouldArchiveMostRecent = NO;
 
@@ -988,7 +989,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
                     DISPATCH_SOURCE_TYPE_VNODE,
                     [_currentLogFileHandle fileDescriptor],
                     DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
-                    self.loggerQueue
+                    loggerQueue
                     );
 
             dispatch_source_set_event_handler(_currentLogFileVnode, ^{ @autoreleasepool {
@@ -1016,21 +1017,21 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
 static int exception_count = 0;
 - (void)logMessage:(DDLogMessage *)logMessage {
-    NSString *message = logMessage->_message;
+    NSString *logMsg = logMessage->logMsg;
     BOOL isFormatted = NO;
 
-    if (_logFormatter) {
-        message = [_logFormatter formatLogMessage:logMessage];
-        isFormatted = message != logMessage->_message;
+    if (formatter) {
+        logMsg = [formatter formatLogMessage:logMessage];
+        isFormatted = logMsg != logMessage->logMsg;
     }
 
-    if (message) {
+    if (logMsg) {
         if ((!isFormatted || _automaticallyAppendNewlineForCustomFormatters) &&
-            (![message hasSuffix:@"\n"])) {
-            message = [message stringByAppendingString:@"\n"];
+            (![logMsg hasSuffix:@"\n"])) {
+            logMsg = [logMsg stringByAppendingString:@"\n"];
         }
 
-        NSData *logData = [message dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *logData = [logMsg dataUsingEncoding:NSUTF8StringEncoding];
 
         @try {
             [[self currentLogFileHandle] writeData:logData];
@@ -1137,7 +1138,7 @@ static int exception_count = 0;
 
 - (NSDate *)modificationDate {
     if (_modificationDate == nil) {
-        _modificationDate = self.fileAttributes[NSFileModificationDate];
+        _modificationDate = [[self fileAttributes] objectForKey:NSFileModificationDate];
     }
 
     return _modificationDate;
@@ -1145,7 +1146,7 @@ static int exception_count = 0;
 
 - (NSDate *)creationDate {
     if (_creationDate == nil) {
-        _creationDate = self.fileAttributes[NSFileCreationDate];
+        _creationDate = [[self fileAttributes] objectForKey:NSFileCreationDate];
     }
 
     return _creationDate;
@@ -1153,7 +1154,7 @@ static int exception_count = 0;
 
 - (unsigned long long)fileSize {
     if (_fileSize == 0) {
-        _fileSize = [self.fileAttributes[NSFileSize] unsignedLongLongValue];
+        _fileSize = [[[self fileAttributes] objectForKey:NSFileSize] unsignedLongLongValue];
     }
 
     return _fileSize;

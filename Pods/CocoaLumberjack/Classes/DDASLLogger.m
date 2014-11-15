@@ -41,7 +41,7 @@ static DDASLLogger *sharedInstance;
     return sharedInstance;
 }
 
-- (instancetype)init {
+- (id)init {
     if (sharedInstance != nil) {
         return nil;
     }
@@ -57,18 +57,22 @@ static DDASLLogger *sharedInstance;
 }
 
 - (void)logMessage:(DDLogMessage *)logMessage {
-    // Skip captured log messages
-    if ([logMessage->_fileName isEqualToString:@"DDASLLogCapture"]) {
+    // Skip captured log messages.
+    if (strcmp(logMessage->file, "DDASLLogCapture") == 0) {
         return;
     }
 
-    NSString * message = _logFormatter ? [_logFormatter formatLogMessage:logMessage] : logMessage->_message;
+    NSString *logMsg = logMessage->logMsg;
 
-    if (logMessage) {
-        const char *msg = [message UTF8String];
+    if (formatter) {
+        logMsg = [formatter formatLogMessage:logMessage];
+    }
+
+    if (logMsg) {
+        const char *msg = [logMsg UTF8String];
 
         size_t aslLogLevel;
-        switch (logMessage->_flag) {
+        switch (logMessage->logFlag) {
             // Note: By default ASL will filter anything above level 5 (Notice).
             // So our mappings shouldn't go above that level.
             case DDLogFlagError     : aslLogLevel = ASL_LEVEL_CRIT;     break;

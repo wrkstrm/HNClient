@@ -50,7 +50,7 @@
 
 @implementation DDMultiFormatter
 
-- (instancetype)init {
+- (id)init {
     self = [super init];
 
     if (self) {
@@ -75,7 +75,7 @@
 #pragma mark Processing
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-    __block NSString *line = logMessage->_message;
+    __block NSString *line = logMessage->logMsg;
 
     dispatch_sync(_queue, ^{
         for (id<DDLogFormatter> formatter in _formatters) {
@@ -94,7 +94,7 @@
 - (DDLogMessage *)logMessageForLine:(NSString *)line originalMessage:(DDLogMessage *)message {
     DDLogMessage *newMessage = [message copy];
 
-    newMessage->_message = line;
+    newMessage->logMsg = line;
     return newMessage;
 }
 

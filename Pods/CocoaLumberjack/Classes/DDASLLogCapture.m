@@ -22,50 +22,18 @@
 #include <sys/time.h>
 
 static BOOL _cancel = YES;
-static DDLogLevel _captureLevel = DDLogLevelVerbose;
-
-#ifdef __IPHONE_8_0
-    #define DDASL_IOS_PIVOT_VERSION __IPHONE_8_0
-#endif
-#ifdef __MAC_10_10
-    #define DDASL_OSX_PIVOT_VERSION __MAC_10_10
-#endif
+static DDLogLevel _captureLogLevel = DDLogLevelVerbose;
 
 @implementation DDASLLogCapture
-
-static aslmsg (*dd_asl_next)(aslresponse obj);
-static void (*dd_asl_release)(aslresponse obj);
-
-+ (void)initialize
-{
-    #if (defined(DDASL_IOS_PIVOT_VERSION) && __IPHONE_OS_VERSION_MAX_ALLOWED >= DDASL_IOS_PIVOT_VERSION) || (defined(DDASL_OSX_PIVOT_VERSION) && __MAC_OS_X_VERSION_MAX_ALLOWED >= DDASL_OSX_PIVOT_VERSION)
-        #if __IPHONE_OS_VERSION_MIN_REQUIRED < DDASL_IOS_PIVOT_VERSION || __MAC_OS_X_VERSION_MIN_REQUIRED < DDASL_OSX_PIVOT_VERSION
-            #pragma GCC diagnostic push
-            #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-                // Building on falsely advertised SDK, targeting deprecated API
-                dd_asl_next    = &aslresponse_next;
-                dd_asl_release = &aslresponse_free;
-            #pragma GCC diagnostic pop
-        #else
-            // Building on lastest, correct SDK, targeting latest API
-            dd_asl_next    = &asl_next;
-            dd_asl_release = &asl_release;
-        #endif
-    #else
-        // Building on old SDKs, targeting deprecated API
-        dd_asl_next    = &aslresponse_next;
-        dd_asl_release = &aslresponse_free;
-    #endif
-}
 
 + (void)start {
     // Ignore subsequent calls
     if (!_cancel) {
         return;
     }
-    
+
     _cancel = NO;
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
         [DDASLLogCapture captureAslLogs];
     });
@@ -75,21 +43,21 @@ static void (*dd_asl_release)(aslresponse obj);
     _cancel = YES;
 }
 
-+ (DDLogLevel)captureLevel {
-    return _captureLevel;
++ (DDLogLevel)captureLogLevel {
+    return _captureLogLevel;
 }
 
-+ (void)setCaptureLevel:(DDLogLevel)level {
-    _captureLevel = level;
++ (void)setCaptureLogLevel:(DDLogLevel)LOG_LEVEL_XXX {
+    _captureLogLevel = LOG_LEVEL_XXX;
 }
 
-#pragma mark - Private methods
+# pragma mark - Private methods
 
 + (void)configureAslQuery:(aslmsg)query {
     const char param[] = "7";  // ASL_LEVEL_DEBUG, which is everything. We'll rely on regular DDlog log level to filter
-    
+
     asl_set_query(query, ASL_KEY_LEVEL, param, ASL_QUERY_OP_LESS_EQUAL | ASL_QUERY_OP_NUMERIC);
-    
+
 #if !TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
     int processId = [[NSProcessInfo processInfo] processIdentifier];
     char pid[16];
@@ -100,14 +68,14 @@ static void (*dd_asl_release)(aslresponse obj);
 
 + (void)aslMessageRecieved:(aslmsg)msg {
     const char* messageCString = asl_get( msg, ASL_KEY_MSG );
-    if ( messageCString == NULL )
-        return;
-    
+	if ( messageCString == NULL )
+	    return;
+	
     //  NSString * sender = [NSString stringWithCString:asl_get(msg, ASL_KEY_SENDER) encoding:NSUTF8StringEncoding];
-    NSString *message = @(messageCString);
-    NSString *level = @(asl_get(msg, ASL_KEY_LEVEL));
-    NSString *secondsStr = @(asl_get(msg, ASL_KEY_TIME));
-    NSString *nanoStr = @(asl_get(msg, ASL_KEY_TIME_NSEC));
+    NSString *message = [NSString stringWithCString:messageCString encoding:NSUTF8StringEncoding];
+    NSString *level = [NSString stringWithCString:asl_get(msg, ASL_KEY_LEVEL) encoding:NSUTF8StringEncoding];
+    NSString *secondsStr = [NSString stringWithCString:asl_get(msg, ASL_KEY_TIME) encoding:NSUTF8StringEncoding];
+    NSString *nanoStr = [NSString stringWithCString:asl_get(msg, ASL_KEY_TIME_NSEC) encoding:NSUTF8StringEncoding];
 
     NSTimeInterval seconds = [secondsStr doubleValue];
     NSTimeInterval nanoSeconds = [nanoStr doubleValue];
@@ -122,30 +90,30 @@ static void (*dd_asl_release)(aslresponse obj);
         // By default all NSLog's with a ASL_LEVEL_WARNING level
         case ASL_LEVEL_EMERG    :
         case ASL_LEVEL_ALERT    :
-        case ASL_LEVEL_CRIT     : flag = DDLogFlagError;    async = NO;  break;
-        case ASL_LEVEL_ERR      : flag = DDLogFlagWarning;  async = YES; break;
-        case ASL_LEVEL_WARNING  : flag = DDLogFlagInfo;     async = YES; break;
-        case ASL_LEVEL_NOTICE   : flag = DDLogFlagDebug;    async = YES; break;
+        case ASL_LEVEL_CRIT     : flag = DDLogFlagError;    async = LOG_ASYNC_ERROR;    break;
+        case ASL_LEVEL_ERR      : flag = DDLogFlagWarning;  async = LOG_ASYNC_WARN;     break;
+        case ASL_LEVEL_WARNING  : flag = DDLogFlagInfo;     async = LOG_ASYNC_INFO;     break;
+        case ASL_LEVEL_NOTICE   : flag = DDLogFlagDebug;    async = LOG_ASYNC_DEBUG;    break;
         case ASL_LEVEL_INFO     :
         case ASL_LEVEL_DEBUG    :
-        default                 : flag = DDLogFlagVerbose;  async = YES;  break;
+        default                 : flag = DDLogFlagVerbose;  async = LOG_ASYNC_VERBOSE;  break;
     }
-    
-    if (!(_captureLevel & flag)) {
+
+    if (!(_captureLogLevel & flag)) {
         return;
     }
-    
-    DDLogMessage *logMessage = [[DDLogMessage alloc]initWithMessage:message
-                                                              level:_captureLevel
-                                                               flag:flag
-                                                            context:0
-                                                               file:@"DDASLLogCapture"
-                                                           function:0
-                                                               line:0
-                                                                tag:nil
-                                                            options:0
-                                                          timestamp:timeStamp];
-    
+
+    DDLogMessage *logMessage = [[DDLogMessage alloc]initWithLogMsg:message
+                                                             level:_captureLogLevel
+                                                              flag:flag
+                                                           context:0
+                                                              file:"DDASLLogCapture"
+                                                          function:0
+                                                              line:0
+                                                               tag:nil
+                                                           options:0
+                                                         timestamp:timeStamp];
+
     [DDLog log:async message:logMessage];
 }
 
@@ -197,16 +165,25 @@ static void (*dd_asl_release)(aslresponse obj);
                 // Iterate over new messages.
                 aslmsg msg;
                 aslresponse response = asl_search(NULL, query);
-                
-                while ((msg = dd_asl_next(response)))
+#if defined(__IPHONE_8_0) || defined(__MAC_10_10)
+
+                while ((msg = asl_next(response)))
+#else
+
+                while ((msg = aslresponse_next(response)))
+#endif
                 {
                     [DDASLLogCapture aslMessageRecieved:msg];
 
                     // Keep track of which messages we've seen.
                     lastSeenID = atoll(asl_get(msg, ASL_KEY_MSG_ID));
                 }
-                dd_asl_release(response);
-                
+#if defined(__IPHONE_8_0) || defined(__MAC_10_10)
+                asl_release(response);
+#else
+                aslresponse_free(response);
+#endif
+
                 if (_cancel) {
                     notify_cancel(notifyToken);
                     return;

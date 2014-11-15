@@ -37,14 +37,14 @@
  **/
 @interface DDContextWhitelistFilterLogFormatter : NSObject <DDLogFormatter>
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (id)init;
 
-- (void)addToWhitelist:(NSUInteger)loggingContext;
-- (void)removeFromWhitelist:(NSUInteger)loggingContext;
+- (void)addToWhitelist:(int)loggingContext;
+- (void)removeFromWhitelist:(int)loggingContext;
 
-@property (readonly, copy) NSArray *whitelist;
+- (NSArray *)whitelist;
 
-- (BOOL)isOnWhitelist:(NSUInteger)loggingContext;
+- (BOOL)isOnWhitelist:(int)loggingContext;
 
 @end
 
@@ -57,13 +57,13 @@
  **/
 @interface DDContextBlacklistFilterLogFormatter : NSObject <DDLogFormatter>
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (id)init;
 
-- (void)addToBlacklist:(NSUInteger)loggingContext;
-- (void)removeFromBlacklist:(NSUInteger)loggingContext;
+- (void)addToBlacklist:(int)loggingContext;
+- (void)removeFromBlacklist:(int)loggingContext;
 
-@property (readonly, copy) NSArray *blacklist;
+- (NSArray *)blacklist;
 
-- (BOOL)isOnBlacklist:(NSUInteger)loggingContext;
+- (BOOL)isOnBlacklist:(int)loggingContext;
 
 @end
