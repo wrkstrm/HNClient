@@ -17,6 +17,5 @@ target 'HackerNewsTests' do
   pod 'ReactiveCocoa'
   pod 'Firebase', '>= 1.2.2'
   pod 'DateTools'
-  pod 'Specta'
 end
   

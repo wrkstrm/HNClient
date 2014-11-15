@@ -38,9 +38,9 @@
 
 // Firebase
 #define COCOAPODS_POD_AVAILABLE_Firebase
-#define COCOAPODS_VERSION_MAJOR_Firebase 1
-#define COCOAPODS_VERSION_MINOR_Firebase 2
-#define COCOAPODS_VERSION_PATCH_Firebase 3
+#define COCOAPODS_VERSION_MAJOR_Firebase 2
+#define COCOAPODS_VERSION_MINOR_Firebase 0
+#define COCOAPODS_VERSION_PATCH_Firebase 2
 
 // ReactiveCocoa
 #define COCOAPODS_POD_AVAILABLE_ReactiveCocoa
@@ -65,12 +65,6 @@
 #define COCOAPODS_VERSION_MAJOR_ReactiveCocoa_no_arc 2
 #define COCOAPODS_VERSION_MINOR_ReactiveCocoa_no_arc 3
 #define COCOAPODS_VERSION_PATCH_ReactiveCocoa_no_arc 1
-
-// Specta
-#define COCOAPODS_POD_AVAILABLE_Specta
-#define COCOAPODS_VERSION_MAJOR_Specta 0
-#define COCOAPODS_VERSION_MINOR_Specta 2
-#define COCOAPODS_VERSION_PATCH_Specta 1
 
 // WSMLogger
 #define COCOAPODS_POD_AVAILABLE_WSMLogger
