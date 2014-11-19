@@ -37,14 +37,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window.tintColor = SKColorMakeRGB(245.0f, 245.0f, 238.0f);
-    NSString *filePath = [NSBundle.mainBundle pathForResource:@"secrets"
-                                                       ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSDictionary *secrets = [NSJSONSerialization JSONObjectWithData:data
-                                                            options:kNilOptions
-                                                              error:nil];
     //Analytics
-    [Flurry startSession:secrets[@"flurryKey"]];
+    [Flurry startSession:self.secrets[@"flurryKey"]];
     return YES;
 }
 
@@ -53,9 +47,20 @@
                     [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
 }
 
+- (NSDictionary *)secrets {
+    return WSM_LAZY(_secrets, ({
+        NSString *filePath = [NSBundle.mainBundle pathForResource:@"secrets"
+                                                           ofType:@"json"];
+        [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:filePath]
+                                        options:kNilOptions
+                                          error:nil];
+    }));
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {

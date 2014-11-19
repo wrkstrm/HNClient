@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) Firebase *hackerAPI;
+@property (nonatomic, strong) NSDictionary *secrets;
 
 @end
 
