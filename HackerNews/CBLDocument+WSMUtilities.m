@@ -11,12 +11,13 @@
 
 @implementation CBLDocument (WSMUtilities)
 
-- (void)mergeUserProperties:(NSDictionary *)properties error:(NSError **)error {
+- (BOOL)mergeUserProperties:(NSDictionary *)properties error:(NSError **)error {
     NSMutableDictionary *mutableOldUserProperties = (self.properties ?: @{}).mutableCopy;
     for (NSString *key in properties) {
         mutableOldUserProperties[key] = properties[key];
     }
     [self putProperties:mutableOldUserProperties error:error];
+    return !!error;
 }
 
 @end

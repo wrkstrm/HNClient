@@ -10,6 +10,6 @@
 
 @interface CBLDocument (WSMUtilities)
 
-- (void)mergeUserProperties:(NSDictionary *)properties error:(NSError **)error;
+- (BOOL)mergeUserProperties:(NSDictionary *)properties error:(NSError **)error;
 
 @end
