@@ -21,6 +21,7 @@
 		6E1A94D61A1C810700496CD7 /* HNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94D31A1C810700496CD7 /* HNUser.m */; };
 		6E1A94D71A1C810700496CD7 /* WSMUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94D51A1C810700496CD7 /* WSMUser.m */; };
 		6E1A94E51A1C81ED00496CD7 /* CBLModel+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E41A1C81ED00496CD7 /* CBLModel+WSMUtilities.m */; };
+		6E1A94E91A1C870B00496CD7 /* HNStoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */; };
 		6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
 		6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */; };
 		6E519E941A140AD300B42816 /* left_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E901A140AD300B42816 /* left_black@2x.png */; };
@@ -139,6 +140,8 @@
 		6E1A94D51A1C810700496CD7 /* WSMUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSMUser.m; sourceTree = "<group>"; };
 		6E1A94E31A1C81ED00496CD7 /* CBLModel+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBLModel+WSMUtilities.h"; sourceTree = "<group>"; };
 		6E1A94E41A1C81ED00496CD7 /* CBLModel+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBLModel+WSMUtilities.m"; sourceTree = "<group>"; };
+		6E1A94E71A1C870B00496CD7 /* HNStoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNStoryManager.h; sourceTree = "<group>"; };
+		6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNStoryManager.m; sourceTree = "<group>"; };
 		6E45657019FB23A100856F74 /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLite.framework; path = vendor/CouchbaseLite.framework; sourceTree = "<group>"; };
 		6E45657319FB23C100856F74 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
@@ -222,6 +225,8 @@
 		6E1A94E21A1C81B100496CD7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6E1A94E71A1C870B00496CD7 /* HNStoryManager.h */,
+				6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */,
 				6E1A94D21A1C810700496CD7 /* HNUser.h */,
 				6E1A94D31A1C810700496CD7 /* HNUser.m */,
 				6E1A94D41A1C810700496CD7 /* WSMUser.h */,
@@ -673,6 +678,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E1A94E91A1C870B00496CD7 /* HNStoryManager.m in Sources */,
 				6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */,
 				6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */,
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
