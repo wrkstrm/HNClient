@@ -36,7 +36,6 @@
 		6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970741A095B8A00EFD4E2 /* WebViewController.swift */; };
 		6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
-		6EC8D3181A16FCE5008A539A /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EC8D3171A16FCE5008A539A /* Nimble.framework */; };
 		6EC8D3191A16FCEE008A539A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EC8D2FF1A16FCA1008A539A /* Quick.framework */; };
 		6EC8D31C1A16FD24008A539A /* HackerNewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC8D31B1A16FD24008A539A /* HackerNewsTests.swift */; };
 		6EC8D31D1A16FD9A008A539A /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
@@ -159,7 +158,6 @@
 		6EA970741A095B8A00EFD4E2 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		6EC8D2F61A16FCA1008A539A /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = vendor/Quick/Quick.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6EC8D3061A16FCB3008A539A /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = vendor/Nimble/Nimble.xcodeproj; sourceTree = SOURCE_ROOT; };
-		6EC8D3171A16FCE5008A539A /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "../../Library/Developer/Xcode/DerivedData/HackerNews-cnqwolxlzomlwzdmapzamyomqobn/Build/Products/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
 		6EC8D31B1A16FD24008A539A /* HackerNewsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HackerNewsTests.swift; sourceTree = "<group>"; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED106F319EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -211,7 +209,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6EC8D3191A16FCEE008A539A /* Quick.framework in Frameworks */,
-				6EC8D3181A16FCE5008A539A /* Nimble.framework in Frameworks */,
 				6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */,
 				6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */,
 				6EC8D31D1A16FD9A008A539A /* CouchbaseLite.framework in Frameworks */,
@@ -401,7 +398,6 @@
 		A8F0BE3B291D393CF1C701C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6EC8D3171A16FCE5008A539A /* Nimble.framework */,
 				6E519E991A140B1100B42816 /* WebKit.framework */,
 				6E45657219FB23C100856F74 /* Flurry */,
 				6E45657019FB23A100856F74 /* CouchbaseLite.framework */,

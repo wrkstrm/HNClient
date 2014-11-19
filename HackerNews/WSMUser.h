@@ -27,7 +27,10 @@
 + (void)setDefaultUser:(WSMUser *)user;
 
 /**
- 
+ Create a brand new Default User with the property dictionary requested. 
+ This is useful after a POST request to create a new user and need to save user data. 
+ If you need to set the specific documentID for the user, pass in a "_id" value. 
+ Otherwise, a random UUID will be created for the user.
  */
 
 + (instancetype)createDefaultUserWithProperties:(NSDictionary *)properties;
@@ -37,6 +40,8 @@
 + (instancetype)existingUserWithID:(NSString *)userID;
 
 - (void)addParams:(NSDictionary *)params;
+
+- (CBLDatabase *)localDatabase;
 
 - (NSString *)localDatabaseName;
 

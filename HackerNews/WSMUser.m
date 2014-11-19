@@ -33,20 +33,17 @@
 }
 
 + (instancetype)createDefaultUserWithProperties:(NSDictionary *)properties {
-    NSMutableDictionary *mutableProperties = properties.mutableCopy;
-    NSLog(@"Creating a user with these properties: %@", mutableProperties);
+    NSMutableDictionary *mutableProperties = (properties ?: @{}).mutableCopy;
     NSString *userID = mutableProperties[@"_id"];
-    //Create a brand new Default User
     CBLDatabase *usersDB = [[CBLManager sharedInstance] databaseNamed:localUsersDB
                                                                 error:nil];
     CBLDocument *userDocument = userID ? [usersDB documentWithID:userID] : [usersDB createDocument];
-    
     [mutableProperties removeObjectForKey:@"_id"];
-    [userDocument putProperties:mutableProperties error:nil];
-    
+    NSError *error; 
+    [userDocument putProperties:mutableProperties error:&error];
+    WSMLog(error, @"There was an error while creating the default user: %@",error);
     id newDefaultUser = [[self alloc] initWithDocument:userDocument];
     [(CBLModel *)newDefaultUser save:nil];
-    
     [self setDefaultUser:newDefaultUser];
     return newDefaultUser;
 }
@@ -111,14 +108,10 @@
     CBLManager *sharedCBLManager = [CBLManager sharedInstance];
     CBLDatabase *db = [sharedCBLManager databaseNamed:localUsersDB
                                                 error:&error];
-    
     CBLUnsavedRevision *doc = [[db documentWithID:defaultUserDocument] newRevision];
-    
     doc[defaultUserProperty] = user.docID;
     [doc save:&error];
-    
     NSAssert(!error, @"Default user not saved!");
-    
     [user registerLocalDatabaseViews];
 }
 
@@ -126,6 +119,10 @@
 //    CBLDatabase *database = [[CBLManager sharedInstance] databaseNamed:self.localDatabaseName
 //                                                                 error:nil];
     // Register stuff...
+}
+
+- (CBLDatabase *)localDatabase {
+    return [[CBLManager sharedInstance] databaseNamed:self.localDatabaseName error:nil];
 }
 
 - (NSString *)localDatabaseName {

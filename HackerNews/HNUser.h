@@ -7,9 +7,11 @@
 //
 
 #import "WSMUser.h"
+#import "CBLDocument+WSMUtilities.h"
 
 @interface HNUser : WSMUser
 
 @property (nonatomic, strong) NSArray *hiddenStories;
+@property (nonatomic) NSInteger minimumScore;
 
 @end
