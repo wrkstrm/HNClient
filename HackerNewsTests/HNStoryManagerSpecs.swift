@@ -11,13 +11,12 @@ import XCTest
 import Quick
 import Nimble
 
-class TopViewControllerTests: QuickSpec {
-    
+class HNStoryManagerSpecs: QuickSpec {
     override func spec() {
-        describe("tableview udpate") {
-            it ("works fine") {
-                let array = [0,1,2]
-                expect(array.count).to(equal(3))
+        describe("Initialization.") {
+            it ("Boots.") {
+                let manager = HNStoryManager()
+                expect(true).to(beTrue())
             }
         }
     }

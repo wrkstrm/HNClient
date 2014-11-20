@@ -7,7 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HNUser.h"
 
 @interface HNStoryManager : NSObject
+
+@property (nonatomic, strong) HNUser *currentUser;
+@property (nonatomic, strong) NSArray *currentTopStories;
+
++ (instancetype)sharedInstance;
+
+- (RACSignal *)latestStateForItemNumber:(NSNumber *)storyNumber;
 
 @end

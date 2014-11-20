@@ -19,7 +19,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
 
-
 @property (nonatomic, strong) CBLDatabase *newsDatabase;
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 @property (nonatomic, strong) RACSubject *topStoriesSubject;

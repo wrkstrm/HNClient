@@ -17,7 +17,7 @@
 + (instancetype)defaultUser {
     NSError *error;
     CBLDatabase *db = [[CBLManager sharedInstance] databaseNamed:localUsersDB error:&error];
-    [db compact:nil];
+    [db compact:&error];
     CBLDocument *doc = [db documentWithID:defaultUserDocument];
     if (doc[defaultUserProperty]) {
         CBLDocument *userDocument = [db documentWithID:doc[defaultUserProperty]];
@@ -122,11 +122,14 @@
 }
 
 - (CBLDatabase *)localDatabase {
-    return [[CBLManager sharedInstance] databaseNamed:self.localDatabaseName error:nil];
+    NSError *error;
+    CBLDatabase *ldb = [[CBLManager sharedInstance] databaseNamed:self.localDatabaseName error:&error];
+    WSMLog(error, @"ERROR: NO database created: %@", error);
+    return ldb;
 }
 
 - (NSString *)localDatabaseName {
-    return [NSString stringWithFormat:@"u_%@", self.document.documentID.lowercaseString];
+    return [self.document.documentID.lowercaseString stringByReplacingOccurrencesOfString:@"!" withString:@"u-"];
 }
 
 - (void)addParams:(NSDictionary *)params {
