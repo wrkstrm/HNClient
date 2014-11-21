@@ -1,4 +1,25 @@
 PODS:
+  - AFNetworking (2.5.0):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+    - AFNetworking/UIKit
+  - AFNetworking/NSURLConnection (2.5.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.5.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.0)
+  - AFNetworking/Security (2.5.0)
+  - AFNetworking/Serialization (2.5.0)
+  - AFNetworking/UIKit (2.5.0):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - CocoaLumberjack (2.0.0-beta3):
     - CocoaLumberjack/Default
     - CocoaLumberjack/Extensions
@@ -9,6 +30,7 @@ PODS:
     - CocoaLumberjack/Default
   - DateTools (1.4.3)
   - Firebase (2.0.2)
+  - KVOController (1.0.3)
   - ReactiveCocoa (2.3.1):
     - ReactiveCocoa/UI
   - ReactiveCocoa/Core (2.3.1):
@@ -21,17 +43,21 @@ PODS:
   - WSMUtilities (0.0.3)
 
 DEPENDENCIES:
+  - AFNetworking (~> 2.0)
   - CocoaLumberjack (= 2.0.0-beta3)
   - DateTools
   - Firebase (>= 1.2.2)
+  - KVOController
   - ReactiveCocoa
   - WSMLogger
   - WSMUtilities
 
 SPEC CHECKSUMS:
+  AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   CocoaLumberjack: 55c22a2b8bde7a29c568ab4015b5874216524d70
   DateTools: 7c2d233ea2d4bda3a717d0cd5f58da926a5998d0
   Firebase: 793a4581e4f4d9cb1e156cab89ca367f3d02b473
+  KVOController: b1139ef1fc373b6757e4b69493fedd7b56eb1272
   ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
   WSMLogger: a465b61ada79c02f5d6e8734d7e4ad6c330a6aa4
   WSMUtilities: 65c4257a427a15fe10445ac03670ce345403dcf7

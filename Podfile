@@ -8,6 +8,8 @@ target 'HackerNews' do
   pod 'WSMUtilities'
   pod 'WSMLogger'
   pod 'ReactiveCocoa'
+  pod 'KVOController'
+  pod 'AFNetworking', '~> 2.0'
   pod 'DateTools'
   pod 'Firebase', '>= 1.2.2'
 end
