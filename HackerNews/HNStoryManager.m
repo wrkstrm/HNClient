@@ -8,38 +8,27 @@
 
 #import "HNStoryManager.h"
 #import "HNUser.h"
+#import "HNFavicon.h"
 #import "NSCache+WSMUtilities.h"
 
-typedef NS_ENUM(NSInteger, HNSortStyle) {
-    kHNSortStyleRank,
-    kHNSortStylePoints,
-    kHNSortStyleComments
-};
 
 @interface HNStoryManager ()
 
+@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
 @property (nonatomic, strong) Firebase *hackerAPI;
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
-@property (nonatomic) HNSortStyle sortStyle;
 
+@property (nonatomic, strong) NSMutableDictionary *firebaseSignalDictionary;
+
+@property (nonatomic, strong, readwrite) NSCache *faviconCache;
 @property (nonatomic, strong) CBLDatabase *newsDatabase;
 @property (nonatomic, strong) CBLDocument *topStoriesDocument;
 
-@property (nonatomic, strong) NSMutableDictionary *firebaseSignalDictionary;
-@property (nonatomic, strong) NSMutableDictionary *faviconKeySignalDictionary;
+@property (nonatomic, strong, readwrite) NSArray *currentTopStories;
 
-
-@property (nonatomic, strong) NSMutableDictionary *observationDictionary;
-@property (nonatomic, strong) NSMutableDictionary *signalTuplesDictionary;
-
-@property (nonatomic, strong) NSOperationQueue *queue;
-@property (nonatomic, strong) NSMutableDictionary *storySignals;
-
-@property (nonatomic, strong) NSCache *faviconCache;
-
-//Placeholder Images
-@property (nonatomic, strong) NSData *webImagePlaceholderData;
+//Placeholder Imagee
+@property (nonatomic, strong) UIImage *webImagePlaceholderData;
 
 @end
 
@@ -52,14 +41,14 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 
 - (instancetype)init {
     if (!(self = [super init])) return nil;
-    _currentUser = [HNUser defaultUser] ?: [HNUser createDefaultUserWithProperties:nil];
-    
-    _newsDatabase = [_currentUser localDatabase];
+    _currentUser = [HNUser defaultUser] ?:
+    [HNUser createDefaultUserWithProperties:@{@"hiddenStories":@[],
+                                              @"minimumScore":@0}];
+    _newsDatabase = [_currentUser userDatabase];
     _newsDatabase.maxRevTreeDepth = 1;
     NSError *error;
     [_newsDatabase compact:&error];
     WSMLog(error, @"Error compacting database: %@", error);
-    
     _topStoriesDocument = [_newsDatabase existingDocumentWithID:topStoriesDocID];
     WSM_LAZY(_topStoriesDocument, ({
         CBLDocument *doc = [_newsDatabase documentWithID:topStoriesDocID];
@@ -69,31 +58,83 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         doc;
     }));
     
-    _queue = NSOperationQueue.new;
-    _queue.maxConcurrentOperationCount = 1;
-    _queue.qualityOfService = NSQualityOfServiceUserInitiated;
-    
-    //    _observationDictionary = @{}.mutableCopy;
     _firebaseSignalDictionary = @{}.mutableCopy;
     
-    //    NSLog(@"Image path: %@", imagePath);
     _faviconCache = NSCache.new;
     _faviconCache[webPlaceHolderName] = [UIImage imageNamed:webPlaceHolderName];
+    NSAssert(_faviconCache[webPlaceHolderName],@"Must be true");
+    
+    _httpManager = [AFHTTPRequestOperationManager manager];
+    _httpManager.operationQueue.maxConcurrentOperationCount = 1;
+    _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
     
     _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
     _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
     _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
     
+    //    self.currentTopStories = @[];
     self.currentTopStories = self.topStoriesWithCurrentFilters;
     @weakify(self);
     [_topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
         if (snapshot.value) {
             [_topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error: nil];
+            NSLog(@"Updating topStories!");
             self.currentTopStories = self.topStoriesWithCurrentFilters;
         }
     }];
+    
+    [self manageNewObservations];
+    [self manageOldObservations];
     return self;
+}
+
+- (void)setSortStyle:(HNSortStyle)sortStyle {
+    if (_sortStyle != sortStyle) {
+        _sortStyle = sortStyle;
+        self.currentTopStories = [self topStoriesWithCurrentFilters];
+    }
+}
+
+- (void)manageNewObservations {
+    [[RACObserve(self, currentTopStories)
+      combinePreviousWithStart:@[]
+      reduce:^id(NSArray *old, NSArray *new) {
+          return [[new.rac_sequence filter:^BOOL(NSNumber *value) {
+              return ![old containsObject:value];
+          }] array];
+      }] subscribeNext:^(NSArray *newStories) {
+          NSLog(@"NewStories Count: %lu",newStories.count);
+          for (NSNumber *number in newStories) {
+              [self firebaseSignalForItemNumber:number];
+          }
+      }];
+}
+
+- (void)manageOldObservations {
+    [[RACObserve(self, currentTopStories)
+      combinePreviousWithStart:@[]
+      reduce:^id(NSArray *old, NSArray *new) {
+          return [[old.rac_sequence filter:^BOOL(NSNumber *value) {
+              return ![new containsObject:value];
+          }] array];
+      }] subscribeNext:^(NSArray *oldStories) {
+          NSNull *null = [NSNull null];
+          NSMutableArray *staleObservations = [[self.firebaseSignalDictionary
+                                                objectsForKeys:oldStories
+                                                notFoundMarker:null] mutableCopy];
+          [staleObservations removeObject:null];
+          for (NSNumber *number in oldStories) {
+              [self discardObservationsForItem:number];
+              [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:nil];
+          }
+      }];
+}
+
+- (void)discardObservationsForItem:(NSNumber *)number {
+    RACSubject *subject = self.firebaseSignalDictionary[number];
+    [subject sendCompleted];
+    [self.firebaseSignalDictionary removeObjectForKey:number];
 }
 
 - (NSArray *)topStoriesWithCurrentFilters {
@@ -102,10 +143,8 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         case kHNSortStylePoints: {
             sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                               CBLDocument *doc1 = [self.newsDatabase
-                                                    documentWithID:[obj1 stringValue]];
-                               CBLDocument *doc2 = [self.newsDatabase
-                                                    documentWithID:[obj2 stringValue]];
+                               CBLDocument *doc1 = [self documentForItemNumber:obj1];
+                               CBLDocument *doc2 = [self documentForItemNumber:obj2];
                                NSInteger score1 = [doc1[@"score"] integerValue];
                                NSInteger score2 = [doc2[@"score"] integerValue];
                                WSM_COMPARATOR(score1 > score2);
@@ -114,10 +153,8 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         case kHNSortStyleComments: {
             sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                               CBLDocument *doc1 = [self.newsDatabase
-                                                    documentWithID:[obj1 stringValue]];
-                               CBLDocument *doc2 = [self.newsDatabase
-                                                    documentWithID:[obj2 stringValue]];
+                               CBLDocument *doc1 = [self documentForItemNumber:obj1];
+                               CBLDocument *doc2 = [self documentForItemNumber:obj2];
                                NSInteger comments1 = [doc1[@"kids"] count];
                                NSInteger comments2 = [doc2[@"kids"] count];
                                WSM_COMPARATOR(comments1 > comments2);
@@ -125,53 +162,30 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         } break;
         default: sortedArray = [self.topStoriesDocument[@"stories"] mutableCopy]; break;
     }
-    NSLog(@"SortedArray: %@", sortedArray);
-    return [sortedArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^
-                                                     BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
-                                                         CBLDocument *document1 = [self.newsDatabase
-                                                                                   documentWithID:[storyNumber stringValue]];
-                                                         NSInteger score1 = [document1[@"score"] integerValue];
-                                                         return ![self.currentUser.hiddenStories containsObject:storyNumber] || !(self.currentUser.minimumScore <=  score1);
-                                                     }]];
+    return [sortedArray filteredArrayUsingPredicate:
+            [NSPredicate predicateWithBlock:^
+             BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
+                 CBLDocument *doc1 = [self documentForItemNumber:storyNumber];
+                 NSInteger score1 = [doc1[@"score"] integerValue];
+                 return ![self.currentUser.hiddenStories containsObject:storyNumber]
+                 || !(self.currentUser.minimumScore <=  score1);
+             }]];
     
-}
-
-- (RACSignal *)latestStateForItemNumber:(NSNumber *)storyNumber {
-    return WSM_LAZY(self.signalTuplesDictionary[[storyNumber stringValue]], ({
-        RACSignal *firebaseSignal = [self firebaseSignalForItemNumber:storyNumber];
-        RACSignal *faviconSignal = [self faviconKeySignalForItemNumber:storyNumber];
-        [RACSignal combineLatest:@[firebaseSignal, faviconSignal]
-                          reduce:(id)^(CBLDocument *document, NSString *faviconKey){
-                              return RACTuplePack(document, faviconKey);
-                          }];
-    }));
 }
 
 - (RACSignal *)firebaseSignalForItemNumber:(NSNumber *)itemNumber {
     return WSM_LAZY(self.firebaseSignalDictionary[[itemNumber stringValue]], ({
         RACSubject *storySubject = RACSubject.subject;
         RACSignal *replay = storySubject.replayLast;
-        __block CBLDocument *storyDoc = [self.newsDatabase documentWithID:[itemNumber stringValue]];
-        if (!storyDoc.userProperties) {
-            [storyDoc mergeUserProperties:@{@"by":@"rismay",
-                                            @"id":@0,
-                                            @"kids":@[],
-                                            @"score":@0,
-                                            @"text":@"",
-                                            @"time":@0,
-                                            @"title":@"Fetching Story...",
-                                            @"type":@"story",
-                                            @"url":@""}
-                                    error:nil];
-        }
+        __block CBLDocument *storyDoc = [self documentForItemNumber:itemNumber];
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
         @weakify(storySubject);
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
             @strongify(storySubject);
             if (snapshot.value) {
                 NSError *error;
-                WSMLog([storyDoc mergeUserProperties:snapshot.value error:&error],
-                       @"Error merging doc after Firebase Event: %@", error);
+                [storyDoc mergeUserProperties:snapshot.value error:&error];
+                WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
                 [storySubject sendNext:storyDoc];
             }
         }];
@@ -187,38 +201,116 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     }));
 }
 
-- (RACSignal *)faviconKeySignalForItemNumber:(NSNumber *)itemNumber {
-    return WSM_LAZY(self.faviconKeySignalDictionary[[itemNumber stringValue]], ({
-        RACSubject *storySubject = RACSubject.subject;
-        RACSignal *replay = storySubject.replayLast;
-        CBLDocument *storyDoc = [self.newsDatabase documentWithID:[itemNumber stringValue]];
-        NSString *hostURL = [self schemeAndHostFromURLString:storyDoc[@"url"]];
-        if (hostURL && !self.faviconCache[hostURL]) {
-            [storySubject sendNext:webPlaceHolderName];
-            [self.queue addOperationWithBlock:^{
-                NSURL *faviconURL = [NSURL URLWithString:
-                                     [hostURL stringByAppendingString:@"/favicon.ico"]];
-                NSData *faviconData = [NSData dataWithContentsOfURL:faviconURL];
-                UIImage *faviconImage = [UIImage imageWithData:faviconData];
-                if (!faviconImage) {
-                    NSString *urlString = [NSString stringWithFormat:
-                                           @"http://www.google.com/s2/favicons?domain=%@", hostURL];
-                    NSURL *googleFavicon = [NSURL URLWithString:urlString];
-                    faviconData = [NSData dataWithContentsOfURL:googleFavicon];
-                    faviconImage = [UIImage imageWithData:faviconData];
-                }
-                if (faviconData) {
-                    self.faviconCache[hostURL] = faviconImage;
-                    [storySubject sendNext:@"urlString"];
-                }
-            }];
-            
+- (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
+                                          callback:(void(^)(UIImage *favicon))completion {
+    CBLDocument *storyDoc = [self documentForItemNumber:itemNumber];
+    NSString *hostURL = [self schemeAndHostFromURLString:storyDoc[@"url"]];
+    if (!hostURL) {
+        completion(nil);
+        return self.faviconCache[webPlaceHolderName];
+    } else {
+        HNFavicon *model = [self modelForFaviconKey:hostURL];
+        if (self.faviconCache[hostURL]) {
+            completion(nil);
+        } else if (!self.faviconCache[hostURL] && model.attachmentNames) {
+            CBLAttachment *attachment = [model attachmentNamed:model.attachmentNames.firstObject];
+            completion(nil);
+            self.faviconCache[hostURL] = [[UIImage alloc] initWithData:attachment.content];
+        } else {
+            self.faviconCache[hostURL] = self.faviconCache[webPlaceHolderName];
+            [self getFaviconFrom:[hostURL stringByAppendingString:@"/favicon.ico"]
+                      completion:^(UIImage *favicon)
+             {
+                 if (favicon) {
+                     [self saveFavicon:favicon onDisk:model inMemory:hostURL];
+                     completion(favicon);
+                     return;
+                 }
+                 [self getFaviconFrom:[NSString stringWithFormat:
+                                       @"http://www.google.com/s2/favicons?domain=%@", hostURL]
+                           completion:^(UIImage *favicon)
+                  {
+                      if (favicon) {
+                          [self saveFavicon:favicon onDisk:model inMemory:hostURL];
+                          completion(favicon);
+                      } else {
+                          completion(nil);
+                      }
+                  }];
+             }];
         }
-        replay;
-    }));
+    }
+    return self.faviconCache[hostURL];
+}
+
+- (void)getFaviconFrom:(NSString *)hostURL completion:(void(^)(UIImage *favicon))completion {
+    NSURL *faviconURL = [NSURL URLWithString:[hostURL stringByAppendingString:@"/favicon.ico"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:faviconURL];
+    self.httpManager.responseSerializer = [AFImageResponseSerializer serializer];
+    [[self.httpManager HTTPRequestOperationWithRequest:request
+                                               success:^(AFHTTPRequestOperation *operation,
+                                                         id responseObject) {
+                                                   completion(responseObject);
+                                               } failure:^(AFHTTPRequestOperation *operation,
+                                                           NSError *error) {
+                                                   completion(nil);
+                                               }] start];
+}
+
+- (void)saveFavicon:(UIImage *)image onDisk:(HNFavicon *)fModel inMemory:(NSString *)hostURL {
+    self.faviconCache[hostURL] = image;
+    [fModel setAttachmentNamed:@"favicon"
+               withContentType:@"image/png"
+                       content:UIImagePNGRepresentation(image)];
+    NSError *error;
+    [fModel save:&error];
+    WSMLog(error, @"Error Saving Attachment: %@", error);
+}
+
+- (void)hideStory:(NSNumber *)number {
+    NSArray *array = self.currentUser.hiddenStories;
+    self.currentUser.hiddenStories = [array arrayByAddingObject:number];
+    NSError *error;
+    [self.currentUser save:&error];
+    WSMLog(error, @"User Could Not Hide Story: %@", error);
+    self.currentTopStories = [self topStoriesWithCurrentFilters];
 }
 
 #pragma mark - Helper Methods
+
+- (HNFavicon *)modelForFaviconKey:(NSString *)key {
+    CBLDocument *doc = [self.newsDatabase documentWithID:key];
+    if (!doc.properties) {
+        NSError *error;
+        [doc mergeUserProperties:@{@"_id":key, @"type":@"HNFavicon"} error:&error];
+        WSMLog(error, @"Failed merging Favicon Document: %@",error);
+    }
+    return [HNFavicon modelForDocument:doc];
+}
+- (CBLDocument *)documentForItemNumber:(NSNumber *)number {
+    CBLDocument *doc = [self.newsDatabase documentWithID:number.stringValue];
+    if (!doc.userProperties) {
+        NSError *error;
+        [doc mergeUserProperties:@{@"by":@"rismay",
+                                   @"id":@0,
+                                   @"kids":@[],
+                                   @"score":@0,
+                                   @"text":@"",
+                                   @"time":@0,
+                                   @"title":@"Fetching Story...",
+                                   @"type":@"story",
+                                   @"url":@""}
+                           error:&error];
+        if (error) {
+            NSLog(@"Error Saving initial doc: %@, %@", error, doc.properties);
+        }
+    }
+    return doc;
+}
+
+- (UIImage *)faviconForKey:(NSString *)key {
+    return self.faviconCache[key];
+}
 
 - (NSString *)schemeAndHostFromURLString:(NSString *)urlString {
     NSURL *url = [NSURL URLWithString:urlString];

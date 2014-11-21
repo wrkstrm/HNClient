@@ -121,15 +121,17 @@
     // Register stuff...
 }
 
-- (CBLDatabase *)localDatabase {
+- (CBLDatabase *)userDatabase {
     NSError *error;
-    CBLDatabase *ldb = [[CBLManager sharedInstance] databaseNamed:self.localDatabaseName error:&error];
+    CBLDatabase *ldb = [[CBLManager sharedInstance] databaseNamed:self.userDatabaseName
+                                                            error:&error];
     WSMLog(error, @"ERROR: NO database created: %@", error);
     return ldb;
 }
 
-- (NSString *)localDatabaseName {
-    return [self.document.documentID.lowercaseString stringByReplacingOccurrencesOfString:@"!" withString:@"u-"];
+- (NSString *)userDatabaseName {
+    return [self.document.documentID.lowercaseString stringByReplacingOccurrencesOfString:@"!"
+                                                                               withString:@"u-"];
 }
 
 - (void)addParams:(NSDictionary *)params {

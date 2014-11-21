@@ -9,10 +9,12 @@
 #import <SpriteKit/SpriteKit.h>
 
 //Third party
+#import <Firebase/Firebase.h>
+#import <CouchbaseLite/CouchbaseLite.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <ReactiveCocoa/RACEXTScope.h>
-#import <CouchbaseLite/CouchbaseLite.h>
-#import <Firebase/Firebase.h>
+#import <KVOController/FBKVOController.h>
+
 #import "Flurry.h"
 
 //My Party
@@ -25,6 +27,5 @@
 
 #import "UITableViewCell+HNHeadline.h"
 
-#import "NSCache+WSMUtilities.h"
 #import "UIView+WSMUtilities.h"
 #import "CBLDocument+WSMUtilities.h"

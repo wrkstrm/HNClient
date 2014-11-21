@@ -41,8 +41,13 @@
 
 - (void)addParams:(NSDictionary *)params;
 
-- (CBLDatabase *)localDatabase;
+/**
+ This method gives you the database that belongs to the user. 
+ This is a different place than where the user documents are created.
+ */
 
-- (NSString *)localDatabaseName;
+- (CBLDatabase *)userDatabase;
+
+- (NSString *)userDatabaseName;
 
 @end

@@ -17,7 +17,11 @@
         mutableOldUserProperties[key] = properties[key];
     }
     [self putProperties:mutableOldUserProperties error:error];
-    return !!error;
+    if (error) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 @end
