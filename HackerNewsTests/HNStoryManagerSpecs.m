@@ -28,11 +28,11 @@ describe(@"HNStoryManager", ^{
         
         it(@"UserDatabase", ^{
             HNUser *user = manager.currentUser;
-            expect(user.localDatabase).toNot(beNil());
+            expect(user.userDatabase).toNot(beNil());
         });
         
         it(@"TopStoriesDocument", ^{
-            CBLDatabase *db = manager.currentUser.localDatabase;
+            CBLDatabase *db = manager.currentUser.userDatabase;
             expect(@([db documentCount])).toNot(equal(@0));
         });
         

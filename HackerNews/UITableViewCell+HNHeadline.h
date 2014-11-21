@@ -10,9 +10,9 @@
 
 @interface UITableViewCell (HNHeadline)
 
-- (void)prepareForHeadline:(NSDictionary *)properties
-                  iconData:(NSData *)iconData
-                      path:(NSIndexPath *)path;
+- (void)prepareForHeadline:(NSDictionary *)properties path:(NSIndexPath *)path;
+
+- (void)setFavicon:(UIImage *)image;
 
 + (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView;
 

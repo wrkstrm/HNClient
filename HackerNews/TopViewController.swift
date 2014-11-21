@@ -15,9 +15,6 @@ class TopViewController: HNTopViewController {
     
     override func viewDidLoad() {
         tableView.backgroundColor = self.hackerBeige()
-        let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-        self.topStoriesAPI = delegate.hackerAPI.childByAppendingPath("topstories")
-        self.itemsAPI = delegate.hackerAPI.childByAppendingPath("item")
         weak var this = self
         NSNotificationCenter.defaultCenter()
             .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -25,14 +22,14 @@ class TopViewController: HNTopViewController {
                 this?.rowHeightDictionary = nil
                 this?.tableView.reloadData()
             })
-        rac_valuesForKeyPath("currentSortedTopStories", observer: self)
+        HNStoryManager.sharedInstance()
+            .rac_valuesForKeyPath("currentTopStories", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (stories) -> Void in
-                if let s = stories as NSMutableArray! {
+                if let s = stories as NSArray! {
                     this?.topStoriesBarItem.badgeValue = "\(s.count)"
                 }
         }
-        removeOldObservations()
         super.viewDidLoad()
     }
     
@@ -41,28 +38,24 @@ class TopViewController: HNTopViewController {
         parentViewController?.navigationController?.hidesBarsOnSwipe = false
         parentViewController?.navigationController?.hidesBarsOnTap = false
         weak var this = self
-        self.topStoriesAPI.observeEventType(FEventType.Value, withBlock: { (snapshot) -> Void in
-            var previousSorted = this?.currentSortedTopStories
-            if let stories = snapshot.value as NSArray! {
-                this?.topStoriesDocument.mergeUserProperties(["stories":stories], error: nil)
-                this?.currentSortedTopStories = this?.arrayWithCurrentSortFilter()
-                this?.updateTableView(previousSorted, current: this?.currentSortedTopStories)
-                this?.topStoriesSubject.sendNext(this?.currentSortedTopStories)
-            }
-        })
+        HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
+            .takeUntil(self.rac_willDeallocSignal())
+            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
+                return RACTuple(objectsFromArray: [oldArray, newArray])
+            }).subscribeNext { (t) -> Void in
+                if let tuple = t as RACTuple! {
+                    self.updateTableView(tuple.first as NSArray, current: tuple.second as NSArray)
+                }
+        }
         super.viewWillAppear(animated)
     }
     
     override func viewDidAppear(animated: Bool) {
-        for path in tableView.indexPathsForVisibleRows() as [NSIndexPath] {
-            observeAndGetDocumentForItem(itemNumberForIndexPath(path))
-        }
         super.viewDidAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
         parentViewController?.navigationItem.titleView = nil;
-        self.topStoriesAPI.removeAllObservers()
         super.viewWillDisappear(animated)
     }
     
@@ -70,7 +63,7 @@ class TopViewController: HNTopViewController {
     
     func formatTitleView() {
         let segmentedControl = UISegmentedControl(items:["Points", "Rank", "Comments"])
-        switch sortStyle {
+        switch HNStoryManager.sharedInstance().sortStyle {
         case HNSortStyle.Comments: segmentedControl.selectedSegmentIndex = 2
         case HNSortStyle.Points: segmentedControl.selectedSegmentIndex = 0
         default: segmentedControl.selectedSegmentIndex = 1
@@ -85,13 +78,11 @@ class TopViewController: HNTopViewController {
     func sortCategory(segmentedControl:UISegmentedControl) {
         let previousSorted = currentSortedTopStories
         switch (segmentedControl.selectedSegmentIndex) {
-        case 0: sortStyle = HNSortStyle.Points
-        case 1: sortStyle = HNSortStyle.Rank
-        case 2: sortStyle = HNSortStyle.Comments
+        case 0: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Points
+        case 1: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Rank
+        case 2: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Comments
         default: assert(false, "Incorrect Sorting State")
         }
-        currentSortedTopStories = nil
-        updateTableView(previousSorted, current: currentSortedTopStories)
     }
     
     //MARK:- TableView Delegate Methods
@@ -102,26 +93,31 @@ class TopViewController: HNTopViewController {
     
     let CELL_IDENTIFIER = "storyCell"
     
-    override func tableView(tableView: UITableView,
-        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
-            if (cell == nil) {
-                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
-                    reuseIdentifier: CELL_IDENTIFIER)
-            }
-            
-            let itemNumber = itemNumberForIndexPath(indexPath)
-            let properties = observeAndGetDocumentForItem(itemNumber).properties
-            let faviconURL = cacheFaviconForItem(itemNumber, url:properties["url"] as NSString?)
-            cell?.prepareForHeadline(properties,
-                iconData:faviconCache[faviconURL] as NSData?, path: indexPath)
-            return cell!
-    }
+    //    override func tableView(tableView: UITableView,
+    //        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    //            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
+    //            if (cell == nil) {
+    //                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
+    //                    reuseIdentifier: CELL_IDENTIFIER)
+    //            }
+    //            let itemNumber = itemNumberForIndexPath(indexPath)
+    //            let signal = HNStoryManager.sharedInstance().latestStateForItemNumber(itemNumber)
+    //            weak var this = self;
+    //            signal.takeUntil(cell?.rac_prepareForReuseSignal).subscribeNext { (tuple) -> Void in
+    //                if let t = tuple as RACTuple! {
+    //                    let document = t.first as CBLDocument!
+    //                    let image = HNStoryManager.sharedInstance().faviconForKey(t.second as NSString!)
+    //                    let path = this?.indexPathForItemNumber(itemNumber)
+    //                    cell?.prepareForHeadline(document.properties, image: image, path: path)
+    //                }
+    //            }
+    //            return cell!
+    //    }
     
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)
-            let document = newsDatabase.documentWithID(itemNumber.stringValue)
+            let document = HNStoryManager.sharedInstance().documentForItemNumber(itemNumber)
             if  document["type"] as NSString == "story" {
                 if !(document["url"] as NSString == "")  {
                     let controller = storyboard?
@@ -145,7 +141,6 @@ class TopViewController: HNTopViewController {
                         .pushViewController(controller, animated: true)
                 }
             }
-            
             tableView .deselectRowAtIndexPath(indexPath, animated: true);
     }
     

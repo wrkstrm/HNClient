@@ -12,7 +12,7 @@
 
 @implementation UITableViewCell (HNHeadline)
 
-- (void)prepareForHeadline:(NSDictionary *)properties iconData:(NSData *)iconData path:(NSIndexPath *)path {
+- (void)prepareForHeadline:(NSDictionary *)properties path:(NSIndexPath *)path {
     //Create the number - ex: 1.
     UILabel *label =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     label.backgroundColor = [UIColor clearColor];
@@ -56,17 +56,12 @@
     }
     [self.textLabel sizeToFit];
     [self.detailTextLabel sizeToFit];
-    //Icon
-    UIImageView *favicon = nil;
-    if (iconData && ![iconData isEqual:[NSNull null]]) {
-        favicon = [[UIImageView alloc] initWithImage:[UIImage imageWithData:iconData]];
-    } else if ([properties[@"type"] isEqualToString:@"story"] &&
-               ![properties[@"url"] isEqualToString:@""]) {
-        favicon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"web_black"]];
-    }
-    
+}
+
+- (void)setFavicon:(UIImage *)image {
     CGFloat faviconSize = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline].pointSize + 1;
-    [favicon setFrame:CGRectMake(0, 0, faviconSize, faviconSize)];
+    UIImageView *favicon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, faviconSize, faviconSize)];
+    [favicon setImage:image];
     self.accessoryView = favicon;
 }
 
