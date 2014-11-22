@@ -48,6 +48,18 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 0
 
+// AsyncDisplayKit
+#define COCOAPODS_POD_AVAILABLE_AsyncDisplayKit
+#define COCOAPODS_VERSION_MAJOR_AsyncDisplayKit 1
+#define COCOAPODS_VERSION_MINOR_AsyncDisplayKit 0
+#define COCOAPODS_VERSION_PATCH_AsyncDisplayKit 1
+
+// AsyncDisplayKit/ASDealloc2MainObject
+#define COCOAPODS_POD_AVAILABLE_AsyncDisplayKit_ASDealloc2MainObject
+#define COCOAPODS_VERSION_MAJOR_AsyncDisplayKit_ASDealloc2MainObject 1
+#define COCOAPODS_VERSION_MINOR_AsyncDisplayKit_ASDealloc2MainObject 0
+#define COCOAPODS_VERSION_PATCH_AsyncDisplayKit_ASDealloc2MainObject 1
+
 // CocoaLumberjack
 #define COCOAPODS_POD_AVAILABLE_CocoaLumberjack
 #define COCOAPODS_VERSION_MAJOR_CocoaLumberjack 2
@@ -83,12 +95,6 @@
 #define COCOAPODS_VERSION_MAJOR_Firebase 2
 #define COCOAPODS_VERSION_MINOR_Firebase 0
 #define COCOAPODS_VERSION_PATCH_Firebase 2
-
-// KVOController
-#define COCOAPODS_POD_AVAILABLE_KVOController
-#define COCOAPODS_VERSION_MAJOR_KVOController 1
-#define COCOAPODS_VERSION_MINOR_KVOController 0
-#define COCOAPODS_VERSION_PATCH_KVOController 3
 
 // ReactiveCocoa
 #define COCOAPODS_POD_AVAILABLE_ReactiveCocoa

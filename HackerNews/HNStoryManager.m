@@ -11,7 +11,6 @@
 #import "HNItems.h"
 #import "NSCache+WSMUtilities.h"
 
-
 @interface HNStoryManager ()
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;

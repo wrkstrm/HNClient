@@ -25,7 +25,7 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <ReactiveCocoa/RACEXTScope.h>
 #import <AFNetworking/AFNetworking.h>
-#import <KVOController/FBKVOController.h>
+#import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "Flurry.h"
 
 //My Party

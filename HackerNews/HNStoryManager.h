@@ -59,8 +59,8 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 #pragma mark - State Methods.
 
 /**
- The way to get the current state of a document. This is also KVO compliant.
- Because, this needs to change often and ReactiveCocoa is slow, use Facebook KVO. 
+ The way to get the current state of a document. 
+ Sign up for notifications on changes via the RACSignal (filter for number + subscribe)
  */
 
 - (CBLModel *)modelForItemNumber:(NSNumber *)number;

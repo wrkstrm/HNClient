@@ -1,0 +1,7 @@
+#include "Pods-HackerNews-AsyncDisplayKit.xcconfig"
+CLANG_CXX_LANGUAGE_STANDARD = ${PODS_HACKERNEWS_ASYNCDISPLAYKIT_CLANG_CXX_LANGUAGE_STANDARD}
+CLANG_CXX_LIBRARY = ${PODS_HACKERNEWS_ASYNCDISPLAYKIT_CLANG_CXX_LIBRARY}
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Build" "${PODS_ROOT}/Headers/Build/AsyncDisplayKit" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/AsyncDisplayKit" "${PODS_ROOT}/Headers/Public/CocoaLumberjack" "${PODS_ROOT}/Headers/Public/DateTools" "${PODS_ROOT}/Headers/Public/Firebase" "${PODS_ROOT}/Headers/Public/ReactiveCocoa" "${PODS_ROOT}/Headers/Public/ReactiveCocoa/ReactiveCocoa" "${PODS_ROOT}/Headers/Public/WSMLogger" "${PODS_ROOT}/Headers/Public/WSMUtilities"
+OTHER_LDFLAGS = ${PODS_HACKERNEWS_ASYNCDISPLAYKIT_OTHER_LDFLAGS} -ObjC
+PODS_ROOT = ${SRCROOT}
