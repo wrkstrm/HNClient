@@ -44,9 +44,10 @@ class TopViewController: HNTopViewController {
                 return RACTuple(objectsFromArray: [oldArray, newArray])
             }).subscribeNext { (t) -> Void in
                 if let tuple = t as RACTuple! {
-                    self.updateTableView(tuple.first as NSArray, current: tuple.second as NSArray)
+                    this?.updateTableView(tuple.first as NSArray, current: tuple.second as NSArray)
                 }
         }
+        respondToItemUpdates()
         super.viewWillAppear(animated)
     }
     
@@ -91,52 +92,46 @@ class TopViewController: HNTopViewController {
         return 1
     }
     
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return HNStoryManager.sharedInstance().currentTopStories.count
+    }
+    
     let CELL_IDENTIFIER = "storyCell"
     
-    //    override func tableView(tableView: UITableView,
-    //        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    //            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
-    //            if (cell == nil) {
-    //                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
-    //                    reuseIdentifier: CELL_IDENTIFIER)
-    //            }
-    //            let itemNumber = itemNumberForIndexPath(indexPath)
-    //            let signal = HNStoryManager.sharedInstance().latestStateForItemNumber(itemNumber)
-    //            weak var this = self;
-    //            signal.takeUntil(cell?.rac_prepareForReuseSignal).subscribeNext { (tuple) -> Void in
-    //                if let t = tuple as RACTuple! {
-    //                    let document = t.first as CBLDocument!
-    //                    let image = HNStoryManager.sharedInstance().faviconForKey(t.second as NSString!)
-    //                    let path = this?.indexPathForItemNumber(itemNumber)
-    //                    cell?.prepareForHeadline(document.properties, image: image, path: path)
-    //                }
-    //            }
-    //            return cell!
-    //    }
+    override func tableView(tableView: UITableView,
+        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
+            if (cell == nil) {
+                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
+                    reuseIdentifier: CELL_IDENTIFIER)
+            }
+            updateCell(cell, atIndexPath: indexPath, shimmer: false)
+            return cell!
+    }
     
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)
-            let document = HNStoryManager.sharedInstance().documentForItemNumber(itemNumber)
-            if  document["type"] as NSString == "story" {
-                if !(document["url"] as NSString == "")  {
+            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNStory
+            if  story.type as NSString == "story" {
+                if !(story.url as NSString == "")  {
                     let controller = storyboard?
                         .instantiateViewControllerWithIdentifier("WebViewController")
                         as WebViewController
-                    controller.document = document
+                    controller.story = story
                     parentViewController?.navigationController?
                         .pushViewController(controller, animated: true)
-                } else if !(document["text"] as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: document)
+                } else if !(story.text as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: story)
                 }
-            } else if  document["type"] as NSString == "job" {
-                if !(document["text"] as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: document)
-                } else if !(document["url"] as NSString == "")  {
+            } else if  story.type as NSString == "job" {
+                if !(story.text as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: story)
+                } else if !(story.url as NSString == "")  {
                     let controller = storyboard?
                         .instantiateViewControllerWithIdentifier("WebViewController")
                         as WebViewController
-                    controller.document = document
+                    controller.story = story
                     parentViewController?.navigationController?
                         .pushViewController(controller, animated: true)
                 }
@@ -169,7 +164,7 @@ class TopViewController: HNTopViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "textViewSegue" {
             let controller = segue.destinationViewController as TextViewController
-            controller.document = sender as CBLDocument!;
+            controller.story = sender as HNStory!;
         }
     }
     

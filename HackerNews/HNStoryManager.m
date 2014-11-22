@@ -8,7 +8,7 @@
 
 #import "HNStoryManager.h"
 #import "HNUser.h"
-#import "HNFavicon.h"
+#import "HNItems.h"
 #import "NSCache+WSMUtilities.h"
 
 
@@ -19,7 +19,7 @@
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
 
-@property (nonatomic, strong) NSMutableDictionary *firebaseSignalDictionary;
+@property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 
 @property (nonatomic, strong, readwrite) NSCache *faviconCache;
 @property (nonatomic, strong) CBLDatabase *newsDatabase;
@@ -29,6 +29,8 @@
 
 //Placeholder Imagee
 @property (nonatomic, strong) UIImage *webImagePlaceholderData;
+
+@property (nonatomic, strong, readwrite) RACSubject *itemUpdates;
 
 @end
 
@@ -58,7 +60,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         doc;
     }));
     
-    _firebaseSignalDictionary = @{}.mutableCopy;
+    _observationDictionary = @{}.mutableCopy;
     
     _faviconCache = NSCache.new;
     _faviconCache[webPlaceHolderName] = [UIImage imageNamed:webPlaceHolderName];
@@ -72,17 +74,26 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
     _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
     
-    //    self.currentTopStories = @[];
+    [[CBLModelFactory sharedInstance] registerClass:@"HNFavicon" forDocumentType:@"HNFavicon"];
+    [[CBLModelFactory sharedInstance] registerClass:@"HNStory" forDocumentType:@"story"];
+    [[CBLModelFactory sharedInstance] registerClass:@"HNJob" forDocumentType:@"job"];
+//    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
+//    [[CBLModelFactory sharedInstance] registerClass:@"HNPoll" forDocumentType:@"poll"];
+//    [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
+   
     self.currentTopStories = self.topStoriesWithCurrentFilters;
     @weakify(self);
     [_topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         @strongify(self);
         if (snapshot.value) {
-            [_topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error: nil];
-            NSLog(@"Updating topStories!");
+            NSError *error;
+            [_topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error:&error];
+            WSMLog(error, @"Error updating top stories: %@", error);
             self.currentTopStories = self.topStoriesWithCurrentFilters;
         }
     }];
+    
+    _itemUpdates = [RACSubject subject];
     
     [self manageNewObservations];
     [self manageOldObservations];
@@ -104,9 +115,8 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
               return ![old containsObject:value];
           }] array];
       }] subscribeNext:^(NSArray *newStories) {
-          NSLog(@"NewStories Count: %lu",newStories.count);
           for (NSNumber *number in newStories) {
-              [self firebaseSignalForItemNumber:number];
+              [self observationForItemNumber:number];
           }
       }];
 }
@@ -120,21 +130,20 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
           }] array];
       }] subscribeNext:^(NSArray *oldStories) {
           NSNull *null = [NSNull null];
-          NSMutableArray *staleObservations = [[self.firebaseSignalDictionary
+          NSMutableArray *staleObservations = [[self.observationDictionary
                                                 objectsForKeys:oldStories
                                                 notFoundMarker:null] mutableCopy];
           [staleObservations removeObject:null];
+          [self.observationDictionary removeObjectsForKeys:staleObservations];
+          for (Firebase *base in staleObservations) {
+              [base removeAllObservers];
+          }
           for (NSNumber *number in oldStories) {
-              [self discardObservationsForItem:number];
-              [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:nil];
+              NSError *error;
+              [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:&error];
+              WSMLog(error, @"Error Purging Old Document: %@", error);
           }
       }];
-}
-
-- (void)discardObservationsForItem:(NSNumber *)number {
-    RACSubject *subject = self.firebaseSignalDictionary[number];
-    [subject sendCompleted];
-    [self.firebaseSignalDictionary removeObjectForKey:number];
 }
 
 - (NSArray *)topStoriesWithCurrentFilters {
@@ -143,20 +152,20 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         case kHNSortStylePoints: {
             sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                               CBLDocument *doc1 = [self documentForItemNumber:obj1];
-                               CBLDocument *doc2 = [self documentForItemNumber:obj2];
-                               NSInteger score1 = [doc1[@"score"] integerValue];
-                               NSInteger score2 = [doc2[@"score"] integerValue];
+                               CBLModel *model1 = [self modelForItemNumber:obj1];
+                               CBLModel *model2 = [self modelForItemNumber:obj2];
+                               NSInteger score1 = [model1[@"score"] integerValue];
+                               NSInteger score2 = [model2[@"score"] integerValue];
                                WSM_COMPARATOR(score1 > score2);
                            }];
         } break;
         case kHNSortStyleComments: {
             sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
-                               CBLDocument *doc1 = [self documentForItemNumber:obj1];
-                               CBLDocument *doc2 = [self documentForItemNumber:obj2];
-                               NSInteger comments1 = [doc1[@"kids"] count];
-                               NSInteger comments2 = [doc2[@"kids"] count];
+                               CBLModel *model1 = [self modelForItemNumber:obj1];
+                               CBLModel *omdel2 = [self modelForItemNumber:obj2];
+                               NSInteger comments1 = [model1[@"kids"] count];
+                               NSInteger comments2 = [omdel2[@"kids"] count];
                                WSM_COMPARATOR(comments1 > comments2);
                            }];
         } break;
@@ -165,46 +174,36 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     return [sortedArray filteredArrayUsingPredicate:
             [NSPredicate predicateWithBlock:^
              BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
-                 CBLDocument *doc1 = [self documentForItemNumber:storyNumber];
-                 NSInteger score1 = [doc1[@"score"] integerValue];
+                 CBLModel *model1 = [self modelForItemNumber:storyNumber];
+                 NSInteger score1 = [model1[@"score"] integerValue];
                  return ![self.currentUser.hiddenStories containsObject:storyNumber]
                  || !(self.currentUser.minimumScore <=  score1);
              }]];
-    
 }
 
-- (RACSignal *)firebaseSignalForItemNumber:(NSNumber *)itemNumber {
-    return WSM_LAZY(self.firebaseSignalDictionary[[itemNumber stringValue]], ({
-        RACSubject *storySubject = RACSubject.subject;
-        RACSignal *replay = storySubject.replayLast;
-        __block CBLDocument *storyDoc = [self documentForItemNumber:itemNumber];
+- (Firebase *)observationForItemNumber:(NSNumber *)itemNumber {
+    return WSM_LAZY(self.observationDictionary[itemNumber], ({
         Firebase *base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
-        @weakify(storySubject);
+        @weakify(self)
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-            @strongify(storySubject);
+            @strongify(self)
             if (snapshot.value) {
                 NSError *error;
-                [storyDoc mergeUserProperties:snapshot.value error:&error];
+                CBLModel *model = [self modelForItemNumber:itemNumber];
+                [model.document mergeUserProperties:snapshot.value error:&error];
                 WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
-                [storySubject sendNext:storyDoc];
+                self.currentTopStories = [self topStoriesWithCurrentFilters];
+                [(RACSubject*) self.itemUpdates sendNext:RACTuplePack(itemNumber,model)];
             }
         }];
-        @weakify(self);
-        [storySubject doCompleted:^{
-            @strongify(self);
-            [base removeAllObservers];
-            [self.firebaseSignalDictionary removeObjectForKey:[itemNumber stringValue]];
-        }];
-        
-        [storySubject sendNext:storyDoc];
-        replay;
+        base;
     }));
 }
 
 - (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
                                           callback:(void(^)(UIImage *favicon))completion {
-    CBLDocument *storyDoc = [self documentForItemNumber:itemNumber];
-    NSString *hostURL = [self schemeAndHostFromURLString:storyDoc[@"url"]];
+    HNItem *storyModel = (HNItem*) [self modelForItemNumber:itemNumber];
+    NSString *hostURL = [self schemeAndHostFromURLString:storyModel.url];
     if (!hostURL) {
         completion(nil);
         return self.faviconCache[webPlaceHolderName];
@@ -287,7 +286,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     }
     return [HNFavicon modelForDocument:doc];
 }
-- (CBLDocument *)documentForItemNumber:(NSNumber *)number {
+- (CBLModel *)modelForItemNumber:(NSNumber *)number {
     CBLDocument *doc = [self.newsDatabase documentWithID:number.stringValue];
     if (!doc.userProperties) {
         NSError *error;
@@ -305,7 +304,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             NSLog(@"Error Saving initial doc: %@, %@", error, doc.properties);
         }
     }
-    return doc;
+    return [CBLModel modelForDocument: doc];
 }
 
 - (UIImage *)faviconForKey:(NSString *)key {

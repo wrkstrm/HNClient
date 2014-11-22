@@ -12,4 +12,10 @@
 
 - (NSString *) docID;
 
+/** Shorthand for [self.properties objectForKey: key]. */
+- (void)setObject:(id)object forKeyedSubscript:(id)key;
+
+/** Same as -propertyForKey:. Enables "[]" access in Xcode 4.4+ */
+- (id)objectForKeyedSubscript:(id)key;
+
 @end

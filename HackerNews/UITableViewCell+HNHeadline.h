@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 wrkstrm. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "HNItems.h"
 
 @interface UITableViewCell (HNHeadline)
 
@@ -14,6 +14,6 @@
 
 - (void)setFavicon:(UIImage *)image;
 
-+ (CGFloat) getCellHeightForDocument:(CBLDocument *)document view:(UIView *)tableView;
++ (CGFloat) getCellHeightForStory:(HNStory *)story view:(UIView *)tableView;
 
 @end

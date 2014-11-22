@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) NSArray *hiddenStories;
 @property (nonatomic) NSInteger minimumScore;
+@property (nonatomic) NSInteger minimumComments;
 
 @end

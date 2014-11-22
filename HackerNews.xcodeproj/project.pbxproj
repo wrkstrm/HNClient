@@ -36,7 +36,7 @@
 		6E8B8C531A1D54EA008C9B66 /* HackerNews-Prefix.pch in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */; };
 		6E8B8C551A1D563B008C9B66 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E8B8C541A1D563B008C9B66 /* Nimble.framework */; };
 		6E8B8C561A1D569E008C9B66 /* HNStoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */; };
-		6E96F2E01A1E071900B7693D /* HNFavicon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E96F2DF1A1E071900B7693D /* HNFavicon.m */; };
+		6E96F2EC1A1F397D00B7693D /* HNItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E96F2EB1A1F397D00B7693D /* HNItems.m */; };
 		6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970741A095B8A00EFD4E2 /* WebViewController.swift */; };
 		6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
@@ -156,8 +156,8 @@
 		6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+HNHeadline.h"; sourceTree = "<group>"; };
 		6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+HNHeadline.m"; sourceTree = "<group>"; };
 		6E8B8C541A1D563B008C9B66 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "../../../Library/Developer/Xcode/DerivedData/HackerNews-dfnilhhzpwfqfaflaxkcfdzffrrq/Build/Products/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
-		6E96F2DE1A1E071900B7693D /* HNFavicon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNFavicon.h; sourceTree = "<group>"; };
-		6E96F2DF1A1E071900B7693D /* HNFavicon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNFavicon.m; sourceTree = "<group>"; };
+		6E96F2EA1A1F397D00B7693D /* HNItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNItems.h; sourceTree = "<group>"; };
+		6E96F2EB1A1F397D00B7693D /* HNItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNItems.m; sourceTree = "<group>"; };
 		6EA970731A095B8A00EFD4E2 /* HackerNews-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Bridging-Header.h"; sourceTree = "<group>"; };
 		6EA970741A095B8A00EFD4E2 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		6EC8D2F61A16FCA1008A539A /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = vendor/Quick/Quick.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -226,8 +226,8 @@
 			children = (
 				6E1A94E71A1C870B00496CD7 /* HNStoryManager.h */,
 				6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */,
-				6E96F2DE1A1E071900B7693D /* HNFavicon.h */,
-				6E96F2DF1A1E071900B7693D /* HNFavicon.m */,
+				6E96F2EA1A1F397D00B7693D /* HNItems.h */,
+				6E96F2EB1A1F397D00B7693D /* HNItems.m */,
 				6E1A94D21A1C810700496CD7 /* HNUser.h */,
 				6E1A94D31A1C810700496CD7 /* HNUser.m */,
 				6E1A94D41A1C810700496CD7 /* WSMUser.h */,
@@ -674,9 +674,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E96F2EC1A1F397D00B7693D /* HNItems.m in Sources */,
 				6E1A94E91A1C870B00496CD7 /* HNStoryManager.m in Sources */,
 				6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */,
-				6E96F2E01A1E071900B7693D /* HNFavicon.m in Sources */,
 				6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */,
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,

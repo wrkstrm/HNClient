@@ -11,7 +11,7 @@ import UIKit
 import WebKit
 
 class WebViewController : UIViewController, WKNavigationDelegate {
-    var document:CBLDocument?
+    var story:HNItem?
     var webView:WKWebView! = WKWebView()
     
     @IBOutlet var toolbar: UIToolbar!
@@ -26,13 +26,13 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = document!.properties["title"] as String!
+        self.title = story?.title
         view.insertSubview(webView, belowSubview: toolbar)
         webView.frame = CGRectMake(0, 0,
             CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
         webView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
         webView.navigationDelegate = self
-        if let urlString = self.document?.properties["url"] as? String {
+        if let urlString = self.story?.url {
             let url = NSURL(string: urlString)
             let urlRequest = NSURLRequest(URL: url!)
             webView.loadRequest(urlRequest)
@@ -93,9 +93,9 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     
     @IBAction func actionTapped(sender: UIBarButtonItem) {
         var itemsToShare:NSMutableArray = []
-        let title = self.document?["title"] as String
-        itemsToShare.addObject(title)
-        if let urlString = self.document?.properties["url"] as? String {
+        let title = story?.title
+        itemsToShare.addObject(title!)
+        if let urlString = story?.url {
             let url = NSURL(string: urlString)
             itemsToShare.addObject(url!)
         }

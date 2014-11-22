@@ -24,6 +24,7 @@
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
 #import "HNStoryManager.h"
+#import "HNItems.h"
 
 #import "UITableViewCell+HNHeadline.h"
 

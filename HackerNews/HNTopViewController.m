@@ -14,7 +14,7 @@
 #import "UIView+WSMUtilities.h"
 #import "CBLDocument+WSMUtilities.h"
 #import "HNStoryManager.h"
-
+#import "HNItems.h"
 #import "HackerNews-Swift.h"
 
 
@@ -36,6 +36,8 @@
     [super viewWillDisappear:animated];
 }
 
+
+#pragma mark - Tableview Update Managment
 #define newsSection 0
 
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
@@ -71,79 +73,67 @@
         [Flurry logEvent:@"endUpdates"];
         for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
             NSNumber *number = [self itemNumberForIndexPath:path];
-            CBLDocument *doc = [[HNStoryManager sharedInstance] documentForItemNumber:number];
-            CGFloat newRowHeight = [UITableViewCell getCellHeightForDocument:doc
-                                                                        view:self.view];
-            CGFloat oldRowHeight = [self.rowHeightDictionary[number] floatValue];
-            NSIndexPath *indexPath = [self indexPathForItemNumber:number];
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            if (cell && newRowHeight == oldRowHeight) {
-                [self updateCell:cell atIndexPath:indexPath shimmer:YES observe:NO];
-            } else {
-                self.rowHeightDictionary[number] = @(newRowHeight);
-                [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:number]]
-                                      withRowAnimation:UITableViewRowAnimationNone];
-            }
-            
+            HNStory *story = (HNStory *)[[HNStoryManager sharedInstance] modelForItemNumber:number];
+            [self updateCellWithTuple:RACTuplePack(number, story)];
         }
+    }
+}
+
+- (void)respondToItemUpdates  {
+    [[[HNStoryManager sharedInstance] itemUpdates] subscribeNext:^(RACTuple *tuple) {
+        [self updateCellWithTuple:tuple];
+    }];
+}
+
+- (void)updateCellWithTuple:(RACTuple *)tuple {
+    NSNumber *number = (NSNumber *) tuple.first;
+    HNStory *story = (HNStory *) tuple.second;
+    CGFloat newRowHeight = [UITableViewCell getCellHeightForStory:story
+                                                             view:self.view];
+    CGFloat oldRowHeight = [self.rowHeightDictionary[number] floatValue];
+    NSIndexPath *indexPath = [self indexPathForItemNumber:number];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (!cell && !oldRowHeight) {
+        self.rowHeightDictionary[number] = @(newRowHeight);
+    } else if (cell && newRowHeight == oldRowHeight) {
+        [self updateCell:cell atIndexPath:indexPath shimmer:YES];
+    } else if (newRowHeight != oldRowHeight) {
+        NSLog(@"Resizing TableView:%f, %f, %@", oldRowHeight, newRowHeight, cell);
+        self.rowHeightDictionary[number] = @(newRowHeight);
+        [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:number]]
+                              withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
 #pragma mark - TableView DataSource and Delegate methods
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return HNStoryManager.sharedInstance.currentTopStories.count;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    CBLDocument *doc = [HNStoryManager.sharedInstance documentForItemNumber:itemNumber];
+    CBLModel *story = [HNStoryManager.sharedInstance modelForItemNumber:itemNumber];
     NSNumber *rowHeight = WSM_LAZY(self.rowHeightDictionary[itemNumber],
-                                   @([UITableViewCell getCellHeightForDocument:doc
-                                                                          view:self.view]));
+                                   @([UITableViewCell getCellHeightForStory:(HNStory *)story
+                                                                       view:self.view]));
     return [rowHeight floatValue];
 }
 
 #define cellIdentifier @"storyCell"
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    WSM_LAZY(cell, [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                          reuseIdentifier:cellIdentifier]);
-    [self updateCell:cell atIndexPath:indexPath shimmer:NO observe:YES];
-    return cell;
-}
-
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-           shimmer:(BOOL)shouldShimmer observe:(BOOL)shouldObserve {
+           shimmer:(BOOL)shouldShimmer {
     NSNumber *number = [self itemNumberForIndexPath:indexPath];
-    CBLDocument *document = [HNStoryManager.sharedInstance documentForItemNumber:number];
-    [cell prepareForHeadline:document.userProperties path:indexPath];
-    UIImage *placeHolder = [HNStoryManager.sharedInstance
-                            getPlaceholderAndFaviconForItemNumber:number
-                            callback:^(UIImage *favicon) {
-                                if (favicon) {
-                                    UITableViewCell *currentCell = [self.tableView
-                                                                    cellForRowAtIndexPath:[self indexPathForItemNumber:number]];
-                                    [currentCell setFavicon:favicon];
-                                }
-                            }];
-    [cell setFavicon:placeHolder];
-    
-    if (shouldObserve) {
-        [self.KVOController observe:document
-                            keyPath:@"properties"
-                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                              block:^(id observer, NSDictionary *properties, NSDictionary *change) {
-                                  NSIndexPath *path = [self indexPathForItemNumber:number];
-                                  UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:path];
-                                  [cell prepareForHeadline:properties path:path];
-                              }];
-        [[cell.rac_prepareForReuseSignal take:1] subscribeNext:^(id x) {
-            [self.KVOController unobserve:document];
-        }];
-    }
+    HNStory *story = (HNStory *) [HNStoryManager.sharedInstance modelForItemNumber:number];
+    [cell prepareForHeadline:story.document.userProperties path:indexPath];
+    UIImage *image = [HNStoryManager.sharedInstance
+                      getPlaceholderAndFaviconForItemNumber:number
+                      callback:^(UIImage *favicon) {
+                          if (favicon) {
+                              UITableViewCell *currentCell =
+                              [self.tableView cellForRowAtIndexPath:
+                               [self indexPathForItemNumber:number]];
+                              [currentCell setFavicon:favicon];
+                          }
+                      }];
+    [cell setFavicon:image];
     if (shouldShimmer) {
         [cell shimmerFor:1.0f];
     }
@@ -152,6 +142,7 @@
 - (NSArray *)tableView:(UITableView *)tableView
 editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *rowActions = @[];
+    
     UITableViewRowAction *hide = [UITableViewRowAction
                                   rowActionWithStyle:UITableViewRowActionStyleNormal
                                   title:@"Hide"
@@ -159,7 +150,18 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
                                   {
                                       [Flurry logEvent:@"Hide"];
                                       NSNumber *iNumber = [self itemNumberForIndexPath:indexPath];
+                                      [self.tableView deselectRowAtIndexPath:indexPath
+                                                                    animated:YES];
+                                      [self.tableView beginUpdates];
                                       [[HNStoryManager sharedInstance] hideStory:iNumber];
+                                      [self.tableView deleteRowsAtIndexPaths:@[indexPath]
+                                                            withRowAnimation:UITableViewRowAnimationBottom];
+                                      [self.tableView endUpdates];
+                                      for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
+                                          [self updateCell:[self.tableView cellForRowAtIndexPath:path]
+                                               atIndexPath:path
+                                                   shimmer:NO];
+                                      }
                                   }];
     hide.backgroundColor = [WSMColorPalette colorGradient:kWSMGradientBlack
                                                  forIndex:0
@@ -178,7 +180,7 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
                               inSection:newsSection];;
 }
 
-- (NSArray *) currentSortedTopStories {
+- (NSArray *)currentSortedTopStories {
     return HNStoryManager.sharedInstance.currentTopStories;
 }
 

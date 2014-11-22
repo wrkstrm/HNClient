@@ -30,6 +30,13 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 @property (nonatomic, strong, readonly) NSArray *currentTopStories;
 
+
+/**
+ A signal that sends all item changes from observed items. 
+ */
+
+@property (nonatomic, strong, readonly) RACSignal *itemUpdates;
+
 /**
  The only way to change the sort style of the current top stories. 
  */
@@ -56,7 +63,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
  Because, this needs to change often and ReactiveCocoa is slow, use Facebook KVO. 
  */
 
-- (CBLDocument *)documentForItemNumber:(NSNumber *)number;
+- (CBLModel *)modelForItemNumber:(NSNumber *)number;
 
 /**
  Favicons are cached to avoid unnecessary network calls.

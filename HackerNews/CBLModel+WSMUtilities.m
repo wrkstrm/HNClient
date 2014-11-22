@@ -7,11 +7,16 @@
 //
 
 #import "CBLModel+WSMUtilities.h"
+#import "CBLDocument+WSMUtilities.h"
 
 @implementation CBLModel (WSMUtilities)
 
 - (NSString *) docID {
     return self.document.documentID;
+}
+
+- (id)objectForKeyedSubscript:(id)key {
+    return self.document[key];
 }
 
 @end

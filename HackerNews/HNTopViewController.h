@@ -11,7 +11,7 @@
 @interface HNTopViewController : UITableViewController
 
 @property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
-@property (nonatomic, strong) NSMutableArray *currentSortedTopStories;
+@property (nonatomic, strong, readonly) NSArray *currentSortedTopStories;
 
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path;
 
@@ -19,5 +19,10 @@
 
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current;
 
-@end
+- (void)respondToItemUpdates;
 
+- (void)updateCell:(UITableViewCell *)cell
+       atIndexPath:(NSIndexPath *)indexPath
+           shimmer:(BOOL)shouldShimmer;
+
+@end
