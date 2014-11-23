@@ -98,7 +98,6 @@
     } else if (cell && newRowHeight == oldRowHeight) {
         [self updateCell:cell atIndexPath:indexPath shimmer:YES];
     } else if (newRowHeight != oldRowHeight) {
-        NSLog(@"Resizing TableView:%f, %f, %@", oldRowHeight, newRowHeight, cell);
         self.rowHeightDictionary[number] = @(newRowHeight);
         [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:number]]
                               withRowAnimation:UITableViewRowAnimationNone];
@@ -153,9 +152,9 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
                                       [self.tableView deselectRowAtIndexPath:indexPath
                                                                     animated:YES];
                                       [self.tableView beginUpdates];
-                                      [[HNStoryManager sharedInstance] hideStory:iNumber];
                                       [self.tableView deleteRowsAtIndexPaths:@[indexPath]
                                                             withRowAnimation:UITableViewRowAnimationBottom];
+                                      [[HNStoryManager sharedInstance] hideStory:iNumber];
                                       [self.tableView endUpdates];
                                       for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
                                           [self updateCell:[self.tableView cellForRowAtIndexPath:path]
