@@ -20,9 +20,6 @@ PODS:
   - AFNetworking/UIKit (2.5.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - AsyncDisplayKit (1.0.1):
-    - AsyncDisplayKit/ASDealloc2MainObject
-  - AsyncDisplayKit/ASDealloc2MainObject (1.0.1)
   - CocoaLumberjack (2.0.0-beta3):
     - CocoaLumberjack/Default
     - CocoaLumberjack/Extensions
@@ -46,7 +43,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
-  - AsyncDisplayKit
   - CocoaLumberjack (= 2.0.0-beta3)
   - DateTools
   - Firebase (>= 1.2.2)
@@ -56,7 +52,6 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
-  AsyncDisplayKit: 1bbf78b78795370cc191b15ad7755683c32cc927
   CocoaLumberjack: 55c22a2b8bde7a29c568ab4015b5874216524d70
   DateTools: 7c2d233ea2d4bda3a717d0cd5f58da926a5998d0
   Firebase: 793a4581e4f4d9cb1e156cab89ca367f3d02b473
