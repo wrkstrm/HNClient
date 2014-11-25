@@ -30,6 +30,7 @@
 		6E519E971A140AD300B42816 /* right_black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E931A140AD300B42816 /* right_black@3x.png */; };
 		6E519E9A1A140B1100B42816 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E519E991A140B1100B42816 /* WebKit.framework */; };
 		6E5AA0301A230C59005A5E53 /* HNSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */; };
+		6E5AA03D1A246AD4005A5E53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */; };
 		6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5EADC21A0F630700A19DA7 /* TopViewController.swift */; };
 		6E5EADC51A10694D00A19DA7 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5EADC41A10694D00A19DA7 /* TextViewController.swift */; };
 		6E5EADC71A1072CC00A19DA7 /* DynamicLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5EADC61A1072CC00A19DA7 /* DynamicLogo.swift */; };
@@ -153,6 +154,7 @@
 		6E519E991A140B1100B42816 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		6E5AA02E1A230C59005A5E53 /* HNSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNSettingsViewController.h; sourceTree = "<group>"; };
 		6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNSettingsViewController.m; sourceTree = "<group>"; };
+		6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		6E5EADC21A0F630700A19DA7 /* TopViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopViewController.swift; sourceTree = "<group>"; };
 		6E5EADC41A10694D00A19DA7 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		6E5EADC61A1072CC00A19DA7 /* DynamicLogo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicLogo.swift; sourceTree = "<group>"; };
@@ -272,9 +274,10 @@
 			children = (
 				6ED106F919EE5BD200E1F669 /* HNTopViewController.h */,
 				6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */,
+				6E5EADC21A0F630700A19DA7 /* TopViewController.swift */,
 				6E5AA02E1A230C59005A5E53 /* HNSettingsViewController.h */,
 				6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */,
-				6E5EADC21A0F630700A19DA7 /* TopViewController.swift */,
+				6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */,
 				6EA970741A095B8A00EFD4E2 /* WebViewController.swift */,
 				6E5EADC41A10694D00A19DA7 /* TextViewController.swift */,
 			);
@@ -696,6 +699,7 @@
 				6E124FC21A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m in Sources */,
 				6E5EADC71A1072CC00A19DA7 /* DynamicLogo.swift in Sources */,
 				6E5EADC51A10694D00A19DA7 /* TextViewController.swift in Sources */,
+				6E5AA03D1A246AD4005A5E53 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
