@@ -5,11 +5,9 @@
 #import "HackerNews-Prefix.pch"
 
 //My Party
-#import <WSMLogger/WSMLogger.h>
-#import <WSMUtilities/WSMUtilities.h>
-
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
+#import "HNSettingsViewController.h"
 #import "HNStoryManager.h"
 #import "HNItems.h"
 
