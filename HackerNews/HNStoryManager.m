@@ -318,4 +318,8 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     return nil;
 }
 
+- (NSArray *)userHiddenStories {
+    return self.currentUser.hiddenStories;
+}
+
 @end

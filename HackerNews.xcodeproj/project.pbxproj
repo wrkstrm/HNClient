@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		50715148D34F3DD84DCBFE92 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */; };
 		57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */; };
+		6E0A542C1A258B1D004B966B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0A542B1A258B1D004B966B /* Images.xcassets */; };
 		6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */; };
 		6E11DA1019EE673400A75579 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0F19EE673400A75579 /* Security.framework */; };
@@ -40,6 +41,8 @@
 		6E8B8C561A1D569E008C9B66 /* HNStoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */; };
 		6E96F2EC1A1F397D00B7693D /* HNItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E96F2EB1A1F397D00B7693D /* HNItems.m */; };
 		6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970741A095B8A00EFD4E2 /* WebViewController.swift */; };
+		6EAE4AFB1A25577B00B73225 /* SectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6EAE4AFA1A25577B00B73225 /* SectionHeader.xib */; };
+		6EAE4B051A25580E00B73225 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAE4B041A25580E00B73225 /* SectionHeaderView.swift */; };
 		6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
 		6EC8D3191A16FCEE008A539A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EC8D2FF1A16FCA1008A539A /* Quick.framework */; };
@@ -48,7 +51,6 @@
 		6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106F719EE5BD200E1F669 /* AppDelegate.m */; };
 		6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */; };
 		6ED106FE19EE5BD200E1F669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FC19EE5BD200E1F669 /* Main.storyboard */; };
-		6ED1070019EE5BD200E1F669 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FF19EE5BD200E1F669 /* Images.xcassets */; };
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
 		6ED1070F19EE5BD200E1F669 /* HNStoryManagerSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HNStoryManagerSpecs.m */; };
 		6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */; };
@@ -127,6 +129,7 @@
 		48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		591A035AA7E80899E62C60B9 /* Pods-HackerNewsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6028C4209F00A205B7FFD67D /* Pods-HackerNewsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.release.xcconfig"; sourceTree = "<group>"; };
+		6E0A542B1A258B1D004B966B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6E11DA0B19EE672100A75579 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		6E11DA0F19EE673400A75579 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -165,6 +168,8 @@
 		6E96F2EB1A1F397D00B7693D /* HNItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNItems.m; sourceTree = "<group>"; };
 		6EA970731A095B8A00EFD4E2 /* HackerNews-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Bridging-Header.h"; sourceTree = "<group>"; };
 		6EA970741A095B8A00EFD4E2 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		6EAE4AFA1A25577B00B73225 /* SectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SectionHeader.xib; sourceTree = "<group>"; };
+		6EAE4B041A25580E00B73225 /* SectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		6EC8D2F61A16FCA1008A539A /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = vendor/Quick/Quick.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6EC8D3061A16FCB3008A539A /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = vendor/Nimble/Nimble.xcodeproj; sourceTree = SOURCE_ROOT; };
 		6ED106EF19EE5BD200E1F669 /* Hacker News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hacker News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,7 +180,6 @@
 		6ED106F919EE5BD200E1F669 /* HNTopViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNTopViewController.h; sourceTree = "<group>"; };
 		6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNTopViewController.m; sourceTree = "<group>"; };
 		6ED106FD19EE5BD200E1F669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		6ED106FF19EE5BD200E1F669 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6ED1070219EE5BD200E1F669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6ED1070819EE5BD200E1F669 /* HackerNewsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HackerNewsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6ED1070D19EE5BD200E1F669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -262,9 +266,11 @@
 				6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */,
 				6ED106FC19EE5BD200E1F669 /* Main.storyboard */,
 				6E5EADC61A1072CC00A19DA7 /* DynamicLogo.swift */,
+				6EAE4B041A25580E00B73225 /* SectionHeaderView.swift */,
+				6EAE4AFA1A25577B00B73225 /* SectionHeader.xib */,
 				6E730AA019FAFB2500E412C3 /* UITableViewCell+HNHeadline.h */,
 				6E730AA119FAFB2500E412C3 /* UITableViewCell+HNHeadline.m */,
-				6ED106FF19EE5BD200E1F669 /* Images.xcassets */,
+				6E0A542B1A258B1D004B966B /* Images.xcassets */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -580,13 +586,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E0A542C1A258B1D004B966B /* Images.xcassets in Resources */,
 				6E519E971A140AD300B42816 /* right_black@3x.png in Resources */,
 				6ED106FE19EE5BD200E1F669 /* Main.storyboard in Resources */,
 				6EFB719919F1CD3600830F79 /* secrets.json in Resources */,
 				6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */,
+				6EAE4AFB1A25577B00B73225 /* SectionHeader.xib in Resources */,
 				6E519E941A140AD300B42816 /* left_black@2x.png in Resources */,
 				6E519E951A140AD300B42816 /* left_black@3x.png in Resources */,
-				6ED1070019EE5BD200E1F669 /* Images.xcassets in Resources */,
 				6E519E961A140AD300B42816 /* right_black@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -691,6 +698,7 @@
 				6E1A94E51A1C81ED00496CD7 /* CBLModel+WSMUtilities.m in Sources */,
 				6E1A94D61A1C810700496CD7 /* HNUser.m in Sources */,
 				6E5AA0301A230C59005A5E53 /* HNSettingsViewController.m in Sources */,
+				6EAE4B051A25580E00B73225 /* SectionHeaderView.swift in Sources */,
 				6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */,
 				6E124FBF1A035CAA00BF9ED5 /* UIView+WSMUtilities.m in Sources */,
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,

@@ -12,7 +12,7 @@
 @interface HNUser : WSMUser
 
 @property (nonatomic, strong) NSArray *hiddenStories;
-@property (nonatomic) NSInteger minimumScore;
-@property (nonatomic) NSInteger minimumComments;
+@property (nonatomic) CGFloat minimumScore;
+@property (nonatomic) CGFloat minimumComments;
 
 @end

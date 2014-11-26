@@ -14,5 +14,9 @@
 @property (nonatomic, strong) Firebase *hackerAPI;
 @property (nonatomic, strong) NSDictionary *secrets;
 
++ (UIColor *)hackerBeige;
+
++ (UIColor *)hackerOrange;
+
 @end
 

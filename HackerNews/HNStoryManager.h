@@ -73,5 +73,21 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 - (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
                                            callback:(void(^)(UIImage *favicon))favicon;
 
+/**
+ The custom stories hidden by the user.
+ */
+- (NSArray *)userHiddenStories;
+
+/**
+ The stories hidden due to low comments.
+ */
+
+- (NSArray *)commentHiddenStories;
+
+/**
+ The stories hidden due to low Points.
+ */
+- (NSArray *)pointHiddenStories;
+
 
 @end
