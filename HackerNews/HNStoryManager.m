@@ -68,7 +68,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _httpManager = [AFHTTPRequestOperationManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
-    
+
     _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
     _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
     _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
@@ -76,10 +76,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     [[CBLModelFactory sharedInstance] registerClass:@"HNFavicon" forDocumentType:@"HNFavicon"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNStory" forDocumentType:@"story"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNJob" forDocumentType:@"job"];
-//    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
-//    [[CBLModelFactory sharedInstance] registerClass:@"HNPoll" forDocumentType:@"poll"];
-//    [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
-   
+    //    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
+    //    [[CBLModelFactory sharedInstance] registerClass:@"HNPoll" forDocumentType:@"poll"];
+    //    [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
+    
     self.currentTopStories = self.topStoriesWithCurrentFilters;
     @weakify(self);
     [_topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
@@ -91,9 +91,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             self.currentTopStories = self.topStoriesWithCurrentFilters;
         }
     }];
-    
     _itemUpdates = [RACSubject subject];
-    
     [self manageNewObservations];
     [self manageOldObservations];
     return self;
@@ -139,8 +137,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
           }
           for (NSNumber *number in oldStories) {
               NSError *error;
-              [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:&error];
-              WSMLog(error, @"Error Purging Old Document: %@", error);
+              HNItem *item = [HNItem modelForDocument:[self.newsDatabase documentWithID:number.stringValue]];
+              item.lastAccessed = [NSDate date];
+              [item save:&error];
+              WSMLog(error, @"Error Timestamping Old Document: %@", error);
           }
       }];
 }
@@ -265,12 +265,24 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     WSMLog(error, @"Error Saving Attachment: %@", error);
 }
 
+#pragma mark - User Hidden Stories
+
 - (void)hideStory:(NSNumber *)number {
     NSArray *array = self.currentUser.hiddenStories;
-    self.currentUser.hiddenStories = [array arrayByAddingObject:number];
+    [self saveHiddenStoriesForUser:[array arrayByAddingObject:number]];
+}
+
+- (void)unhideStory:(NSNumber *)number {
+    NSMutableArray *array = self.currentUser.hiddenStories.mutableCopy;
+    [array removeObject:number];
+    [self saveHiddenStoriesForUser:array];
+}
+
+- (void)saveHiddenStoriesForUser:(NSArray *)array {
+    self.currentUser.hiddenStories = array;
     NSError *error;
     [self.currentUser save:&error];
-    WSMLog(error, @"User Could Not Hide Story: %@", error);
+    WSMLog(error, @"User Could Save New Hiddens Stories array: %@", error);
     self.currentTopStories = [self topStoriesWithCurrentFilters];
 }
 
@@ -303,7 +315,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             NSLog(@"Error Saving initial doc: %@, %@", error, doc.properties);
         }
     }
-    return [CBLModel modelForDocument: doc];
+    return [CBLModel modelForDocument: doc];;
 }
 
 - (UIImage *)faviconForKey:(NSString *)key {
@@ -319,7 +331,11 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 }
 
 - (NSArray *)userHiddenStories {
-    return self.currentUser.hiddenStories;
+    return [self.currentUser.hiddenStories filteredArrayUsingPredicate:
+            [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject,
+                                                  NSDictionary *bindings) {
+        return [self.topStoriesDocument[@"stories"] containsObject:evaluatedObject];
+    }]];
 }
 
 @end

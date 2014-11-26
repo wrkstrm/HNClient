@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
  The current user. This allows you to access his settings.
  */
 
-@property (nonatomic, strong) HNUser *currentUser;
+@property (nonatomic, strong, readonly) HNUser *currentUser;
 
 /**
  The current Top Stories according to the user. This property is KVO compliant.
@@ -56,6 +56,12 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (void)hideStory:(NSNumber *)number;
 
+/**
+ Call when you want to unhide a story and update the currentTopStories;
+ */
+
+- (void)unhideStory:(NSNumber *)number;
+
 #pragma mark - State Methods.
 
 /**
@@ -72,6 +78,8 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
                                            callback:(void(^)(UIImage *favicon))favicon;
+
+#pragma mark - User State Access Methods.
 
 /**
  The custom stories hidden by the user.

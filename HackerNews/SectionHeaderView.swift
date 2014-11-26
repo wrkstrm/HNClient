@@ -44,8 +44,12 @@ class SectionHeaderView : UITableViewHeaderFooterView {
                 stepper.tag = sectionNumber
                 stepper.value = value!
             }
-            self.disclosureButton.imageView?.transform =
-                CGAffineTransformMakeRotation(CGFloat(-M_PI_2));
+    }
+    
+    func setState(open:Bool) {
+        self.disclosureButton.selected = open;
+        let newTransform = CGAffineTransformMakeRotation(open ? 0 : CGFloat(-M_PI_2))
+        self.disclosureButton.imageView?.transform = newTransform;
     }
     
     @IBAction func stepperValueDidChange(sender: UIStepper) {
@@ -55,10 +59,8 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     }
     
     func toggleOpen(sender:AnyObject!) {
-        disclosureButton.selected = !disclosureButton.selected
         UIView.animateWithDuration(0.3) {
-            let newTransform = CGAffineTransformMakeRotation(self.disclosureButton.selected ? 0 : CGFloat(-M_PI_2))
-            self.disclosureButton.imageView?.transform = newTransform;
+            self.setState(!self.disclosureButton.selected)
         }
         if let sectionDelegate = delegate {
             sectionDelegate.sectionStateDidChange(self, open: disclosureButton.selected)

@@ -24,6 +24,8 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSArray *parts;
 
+@property (nonatomic, strong) NSDate *lastAccessed;
+
 @end
 
 @interface HNJob : HNItem

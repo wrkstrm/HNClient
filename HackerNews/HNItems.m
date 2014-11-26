@@ -10,7 +10,7 @@
 
 @implementation HNItem
 
-@dynamic deleted, by, time, text, dead, parent, kids, url, score, title, parts;
+@dynamic deleted, by, time, text, dead, parent, kids, url, score, title, parts, lastAccessed;
 
 @end
 

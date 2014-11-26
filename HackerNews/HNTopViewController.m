@@ -19,6 +19,9 @@
 
 @interface HNTopViewController ()
 
+@property(nonatomic, strong) NSMutableArray *previouslyUncontainedCells;
+@property(nonatomic, strong) NSMutableArray *changedCells;
+
 @end
 
 @implementation HNTopViewController
@@ -29,61 +32,60 @@
     return WSM_LAZY(_rowHeightDictionary, @{}.mutableCopy);
 }
 
-#pragma mark - View Lifecycle Managment
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    @weakify(self)
-    [[[RACObserve([HNStoryManager sharedInstance], currentTopStories)
-       takeUntil:self.rac_willDeallocSignal]
-      combinePreviousWithStart:@[] reduce:^id(id previous, id current) {
-          return @[previous, current];
-      }] subscribeNext:^(NSArray *array) {
-          @strongify(self)
-          [self updateTableView:array.firstObject current:array.lastObject];
-      }];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-
-
 #pragma mark - Tableview Update Managment
+
+/**
+ The Update TableView Algo goes like this:
+ 1. If starting out, reload data.
+ 2. If removing cells, reload data. This will be updated later.
+ 3. If adding cells:
+ A. only insert cells at the end.
+ B. If not previosly present, update cell which will now contain it.
+ C. If previously present, try to animate the cell to new position, then update.
+ */
+
 #define newsSection 0
 
 - (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
-    NSMutableArray *newCells = @[].mutableCopy;
-    NSMutableArray *changedCells = @[].mutableCopy;
-    if (previous.count == 0 || [self.tableView numberOfRowsInSection:0] == 0 ||
-        previous.count > current.count) {
+    self.previouslyUncontainedCells = @[].mutableCopy;
+    self.changedCells = @[].mutableCopy;
+    if (previous.count == 0 || [self.tableView numberOfRowsInSection:0] == 0) {
+        [self.tableView reloadData];
+    } else if (previous.count > current.count) {
+        NSLog(@"BEGIN: Number of Rows in Section: %lu", [self.tableView numberOfRowsInSection:0]);
+        WSMLog(previous.count != current.count, @"Previous: %lu Current: %lu",
+               previous.count, current.count);
         [self.tableView reloadData];
     } else {
         [Flurry logEvent:@"beginUpdates"];
         [self.tableView beginUpdates];
-        for (NSInteger i = 0; i < current.count; i++) {
-            BOOL previouslyContained = [previous containsObject:current[i]];
-            NSUInteger previousItemIndex = [previous indexOfObject:current[i]];
-            if (previous.count <= i) {
-                NSIndexPath *newCell = [NSIndexPath indexPathForRow:i
+        for (NSInteger index = 0; index < current.count; index++) {
+            BOOL previouslyContained = [previous containsObject:current[index]];
+            NSUInteger previousItemIndex = [previous indexOfObject:current[index]];
+            //If we have more rows currently than previously, just insert
+            if (previous.count <= index) {
+                NSIndexPath *newCell = [NSIndexPath indexPathForRow:index
                                                           inSection:newsSection];
                 [self.tableView insertRowsAtIndexPaths:@[newCell]
                                       withRowAnimation:UITableViewRowAnimationTop];
             } else if (!previouslyContained) {
-                [newCells addObject:[NSIndexPath indexPathForRow:i inSection:newsSection]];
+                [self.previouslyUncontainedCells addObject:[NSIndexPath indexPathForRow:index
+                                                                              inSection:newsSection]];
             } else if (previouslyContained) {
-                if (![current[i] isEqualToNumber:previous[i]]) {
+                if (![current[index] isEqualToNumber:previous[index]]) {
                     NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
                                                               inSection:newsSection];
-                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:i inSection:newsSection];
+                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:index
+                                                              inSection:newsSection];
                     [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                    [changedCells addObject:oldPath];
+                    [self.changedCells addObject:oldPath];
                 }
             }
         }
         [self.tableView endUpdates];
         [Flurry logEvent:@"endUpdates"];
-        for (NSIndexPath *path in [newCells arrayByAddingObjectsFromArray:changedCells]) {
+        for (NSIndexPath *path in [self.previouslyUncontainedCells
+                                   arrayByAddingObjectsFromArray:self.changedCells]) {
             NSNumber *number = [self itemNumberForIndexPath:path];
             HNStory *story = (HNStory *)[[HNStoryManager sharedInstance] modelForItemNumber:number];
             [self updateCellWithTuple:RACTuplePack(number, story)];
@@ -91,7 +93,7 @@
     }
 }
 
-- (void)respondToItemUpdates  {
+- (void)respondToItemUpdates {
     [[[HNStoryManager sharedInstance] itemUpdates] subscribeNext:^(RACTuple *tuple) {
         [self updateCellWithTuple:tuple];
     }];
@@ -148,38 +150,6 @@
     if (shouldShimmer) {
         [cell shimmerFor:1.0f];
     }
-}
-
-- (NSArray *)tableView:(UITableView *)tableView
-editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *rowActions = @[];
-    
-    UITableViewRowAction *hide = [UITableViewRowAction
-                                  rowActionWithStyle:UITableViewRowActionStyleNormal
-                                  title:@"Hide"
-                                  handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
-                                  {
-                                      [Flurry logEvent:@"Hide"];
-                                      NSNumber *iNumber = [self itemNumberForIndexPath:indexPath];
-                                      [self.tableView deselectRowAtIndexPath:indexPath
-                                                                    animated:YES];
-                                      [self.tableView beginUpdates];
-                                      [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                                                            withRowAnimation:UITableViewRowAnimationBottom];
-                                      [[HNStoryManager sharedInstance] hideStory:iNumber];
-                                      [self.tableView endUpdates];
-                                      for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
-                                          [self updateCell:[self.tableView cellForRowAtIndexPath:path]
-                                               atIndexPath:path
-                                                   shimmer:NO];
-                                      }
-                                  }];
-    hide.backgroundColor = [WSMColorPalette colorGradient:kWSMGradientBlack
-                                                 forIndex:0
-                                                  ofCount:0
-                                                 reversed:NO];
-    rowActions = [rowActions arrayByAddingObject:hide];
-    return rowActions;
 }
 
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path {
