@@ -37,16 +37,6 @@ class TopViewController: HNTopViewController {
         formatTitleView()
         parentViewController?.navigationController?.hidesBarsOnSwipe = false
         parentViewController?.navigationController?.hidesBarsOnTap = false
-        weak var this = self
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
-            .takeUntil(self.rac_willDeallocSignal())
-            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return RACTuple(objectsFromArray: [oldArray, newArray])
-            }).subscribeNext { (t) -> Void in
-                if let tuple = t as RACTuple! {
-                    this?.updateTableView(tuple.first as NSArray, current: tuple.second as NSArray)
-                }
-        }
         respondToItemUpdates()
         super.viewWillAppear(animated)
     }

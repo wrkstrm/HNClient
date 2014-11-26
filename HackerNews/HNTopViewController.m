@@ -17,7 +17,6 @@
 #import "HNItems.h"
 #import "HackerNews-Swift.h"
 
-
 @interface HNTopViewController ()
 
 @end
@@ -31,6 +30,19 @@
 }
 
 #pragma mark - View Lifecycle Managment
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    @weakify(self)
+    [[[RACObserve([HNStoryManager sharedInstance], currentTopStories)
+       takeUntil:self.rac_willDeallocSignal]
+      combinePreviousWithStart:@[] reduce:^id(id previous, id current) {
+          return @[previous, current];
+      }] subscribeNext:^(NSArray *array) {
+          @strongify(self)
+          [self updateTableView:array.firstObject current:array.lastObject];
+      }];
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
