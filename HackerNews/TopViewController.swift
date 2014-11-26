@@ -34,11 +34,11 @@ class TopViewController: HNTopViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         formatTitleView()
         parentViewController?.navigationController?.hidesBarsOnSwipe = false
         parentViewController?.navigationController?.hidesBarsOnTap = false
         respondToItemUpdates()
-        super.viewWillAppear(animated)
     }
     
     override func viewDidAppear(animated: Bool) {
