@@ -68,7 +68,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _httpManager = [AFHTTPRequestOperationManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
-
+    
     _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
     _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
     _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
@@ -297,6 +297,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     }
     return [HNFavicon modelForDocument:doc];
 }
+
 - (CBLModel *)modelForItemNumber:(NSNumber *)number {
     CBLDocument *doc = [self.newsDatabase documentWithID:number.stringValue];
     if (!doc.userProperties) {
@@ -315,7 +316,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             NSLog(@"Error Saving initial doc: %@, %@", error, doc.properties);
         }
     }
-    return [CBLModel modelForDocument: doc];;
+    return [CBLModel modelForDocument: doc];
 }
 
 - (UIImage *)faviconForKey:(NSString *)key {
