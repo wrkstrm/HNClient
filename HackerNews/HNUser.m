@@ -10,6 +10,6 @@
 
 @implementation HNUser
 
-@dynamic hiddenStories, minimumScore;
+@dynamic hiddenStories, minimumScore, minimumComments;
 
 @end

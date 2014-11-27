@@ -173,10 +173,12 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     return [sortedArray filteredArrayUsingPredicate:
             [NSPredicate predicateWithBlock:^
              BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
-                 CBLModel *model1 = [self modelForItemNumber:storyNumber];
-                 NSInteger score1 = [model1[@"score"] integerValue];
-                 return ![self.currentUser.hiddenStories containsObject:storyNumber]
-                 || !(self.currentUser.minimumScore <=  score1);
+                 CBLModel *model = [self modelForItemNumber:storyNumber];
+                 NSInteger score = [model[@"score"] integerValue];
+                 NSInteger comments = [model[@"kids"] count];
+                 return ![self.currentUser.hiddenStories containsObject:storyNumber] ||
+                 !(self.currentUser.minimumScore <=  score ||
+                   !(self.currentUser.minimumComments <= comments));
              }]];
 }
 
