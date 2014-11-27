@@ -105,8 +105,8 @@ class SettingsViewController : HNSettingsViewController, SectionHeaderDelegate {
     
     override func tableView(tableView: UITableView,
         heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-            let number = self .itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNStory
+            let number = self.itemNumberForIndexPath(indexPath)
+            let story = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
             var rowHeight:CGFloat? = rowHeightDictionary[number]
             if rowHeight == nil {
                 rowHeight = UITableViewCell.getCellHeightForStory(story, view: view)

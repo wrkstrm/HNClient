@@ -14,6 +14,6 @@
 
 - (void)setFavicon:(UIImage *)image;
 
-+ (CGFloat) getCellHeightForStory:(HNStory *)story view:(UIView *)tableView;
++ (CGFloat) getCellHeightForStory:(HNItem *)story view:(UIView *)tableView;
 
 @end

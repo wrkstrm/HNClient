@@ -66,10 +66,10 @@
     self.accessoryView = favicon;
 }
 
-+ (CGFloat) getCellHeightForStory:(HNStory *)story view:(UIView *)tableView {
++ (CGFloat) getCellHeightForStory:(HNItem *)item view:(UIView *)tableView {
     CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 55;
-    CGFloat titleHeight = [UITableViewCell getTitleHeight:story.title forWidth:labelWidth];
-    CGFloat infoHeight = [UITableViewCell getInfoHeight:story.document forWidth:labelWidth];
+    CGFloat titleHeight = [UITableViewCell getTitleHeight:item.title forWidth:labelWidth];
+    CGFloat infoHeight = [UITableViewCell getInfoHeight:item.document forWidth:labelWidth];
     CGFloat final = ceil(titleHeight + infoHeight);
     return final;
 }

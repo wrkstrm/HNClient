@@ -52,9 +52,8 @@
     if (previous.count == 0 || [self.tableView numberOfRowsInSection:0] == 0) {
         [self.tableView reloadData];
     } else if (previous.count > current.count) {
-        NSLog(@"BEGIN: Number of Rows in Section: %lu", [self.tableView numberOfRowsInSection:0]);
         WSMLog(previous.count != current.count, @"Previous: %lu Current: %lu",
-               previous.count, current.count);
+               (unsigned long)previous.count, (unsigned long)current.count);
         [self.tableView reloadData];
     } else {
         [Flurry logEvent:@"beginUpdates"];
@@ -143,7 +142,7 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
                                                                     animated:YES];
                                       [self.tableView beginUpdates];
                                       [self.tableView deleteRowsAtIndexPaths:@[indexPath]
-                                                            withRowAnimation:UITableViewRowAnimationBottom];
+                                                            withRowAnimation:UITableViewRowAnimationRight];
                                       [[HNStoryManager sharedInstance] hideStory:iNumber];
                                       [self.tableView endUpdates];
                                       for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
