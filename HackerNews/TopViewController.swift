@@ -109,32 +109,6 @@ class TopViewController: HNTopViewController {
             return cell!
     }
     
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var rowActions = [AnyObject]()
-        weak var this = self
-        let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
-            title: "Hide", handler: { (rowAction, indexPath) -> Void in
-                Flurry.logEvent("Hide")
-                if let number:NSNumber = this?.itemNumberForIndexPath(indexPath) {
-                    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                    self.tableView.beginUpdates()
-                    HNStoryManager.sharedInstance().hideStory(number)
-                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-                    self.tableView.endUpdates()
-                    let rows = this?.tableView.indexPathsForVisibleRows()!
-                    for path:NSIndexPath! in rows as [NSIndexPath] {
-                        if let cell = this?.tableView.cellForRowAtIndexPath(path) {
-                            this?.updateCell(cell, atIndexPath: path, shimmer: false)
-                        }
-                    }
-                }
-        })
-        unhide.backgroundColor = WSMColorPalette.colorGradient(WSMColorGradient.GradientGreen,
-            forIndex: 0, ofCount: 0, reversed: false)
-        rowActions.append(unhide)
-        return rowActions
-    }
-    
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)

@@ -129,6 +129,37 @@
     return [rowHeight floatValue];
 }
 
+- (NSArray *)tableView:(UITableView *)tableView
+editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *rowActions = @[];
+    UITableViewRowAction *hide = [UITableViewRowAction
+                                  rowActionWithStyle:UITableViewRowActionStyleNormal
+                                  title:@"Hide"
+                                  handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+                                  {
+                                      [Flurry logEvent:@"Hide"];
+                                      NSNumber *iNumber = [self itemNumberForIndexPath:indexPath];
+                                      [self.tableView deselectRowAtIndexPath:indexPath
+                                                                    animated:YES];
+                                      [self.tableView beginUpdates];
+                                      [self.tableView deleteRowsAtIndexPaths:@[indexPath]
+                                                            withRowAnimation:UITableViewRowAnimationBottom];
+                                      [[HNStoryManager sharedInstance] hideStory:iNumber];
+                                      [self.tableView endUpdates];
+                                      for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
+                                          [self updateCell:[self.tableView cellForRowAtIndexPath:path]
+                                               atIndexPath:path
+                                                   shimmer:NO];
+                                      }
+                                  }];
+    hide.backgroundColor = [WSMColorPalette colorGradient:kWSMGradientBlack
+                                                 forIndex:0
+                                                  ofCount:0
+                                                 reversed:NO];
+    rowActions = [rowActions arrayByAddingObject:hide];
+    return rowActions;
+}
+
 #define cellIdentifier @"storyCell"
 
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
