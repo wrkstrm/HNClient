@@ -22,7 +22,7 @@ Based on these focuses, I am working / planning on these features.
 
 Mission Statement:
 
-Hacker News is the Reddit for the technical. However, too often the top page gets clogged up by what everyone agrees is awesome. On the web, I rarely, scroll past the top 30.
+Hacker News is Reddit for the technical minded. However, too often the top page gets clogged up by what everyone agrees is awesome. On the web, I rarely, scroll past the top 30.
 That means 70 of the best stories are hidden from me at any given time.
 This app is meant to expose the consumers of Hacker News to the larger library of interesting articles at any given time.
 More over, it is meant to streamline the experience for the constant consumers of Hacker News.
