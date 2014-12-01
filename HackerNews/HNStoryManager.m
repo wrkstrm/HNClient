@@ -76,9 +76,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     [[CBLModelFactory sharedInstance] registerClass:@"HNFavicon" forDocumentType:@"HNFavicon"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNStory" forDocumentType:@"story"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNJob" forDocumentType:@"job"];
+    [[CBLModelFactory sharedInstance] registerClass:@"HNPoll" forDocumentType:@"poll"];
+    [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
     //    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
-    //    [[CBLModelFactory sharedInstance] registerClass:@"HNPoll" forDocumentType:@"poll"];
-    //    [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
+    
     
     self.currentTopStories = self.topStoriesWithCurrentFilters;
     @weakify(self);

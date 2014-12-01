@@ -112,7 +112,7 @@ class TopViewController: HNTopViewController {
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNStory
+            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNItem
             if  story.type as NSString == "story" {
                 if !(story.url as NSString == "")  {
                     let controller = storyboard?

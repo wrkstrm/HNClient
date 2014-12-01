@@ -22,6 +22,10 @@
 
 @end
 
+@implementation HNPoll
+
+@end
+
 @implementation HNFavicon
 
 @end

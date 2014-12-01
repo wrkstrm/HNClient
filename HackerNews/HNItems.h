@@ -36,6 +36,10 @@
 
 @end
 
+@interface HNPoll : HNItem
+
+@end
+
 @interface HNFavicon : CBLModel
 
 @end
