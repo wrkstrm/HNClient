@@ -656,17 +656,6 @@
 					<string key="className">SectionHeaderView</string>
 					<bool key="requiresClassNameFormatting">YES</bool>
 					<string key="superclassName">UITableViewHeaderFooterView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">stepperValueDidChange:</string>
-						<string key="NS.object.0">UIStepper</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">stepperValueDidChange:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">stepperValueDidChange:</string>
-							<string key="candidateClassName">UIStepper</string>
-						</object>
-					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="disclosureButton">UIButton</string>
 						<string key="stepper">UIStepper</string>
