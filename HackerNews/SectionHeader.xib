@@ -182,15 +182,6 @@
 					</object>
 					<int key="connectionID">17</int>
 				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">stepperValueDidChange:</string>
-						<reference key="source" ref="468436465"/>
-						<reference key="destination" ref="693212925"/>
-						<int key="IBEventType">13</int>
-					</object>
-					<int key="connectionID">130</int>
-				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">

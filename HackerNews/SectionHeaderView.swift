@@ -25,8 +25,8 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     var tap:UITapGestureRecognizer?
     
     override func awakeFromNib() {
-        stepper.addTarget(self, action:"respondToStepper:",
-            forControlEvents: UIControlEvents.AllEvents)
+        stepper.addTarget(self, action:"stepperValueDidChange:",
+            forControlEvents: UIControlEvents.TouchUpInside)
         tap = UITapGestureRecognizer(target: self, action: "toggleOpen:")
         addGestureRecognizer(tap!)
         tap?.enabled = true;
@@ -52,7 +52,7 @@ class SectionHeaderView : UITableViewHeaderFooterView {
         self.disclosureButton.imageView?.transform = newTransform;
     }
     
-    @IBAction func stepperValueDidChange(sender: UIStepper) {
+    func stepperValueDidChange(sender: UIStepper) {
         if let sectionDelegate = delegate {
             sectionDelegate.sectionValueDidChange(self, value: stepper.value)
         }
