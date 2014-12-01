@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UITableViewController+HNUtilities.h"
 
 @interface HNTopViewController : UITableViewController
 
@@ -17,12 +18,12 @@
 
 - (NSIndexPath *)indexPathForItemNumber:(NSNumber *)itemNumber;
 
-- (void)updateTableView:(NSArray *)previous current:(NSArray *)current;
-
 - (void)respondToItemUpdates;
 
 - (void)updateCell:(UITableViewCell *)cell
        atIndexPath:(NSIndexPath *)indexPath
            shimmer:(BOOL)shouldShimmer;
+
+- (void)updateCellWithTuple:(RACTuple *)tuple;
 
 @end

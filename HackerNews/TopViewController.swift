@@ -30,14 +30,22 @@ class TopViewController: HNTopViewController {
                     this?.topStoriesBarItem.badgeValue = "\(s.count)"
                 }
         }
-
+        
+        let NEWS_SECTION = 0
         HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
             .takeUntil(self.rac_willDeallocSignal())
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return RACTuple(objectsFromArray: [oldArray, newArray])
+                return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
                 if let tuple = t as RACTuple! {
-                    this?.updateTableView(tuple.first as NSArray, current: tuple.second as NSArray)
+                    let changedCells = UITableViewController.tableView(self.tableView,
+                        updateSection: NEWS_SECTION, previous: tuple.first as NSArray,
+                        current: tuple.second as NSArray) as NSArray
+                    for path in changedCells as [NSIndexPath] {
+                        let number = this?.itemNumberForIndexPath(path)
+                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
+                        this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item]))
+                    }
                 }
         }
         super.viewDidLoad()

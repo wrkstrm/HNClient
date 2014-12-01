@@ -19,9 +19,6 @@
 
 @interface HNTopViewController ()
 
-@property(nonatomic, strong) NSMutableArray *previouslyUncontainedCells;
-@property(nonatomic, strong) NSMutableArray *changedCells;
-
 @end
 
 @implementation HNTopViewController
@@ -34,63 +31,7 @@
 
 #pragma mark - Tableview Update Managment
 
-/**
- The Update TableView Algo goes like this:
- 1. If starting out, reload data.
- 2. If removing cells, reload data. This will be updated later.
- 3. If adding cells:
- A. only insert cells at the end.
- B. If not previosly present, update cell which will now contain it.
- C. If previously present, try to animate the cell to new position, then update.
- */
-
 #define newsSection 0
-
-- (void)updateTableView:(NSArray *)previous current:(NSArray *)current {
-    self.previouslyUncontainedCells = @[].mutableCopy;
-    self.changedCells = @[].mutableCopy;
-    if (previous.count == 0 || [self.tableView numberOfRowsInSection:0] == 0) {
-        [self.tableView reloadData];
-    } else if (previous.count > current.count) {
-        WSMLog(previous.count != current.count, @"Previous: %lu Current: %lu",
-               (unsigned long)previous.count, (unsigned long)current.count);
-        [self.tableView reloadData];
-    } else {
-        [Flurry logEvent:@"beginUpdates"];
-        [self.tableView beginUpdates];
-        for (NSInteger index = 0; index < current.count; index++) {
-            BOOL previouslyContained = [previous containsObject:current[index]];
-            NSUInteger previousItemIndex = [previous indexOfObject:current[index]];
-            //If we have more rows currently than previously, just insert
-            if (previous.count <= index) {
-                NSIndexPath *newCell = [NSIndexPath indexPathForRow:index
-                                                          inSection:newsSection];
-                [self.tableView insertRowsAtIndexPaths:@[newCell]
-                                      withRowAnimation:UITableViewRowAnimationTop];
-            } else if (!previouslyContained) {
-                [self.previouslyUncontainedCells addObject:[NSIndexPath indexPathForRow:index
-                                                                              inSection:newsSection]];
-            } else if (previouslyContained) {
-                if (![current[index] isEqualToNumber:previous[index]]) {
-                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
-                                                              inSection:newsSection];
-                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:index
-                                                              inSection:newsSection];
-                    [self.tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                    [self.changedCells addObject:oldPath];
-                }
-            }
-        }
-        [self.tableView endUpdates];
-        [Flurry logEvent:@"endUpdates"];
-        for (NSIndexPath *path in [self.previouslyUncontainedCells
-                                   arrayByAddingObjectsFromArray:self.changedCells]) {
-            NSNumber *number = [self itemNumberForIndexPath:path];
-            HNStory *story = (HNStory *)[[HNStoryManager sharedInstance] modelForItemNumber:number];
-            [self updateCellWithTuple:RACTuplePack(number, story)];
-        }
-    }
-}
 
 - (void)respondToItemUpdates {
     [[[HNStoryManager sharedInstance] itemUpdates] subscribeNext:^(RACTuple *tuple) {

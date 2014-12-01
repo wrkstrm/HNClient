@@ -25,6 +25,7 @@
 		6E1A94E91A1C870B00496CD7 /* HNStoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */; };
 		6E45657119FB23A100856F74 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657019FB23A100856F74 /* CouchbaseLite.framework */; };
 		6E45657519FB23C100856F74 /* libFlurry_5.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */; };
+		6E4F20BC1A2C332500487F39 /* UITableViewController+HNUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4F20BB1A2C332500487F39 /* UITableViewController+HNUtilities.m */; };
 		6E519E941A140AD300B42816 /* left_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E901A140AD300B42816 /* left_black@2x.png */; };
 		6E519E951A140AD300B42816 /* left_black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E911A140AD300B42816 /* left_black@3x.png */; };
 		6E519E961A140AD300B42816 /* right_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E921A140AD300B42816 /* right_black@2x.png */; };
@@ -150,6 +151,8 @@
 		6E45657019FB23A100856F74 /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLite.framework; path = vendor/CouchbaseLite.framework; sourceTree = "<group>"; };
 		6E45657319FB23C100856F74 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		6E45657419FB23C100856F74 /* libFlurry_5.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_5.4.0.a; sourceTree = "<group>"; };
+		6E4F20BA1A2C332500487F39 /* UITableViewController+HNUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewController+HNUtilities.h"; sourceTree = "<group>"; };
+		6E4F20BB1A2C332500487F39 /* UITableViewController+HNUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewController+HNUtilities.m"; sourceTree = "<group>"; };
 		6E519E901A140AD300B42816 /* left_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left_black@2x.png"; sourceTree = "<group>"; };
 		6E519E911A140AD300B42816 /* left_black@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left_black@3x.png"; sourceTree = "<group>"; };
 		6E519E921A140AD300B42816 /* right_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right_black@2x.png"; sourceTree = "<group>"; };
@@ -281,6 +284,8 @@
 				6ED106F919EE5BD200E1F669 /* HNTopViewController.h */,
 				6ED106FA19EE5BD200E1F669 /* HNTopViewController.m */,
 				6E5EADC21A0F630700A19DA7 /* TopViewController.swift */,
+				6E4F20BA1A2C332500487F39 /* UITableViewController+HNUtilities.h */,
+				6E4F20BB1A2C332500487F39 /* UITableViewController+HNUtilities.m */,
 				6E5AA02E1A230C59005A5E53 /* HNSettingsViewController.h */,
 				6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */,
 				6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */,
@@ -693,6 +698,7 @@
 				6E1A94E91A1C870B00496CD7 /* HNStoryManager.m in Sources */,
 				6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */,
 				6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */,
+				6E4F20BC1A2C332500487F39 /* UITableViewController+HNUtilities.m in Sources */,
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
 				6E1A94E51A1C81ED00496CD7 /* CBLModel+WSMUtilities.m in Sources */,
