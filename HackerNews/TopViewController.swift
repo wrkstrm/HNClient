@@ -14,7 +14,7 @@ class TopViewController: HNTopViewController {
     //MARK:- View Lifecycle
     
     override func viewDidLoad() {
-        tableView.backgroundColor = self.hackerBeige()
+        tableView.backgroundColor = AppDelegate.hackerBeige()
         weak var this = self
         NSNotificationCenter.defaultCenter()
             .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -141,7 +141,7 @@ class TopViewController: HNTopViewController {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
         forRowAtIndexPath indexPath: NSIndexPath) {
-            cell.backgroundColor = hackerBeige()
+            cell.backgroundColor = AppDelegate.hackerBeige()
     }
     
     override func tableView(tableView: UITableView, commitEditingStyle
@@ -166,16 +166,6 @@ class TopViewController: HNTopViewController {
             let controller = segue.destinationViewController as TextViewController
             controller.story = sender as HNStory!;
         }
-    }
-    
-    //MARK:- Helper Methods
-    
-    func hackerBeige() -> UIColor  {
-        return SKColorMakeRGB(245.0, 245.0, 238.0)
-    }
-    
-    func hackerOrange() -> UIColor {
-        return SKColorMakeRGB(255.0, 102.0, 0.0)
     }
     
     //MARK:- Memory Management
