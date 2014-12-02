@@ -73,6 +73,7 @@ class TopViewController: HNTopViewController {
     //MARK:- Lifecycle Helpers
     
     func formatTitleView() {
+        parentViewController?.title = "Top Stories"
         if !(parentViewController?.navigationItem.titleView? is UISegmentedControl) {
             if let segControl = titleView {
                 parentViewController?.navigationItem.titleView = segControl
@@ -89,6 +90,7 @@ class TopViewController: HNTopViewController {
                 titleView!.addTarget(self, action: "sortCategory:",
                     forControlEvents: UIControlEvents.ValueChanged)
                 parentViewController?.navigationItem.titleView = titleView!
+                titleView!.sizeToFit()
             }
         }
     }
