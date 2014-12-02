@@ -15,6 +15,7 @@ enum SettingsSectionType:Int {
 class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     //MARK:- Constants and Properties
     let headerIdentifier = "headerReuseIdentifier"
+    let scoreSection:Int = 0
     let commentSection:Int = 1
     let sectionHeaderHeight:CGFloat = 48.0
     
@@ -31,38 +32,32 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         tableView.registerNib(headerNib, forHeaderFooterViewReuseIdentifier: headerIdentifier)
         
         weak var this = self;
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("scoreFilteredStories",
-            observer: self)
+        HNStoryManager.sharedInstance().rac_valuesForKeyPath("scoreFilteredStories", observer: self)
             .takeUntil(self.rac_willDeallocSignal())
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
                 return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
-                if let tuple = t as RACTuple! {
-                    let changedCells = UITableViewController.tableView(self.tableView,
-                        updateSection:this!.commentSection, previous: tuple.first as NSArray,
-                        current: tuple.second as NSArray) as NSArray
-                    for path in changedCells as [NSIndexPath] {
-                        let number = this?.itemNumberForIndexPath(path)
-                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
-                        this?.updateCell(number!, item: item, section: this!.commentSection)
+                if this?.sectionStateDictionary[this!.scoreSection] == true {
+                    if let tuple = t as RACTuple! {
+                        let changedCells = UITableViewController.tableView(self.tableView,
+                            updateSection:this!.scoreSection, previous: tuple.first as NSArray,
+                            current: tuple.second as NSArray) as NSArray
+                        this?.updateChangedCells(changedCells, section:this!.scoreSection)
                     }
                 }
         }
         
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories",
-            observer: self)
+        HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories", observer:self)
             .takeUntil(self.rac_willDeallocSignal())
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
                 return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
-                if let tuple = t as RACTuple! {
-                    let changedCells = UITableViewController.tableView(self.tableView,
-                        updateSection:this!.commentSection, previous: tuple.first as NSArray,
-                        current: tuple.second as NSArray) as NSArray
-                    for path in changedCells as [NSIndexPath] {
-                        let number = this?.itemNumberForIndexPath(path)
-                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
-                        this?.updateCell(number!, item: item, section: this!.commentSection)
+                if this?.sectionStateDictionary[this!.commentSection] == true {
+                    if let tuple = t as RACTuple! {
+                        let changedCells = UITableViewController.tableView(self.tableView,
+                            updateSection:this!.commentSection, previous: tuple.first as NSArray,
+                            current: tuple.second as NSArray) as NSArray
+                        this?.updateChangedCells(changedCells, section:this!.commentSection)
                     }
                 }
         }
@@ -73,6 +68,22 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                 this?.rowHeightDictionary = [NSNumber:CGFloat]()
                 this?.tableView.reloadData()
             })
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        parentViewController?.title = "Current Story Filters"
+    }
+    
+    
+    //MARK:- View Lifecycle Helpers
+    
+    func updateChangedCells(cells:NSArray, section:Int) {
+        for path in cells as [NSIndexPath] {
+            let num = itemNumberForIndexPath(path)
+            let item = HNStoryManager.sharedInstance().modelForItemNumber(num) as HNItem
+            updateCell(num, item: item, section:section)
+        }
     }
     
     func respondToItemUpdates() {
@@ -90,11 +101,6 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                     }
                 }
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        parentViewController?.title = "Current Story Filters"
     }
     
     //MARK:- TableView Section Delegate Methods
