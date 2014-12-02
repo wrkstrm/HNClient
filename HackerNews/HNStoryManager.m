@@ -11,6 +11,10 @@
 #import "HNItems.h"
 #import "NSCache+WSMUtilities.h"
 
+NSString * const HNFilterKeyUserHidden = @"HNFilterKeyUserHidden";
+NSString * const HNFilterKeyComments = @"HNFilterKeyComments";
+NSString * const HNFilterKeyScore = @"HNFilterKeyScore";
+
 @interface HNStoryManager ()
 
 @property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
@@ -26,10 +30,17 @@
 
 @property (nonatomic, strong, readwrite) NSArray *currentTopStories;
 
+#pragma mark Filter Arrays
+@property (nonatomic, strong, readwrite) NSArray *scoreFilteredStories;
+@property (nonatomic, strong, readwrite) NSArray *commentFilteredStories;
+
 //Placeholder Imagee
 @property (nonatomic, strong) UIImage *webImagePlaceholderData;
 
+@property (nonatomic, strong) RACSubject *top100Updates;
 @property (nonatomic, strong, readwrite) RACSubject *itemUpdates;
+
+@property (nonatomic) BOOL pendingRankingUpdate;
 
 @end
 
@@ -44,7 +55,9 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     if (!(self = [super init])) return nil;
     _currentUser = [HNUser defaultUser] ?:
     [HNUser createDefaultUserWithProperties:@{@"hiddenStories":@[],
-                                              @"minimumScore":@0}];
+                                              @"minimumScore":@0,
+                                              @"minimumComments":@0}];
+    
     _newsDatabase = [_currentUser userDatabase];
     _newsDatabase.maxRevTreeDepth = 1;
     NSError *error;
@@ -80,6 +93,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
     //    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
     
+    _top100Updates = RACSubject.subject;
     
     self.currentTopStories = self.topStoriesWithCurrentFilters;
     @weakify(self);
@@ -90,6 +104,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             [_topStoriesDocument mergeUserProperties:@{@"stories":snapshot.value} error:&error];
             WSMLog(error, @"Error updating top stories: %@", error);
             self.currentTopStories = self.topStoriesWithCurrentFilters;
+            [_top100Updates sendNext:_topStoriesDocument[@"stories"]];
         }
     }];
     _itemUpdates = [RACSubject subject];
@@ -106,9 +121,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 }
 
 - (void)manageNewObservations {
-    [[RACObserve(self, currentTopStories)
-      combinePreviousWithStart:@[]
-      reduce:^id(NSArray *old, NSArray *new) {
+    [[self.top100Updates combinePreviousWithStart:@[] reduce:^id(NSArray *old, NSArray *new) {
           return [[new.rac_sequence filter:^BOOL(NSNumber *value) {
               return ![old containsObject:value];
           }] array];
@@ -120,9 +133,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 }
 
 - (void)manageOldObservations {
-    [[RACObserve(self, currentTopStories)
-      combinePreviousWithStart:@[]
-      reduce:^id(NSArray *old, NSArray *new) {
+    [[self.top100Updates combinePreviousWithStart:@[] reduce:^id(NSArray *old, NSArray *new) {
           return [[old.rac_sequence filter:^BOOL(NSNumber *value) {
               return ![new containsObject:value];
           }] array];
@@ -138,12 +149,24 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
           }
           for (NSNumber *number in oldStories) {
               NSError *error;
-              HNItem *item = [HNItem modelForDocument:[self.newsDatabase documentWithID:number.stringValue]];
-              item.lastAccessed = [NSDate date];
-              [item save:&error];
-              WSMLog(error, @"Error Timestamping Old Document: %@", error);
+              [[self.newsDatabase documentWithID:number.stringValue] purgeDocument:&error];
+              WSMLog(error, @"Error Purging Old Document: %@", error);
+              [self unhideStory:number];
           }
+          [self updateItemRankings];
       }];
+}
+
+- (void)updateItemRankings {
+    if (!self.pendingRankingUpdate) {
+        self.pendingRankingUpdate = YES;
+        WSM_DISPATCH_AFTER(2.0f, {
+            self.commentFilteredStories = nil;
+            self.scoreFilteredStories = nil;
+            self.currentTopStories = [self topStoriesWithCurrentFilters];
+            self.pendingRankingUpdate = NO;
+        });
+    }
 }
 
 - (NSArray *)topStoriesWithCurrentFilters {
@@ -163,9 +186,9 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             sortedArray = [self.topStoriesDocument[@"stories"] sortedArrayUsingComparator:
                            ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
                                CBLModel *model1 = [self modelForItemNumber:obj1];
-                               CBLModel *omdel2 = [self modelForItemNumber:obj2];
+                               CBLModel *model2 = [self modelForItemNumber:obj2];
                                NSInteger comments1 = [model1[@"kids"] count];
-                               NSInteger comments2 = [omdel2[@"kids"] count];
+                               NSInteger comments2 = [model2[@"kids"] count];
                                WSM_COMPARATOR(comments1 > comments2);
                            }];
         } break;
@@ -174,12 +197,9 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     return [sortedArray filteredArrayUsingPredicate:
             [NSPredicate predicateWithBlock:^
              BOOL(NSNumber *storyNumber, NSDictionary *bindings) {
-                 CBLModel *model = [self modelForItemNumber:storyNumber];
-                 NSInteger score = [model[@"score"] integerValue];
-                 NSInteger comments = [model[@"kids"] count];
-                 return ![self.currentUser.hiddenStories containsObject:storyNumber] ||
-                 !(self.currentUser.minimumScore <=  score ||
-                   !(self.currentUser.minimumComments <= comments));
+                 return ![self.scoreFilteredStories containsObject:storyNumber] &&
+                 ![self.commentFilteredStories containsObject:storyNumber] &&
+                 ![self.currentUser.hiddenStories containsObject:storyNumber];
              }]];
 }
 
@@ -195,6 +215,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
                 [model.document mergeUserProperties:snapshot.value error:&error];
                 WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
                 self.currentTopStories = [self topStoriesWithCurrentFilters];
+                [self updateItemRankings];
                 [(RACSubject*) self.itemUpdates sendNext:RACTuplePack(itemNumber,model)];
             }
         }];
@@ -245,7 +266,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 }
 
 - (void)getFaviconFrom:(NSString *)hostURL completion:(void(^)(UIImage *favicon))completion {
-    NSURL *faviconURL = [NSURL URLWithString:[hostURL stringByAppendingString:@"/favicon.ico"]];
+    NSURL *faviconURL = [NSURL URLWithString:hostURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:faviconURL];
     self.httpManager.responseSerializer = [AFImageResponseSerializer serializer];
     [[self.httpManager HTTPRequestOperationWithRequest:request
@@ -319,7 +340,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             NSLog(@"Error Saving initial doc: %@, %@", error, doc.properties);
         }
     }
-    return [CBLModel modelForDocument: doc];
+    return [CBLModel modelForDocument:doc];
 }
 
 - (UIImage *)faviconForKey:(NSString *)key {
@@ -334,12 +355,99 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     return nil;
 }
 
+- (id)objectForKeyedSubscript:(id)key {
+    NSArray *filteredStories;
+    if ([key isEqualToString:HNFilterKeyUserHidden]) {
+        filteredStories = self.userHiddenStories;
+    } else if ([key isEqualToString:HNFilterKeyScore]) {
+        filteredStories = self.scoreFilteredStories;
+    } else if ([key isEqualToString:HNFilterKeyComments]){
+        filteredStories = self.commentFilteredStories;
+    } else {
+        NSAssert(false, @"Only Filter keys are allowed to be subscripted");
+    }
+    return filteredStories;
+}
+
+- (void)setObject:(id)object forKeyedSubscript:(id)key {
+    NSError *error;
+    if ([key isEqualToString:HNFilterKeyScore]) {
+        self.currentUser.minimumScore = [object floatValue];
+        [self.currentUser save:&error];
+        NSInteger previous = self.scoreFilteredStories.count;
+        self.scoreFilteredStories = [self filteredArrayForKey:HNFilterKeyScore];
+        if (previous != self.scoreFilteredStories.count) {
+            self.currentTopStories = [self topStoriesWithCurrentFilters];
+        }
+    } else if ([key isEqualToString:HNFilterKeyComments]) {
+        self.currentUser.minimumComments = [object floatValue];
+        [self.currentUser save:&error];
+        NSInteger previous = self.commentFilteredStories.count;
+        self.commentFilteredStories = [self filteredArrayForKey:HNFilterKeyComments];
+        if (previous != self.commentFilteredStories.count) {
+            self.currentTopStories = [self topStoriesWithCurrentFilters];
+        }
+    } else {
+        NSAssert(false, @"Only Comment and Score keys are allowed to be subscripted");
+    }
+    WSMLog(error, @"Error saving new filters: %@", error);
+}
+
 - (NSArray *)userHiddenStories {
     return [self.currentUser.hiddenStories filteredArrayUsingPredicate:
             [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject,
                                                   NSDictionary *bindings) {
         return [self.topStoriesDocument[@"stories"] containsObject:evaluatedObject];
     }]];
+}
+
+- (NSArray *)scoreFilteredStories {
+    return WSM_LAZY(_scoreFilteredStories, [self filteredArrayForKey:HNFilterKeyScore]);
+}
+
+- (NSArray *)commentFilteredStories {
+    return WSM_LAZY(_commentFilteredStories, [self filteredArrayForKey:HNFilterKeyComments]);
+}
+
+- (NSArray *)filteredArrayForKey:(NSString *)key {
+    NSArray *filteredArrayForKey;
+    if ([key isEqualToString:HNFilterKeyScore]) {
+        CGFloat currentMinimumScore = self.currentUser.minimumScore;
+        filteredArrayForKey = [self.topStoriesDocument[@"stories"] filteredArrayUsingPredicate:
+                               [NSPredicate predicateWithBlock:^BOOL(NSNumber *evaluatedObject,
+                                                                     NSDictionary *bindings) {
+            CBLModel *model = [self modelForItemNumber:evaluatedObject];
+            NSInteger points = [model[@"score"] integerValue];
+            return (points < currentMinimumScore);
+        }]];
+        filteredArrayForKey = [filteredArrayForKey sortedArrayUsingComparator:
+                               ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                                   CBLModel *model1 = [self modelForItemNumber:obj1];
+                                   CBLModel *model2 = [self modelForItemNumber:obj2];
+                                   NSInteger score1 = [model1[@"score"] integerValue];
+                                   NSInteger score2 = [model2[@"score"] integerValue];
+                                   WSM_COMPARATOR(score1 > score2);
+                               }];
+    } else if ([key isEqualToString:HNFilterKeyComments]) {
+        CGFloat currentMinimumComments = self.currentUser.minimumComments;
+        filteredArrayForKey = [[self.topStoriesDocument[@"stories"] filteredArrayUsingPredicate:
+                                [NSPredicate predicateWithBlock:^BOOL(NSNumber *evaluatedObject,
+                                                                      NSDictionary *bindings) {
+            HNItem *item = (HNItem *)[self modelForItemNumber:evaluatedObject];
+            NSInteger comments = [item.kids count];
+            return (comments < currentMinimumComments);
+        }]] sortedArrayUsingComparator:
+                               ^NSComparisonResult(NSNumber *obj1, NSNumber *obj2) {
+                                   CBLModel *model1 = [self modelForItemNumber:obj1];
+                                   CBLModel *model2 = [self modelForItemNumber:obj2];
+                                   NSInteger comments1 = [model1[@"kids"] count];
+                                   NSInteger comments2 = [model2[@"kids"] count];
+                                   WSM_COMPARATOR(comments1 > comments2);
+                               }];
+    } else {
+        NSAssert(false, @"Only Score and Comment Filter Arrays are available.");
+    }
+    return filteredArrayForKey;
 }
 
 @end

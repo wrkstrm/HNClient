@@ -29,13 +29,67 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         
         let headerNib = UINib(nibName: "SectionHeader", bundle: nil)
         tableView.registerNib(headerNib, forHeaderFooterViewReuseIdentifier: headerIdentifier)
+        
         weak var this = self;
+        HNStoryManager.sharedInstance().rac_valuesForKeyPath("scoreFilteredStories",
+            observer: self)
+            .takeUntil(self.rac_willDeallocSignal())
+            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
+                return RACTuple(objectsFromArray:[oldArray, newArray])
+            }).subscribeNext { (t) -> Void in
+                if let tuple = t as RACTuple! {
+                    let changedCells = UITableViewController.tableView(self.tableView,
+                        updateSection:this!.commentSection, previous: tuple.first as NSArray,
+                        current: tuple.second as NSArray) as NSArray
+                    for path in changedCells as [NSIndexPath] {
+                        let number = this?.itemNumberForIndexPath(path)
+                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
+                        this?.updateCell(number!, item: item, section: this!.commentSection)
+                    }
+                }
+        }
+        
+        HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories",
+            observer: self)
+            .takeUntil(self.rac_willDeallocSignal())
+            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
+                return RACTuple(objectsFromArray:[oldArray, newArray])
+            }).subscribeNext { (t) -> Void in
+                if let tuple = t as RACTuple! {
+                    let changedCells = UITableViewController.tableView(self.tableView,
+                        updateSection:this!.commentSection, previous: tuple.first as NSArray,
+                        current: tuple.second as NSArray) as NSArray
+                    for path in changedCells as [NSIndexPath] {
+                        let number = this?.itemNumberForIndexPath(path)
+                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
+                        this?.updateCell(number!, item: item, section: this!.commentSection)
+                    }
+                }
+        }
+        
         NSNotificationCenter.defaultCenter()
             .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
             .takeUntil(rac_willDeallocSignal()).subscribeNext({ (x) -> Void in
                 this?.rowHeightDictionary = [NSNumber:CGFloat]()
                 this?.tableView.reloadData()
             })
+    }
+    
+    func respondToItemUpdates() {
+        weak var this = self
+        HNStoryManager.sharedInstance().itemUpdates.filter { (tuple) -> Bool in
+            return !self.currentSortedTopStories().containsObject((tuple as RACTuple!).first)
+            }.subscribeNext { (tupleObject) -> Void in
+                if let tuple = tupleObject as RACTuple! {
+                    let number = tuple.first as NSNumber
+                    let item = tuple.second as HNItem
+                    for index in 0..<self.tableView.numberOfSections() {
+                        if (this?.cellArrayForSection(index).containsObject(number) == true) {
+                            this?.updateCell(number, item: item, section: index)
+                        }
+                    }
+                }
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -85,9 +139,6 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         
         if let state = sectionStateDictionary[sectionNumber] {
             headerView.setState(state)
-        } else {
-            sectionStateDictionary[sectionNumber] = false
-            headerView.setState(false)
         }
         headerView.delegate = self;
     }
@@ -96,14 +147,10 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if  sectionStateDictionary[section] == true {
-            switch section {
-            case 2:
-                let hiddenStories = HNStoryManager.sharedInstance().userHiddenStories() as NSArray
-                return hiddenStories.count
-            default: return 0
-            }
+            return cellArrayForSection(section).count
+        } else {
+            return 0
         }
-        return 0
     }
     
     override func tableView(tableView: UITableView,
@@ -127,25 +174,45 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
             return cell!
     }
     
+    override func tableView(tableView: UITableView, willDisplayCell
+        cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+            cell.backgroundColor = AppDelegate.hackerBeige()
+    }
+    
+    //MARK:- Update Cell Methods
+    
+    func updateCell(number:NSNumber,item:HNItem, section:Int) {
+        let newRowHeight = UITableViewCell.getCellHeightForStory(item, view: self.view)
+        let oldRowHeight:CGFloat? = self.rowHeightDictionary[number];
+        let indexPath = indexPathForItemNumber(number, section: section)
+        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+        if  cell == nil && oldRowHeight == nil {
+            rowHeightDictionary[number] = newRowHeight;
+        } else if (cell != nil) && (newRowHeight == oldRowHeight) {
+            updateCell(cell!, indexPath: indexPath, shimmer: true)
+        } else if (newRowHeight != oldRowHeight) {
+            rowHeightDictionary[number] = newRowHeight;
+            self.tableView.reloadRowsAtIndexPaths([indexPathForItemNumber(number, section: section)],
+                withRowAnimation: UITableViewRowAnimation.None)
+        }
+    }
+    
     func updateCell(cell:UITableViewCell, indexPath:NSIndexPath, shimmer:Bool) {
         let number = itemNumberForIndexPath(indexPath)
         let story = HNStoryManager.sharedInstance().modelForItemNumber(number)
         cell.prepareForHeadline(story.document.properties, path: indexPath)
-        let placeholder = HNStoryManager.sharedInstance().getPlaceholderAndFaviconForItemNumber(number) { (favicon) -> Void in
-            if (favicon != nil) {
-                let indexPath = self.indexPathForItemNumber(number, section:indexPath.section)
-                let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-                cell?.setFavicon(favicon)
-            }
+        let placeholder = HNStoryManager.sharedInstance()
+            .getPlaceholderAndFaviconForItemNumber(number) { (favicon) -> Void in
+                if (favicon != nil) {
+                    let indexPath = self.indexPathForItemNumber(number, section:indexPath.section)
+                    let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+                    cell?.setFavicon(favicon)
+                }
         }
         cell.setFavicon(placeholder)
         if shimmer {
             cell.shimmerFor(1.0)
         }
-    }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        cell.backgroundColor = AppDelegate.hackerBeige()
     }
     
     //MARK:- SectionView Delegate Method
@@ -154,28 +221,37 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         sectionStateDictionary[section.tag] = open
         if open {
             let indexPathsToInsert = NSMutableArray()
-            for index in 0..<userHiddenStories().count {
+            for index in 0..<cellArrayForSection(section.tag).count {
                 indexPathsToInsert.addObject(NSIndexPath(forRow: index, inSection: section.tag))
             }
             self.tableView.beginUpdates()
-            self.tableView.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: UITableViewRowAnimation.Top)
+            self.tableView.insertRowsAtIndexPaths(indexPathsToInsert,
+                withRowAnimation: UITableViewRowAnimation.Top)
             self.tableView.endUpdates()
         } else {
             let indexPathsToDelete = NSMutableArray()
-            for index in 0..<userHiddenStories().count {
+            for index in 0..<cellArrayForSection(section.tag).count {
                 indexPathsToDelete.addObject(NSIndexPath(forRow: index, inSection: section.tag))
             }
             self.tableView.beginUpdates()
-            self.tableView.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: UITableViewRowAnimation.Top)
+            self.tableView.deleteRowsAtIndexPaths(indexPathsToDelete,
+                withRowAnimation: UITableViewRowAnimation.Top)
             self.tableView.endUpdates()
         }
-        
-        println("We are getting Open and CLOSE Notifications.")
     }
     
     func sectionValueDidChange(section: SectionHeaderView, value: Double) {
-        println("We are getting notifications of changing values.")
-        
+        switch section.tag {
+        case SettingsSectionType.Score.rawValue:
+            HNStoryManager.sharedInstance()[HNFilterKeyScore] = NSNumber(double:value)
+            
+        case SettingsSectionType.Comments.rawValue:
+            HNStoryManager.sharedInstance()[HNFilterKeyComments] = NSNumber(double:value)
+        default:
+            assert(false, "We should not have a switch higher thatn Score or Comments....")
+        }
+        let indexSet = NSIndexSet(index: section.tag)
+        tableView.reloadSections(indexSet, withRowAnimation: UITableViewRowAnimation.None)
     }
     
     //MARK:- UITableViewCell Editing
@@ -189,69 +265,104 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
             return indexPath.section == SettingsSectionType.User.rawValue
     }
     
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var rowActions = [AnyObject]()
-        weak var this = self
-        let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
-            title: "Unhide", handler: { (rowAction, indexPath) -> Void in
-                Flurry.logEvent("Unhide")
-                if let number:NSNumber = this?.itemNumberForIndexPath(indexPath) {
-                    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                    self.tableView.beginUpdates()
-                    HNStoryManager.sharedInstance().unhideStory(number)
-                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-                    self.tableView.endUpdates()
-                    let rows = this?.tableView.indexPathsForVisibleRows()!
-                    for path:NSIndexPath! in rows as [NSIndexPath] {
-                        if let cell = this?.tableView.cellForRowAtIndexPath(path) {
-                            this?.updateCell(cell, indexPath: path, shimmer: false)
+    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath
+        indexPath: NSIndexPath) -> [AnyObject]? {
+            var rowActions = [AnyObject]()
+            weak var this = self
+            let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
+                title: "Unhide", handler: { (rowAction, indexPath) -> Void in
+                    Flurry.logEvent("Unhide")
+                    if let number:NSNumber = this?.itemNumberForIndexPath(indexPath) {
+                        this?.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                        this?.tableView.beginUpdates()
+                        HNStoryManager.sharedInstance().unhideStory(number)
+                        this?.tableView.deleteRowsAtIndexPaths([indexPath],
+                            withRowAnimation: UITableViewRowAnimation.Automatic)
+                        this?.tableView.endUpdates()
+                        let rows = this?.tableView.indexPathsForVisibleRows()!
+                        for path:NSIndexPath! in rows as [NSIndexPath] {
+                            if let cell = this?.tableView.cellForRowAtIndexPath(path) {
+                                this?.updateCell(cell, indexPath: path, shimmer: false)
+                            }
                         }
                     }
+            })
+            unhide.backgroundColor = WSMColorPalette.colorGradient(WSMColorGradient.GradientGreen,
+                forIndex: 0, ofCount: 0, reversed: false)
+            rowActions.append(unhide)
+            return rowActions
+    }
+    
+    override func tableView(tableView: UITableView,
+        didSelectRowAtIndexPath indexPath: NSIndexPath) {
+            let itemNumber = itemNumberForIndexPath(indexPath)
+            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNItem
+            if  story.type as NSString == "story" {
+                if !(story.url as NSString == "")  {
+                    let controller = storyboard?
+                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        as WebViewController
+                    controller.story = story
+                    parentViewController?.navigationController?
+                        .pushViewController(controller, animated: true)
+                } else if !(story.text as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: story)
                 }
-        })
-        unhide.backgroundColor = WSMColorPalette.colorGradient(WSMColorGradient.GradientGreen,
-            forIndex: 0, ofCount: 0, reversed: false)
-        rowActions.append(unhide)
-        return rowActions
+            } else if  story.type as NSString == "job" {
+                if !(story.text as NSString == "") {
+                    performSegueWithIdentifier("textViewSegue", sender: story)
+                } else if !(story.url as NSString == "")  {
+                    let controller = storyboard?
+                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        as WebViewController
+                    controller.story = story
+                    parentViewController?.navigationController?
+                        .pushViewController(controller, animated: true)
+                }
+            }
+            tableView .deselectRowAtIndexPath(indexPath, animated: true);
     }
     
     //MARK:- Helpers
     
     func itemNumberForIndexPath(path:NSIndexPath) -> NSNumber {
-        var itemNumber:NSNumber
-        switch path.section {
-        case SettingsSectionType.Score.rawValue:
-            itemNumber = 0
-        case SettingsSectionType.Comments.rawValue:
-            itemNumber = 0
-        case SettingsSectionType.User.rawValue:
-            itemNumber = self.userHiddenStories().objectAtIndex(path.row) as NSNumber
-        default:
-            itemNumber = 0
-        }
-        return itemNumber;
+        return cellArrayForSection(path.section).objectAtIndex(path.row) as NSNumber;
     }
     
     func indexPathForItemNumber(itemNumber:NSNumber, section:Int) -> NSIndexPath {
-        var path:NSIndexPath
+        return NSIndexPath(forRow: cellArrayForSection(section).indexOfObject(itemNumber),
+            inSection: section);
+    }
+    
+    func cellArrayForSection(section:Int)-> NSArray {
         switch section {
         case SettingsSectionType.Score.rawValue:
-            path = NSIndexPath(forRow: 0, inSection: section)
+            return scoreFilteredStories()
         case SettingsSectionType.Comments.rawValue:
-            path = NSIndexPath(forRow: 0, inSection: section)
+            return commmentFilteredStories()
         case SettingsSectionType.User.rawValue:
-            path = NSIndexPath(forRow: self.userHiddenStories().indexOfObject(itemNumber),
-                inSection: section)
+            return userHiddenStories()
         default:
-            path = NSIndexPath(forRow: 0, inSection: section)
+            assert(false, "something is horribly wrong. Why are you asking for an unknown filter?")
+            return NSArray()
         }
-        return path;
     }
     
     func userHiddenStories() -> NSArray {
         return HNStoryManager.sharedInstance().userHiddenStories() as NSArray
     }
     
+    func scoreFilteredStories() -> NSArray {
+        return HNStoryManager.sharedInstance().scoreFilteredStories as NSArray
+    }
+    
+    func commmentFilteredStories() -> NSArray {
+        return HNStoryManager.sharedInstance().commentFilteredStories as NSArray
+    }
+    
+    func currentSortedTopStories() -> NSArray {
+        return HNStoryManager.sharedInstance().currentTopStories;
+    }
     
     //MARK:- Other
     

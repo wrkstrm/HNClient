@@ -35,7 +35,7 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 			<object class="IBUIView" id="693212925">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="693640014">
@@ -47,7 +47,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{32, 13}, {178, 22}}</string>
 								<reference key="NSSuperview" ref="693640014"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="468436465"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -79,7 +78,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{0, 6}, {24, 35}}</string>
 								<reference key="NSSuperview" ref="693640014"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="602825301"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -114,7 +112,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{218, 10}, {94, 27}}</string>
 								<reference key="NSSuperview" ref="693640014"/>
-								<reference key="NSWindow"/>
 								<string key="NSHuggingPriority">{750, 750}</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -125,7 +122,6 @@
 						</array>
 						<string key="NSFrameSize">{320, 48}</string>
 						<reference key="NSSuperview" ref="693212925"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="999026720"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -137,8 +133,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{320, 48}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="693640014"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<object class="IBUISimulatedSizeMetrics" key="IBUISimulatedDestinationMetrics">
@@ -379,7 +373,7 @@
 								<int key="contentType">3</int>
 								<bool key="placeholder">NO</bool>
 							</object>
-							<object class="IBNSLayoutConstraint" id="588205195">
+							<object class="IBNSLayoutConstraint" id="57239060">
 								<reference key="firstItem" ref="999026720"/>
 								<int key="firstAttribute">10</int>
 								<int key="relation">0</int>
@@ -466,7 +460,7 @@
 						<int key="objectID">4</int>
 						<reference key="object" ref="999026720"/>
 						<array class="NSMutableArray" key="children">
-							<object class="IBNSLayoutConstraint" id="149835126">
+							<object class="IBNSLayoutConstraint" id="870325140">
 								<reference key="firstItem" ref="999026720"/>
 								<int key="firstAttribute">7</int>
 								<int key="relation">0</int>
@@ -572,7 +566,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">139</int>
-						<reference key="object" ref="588205195"/>
+						<reference key="object" ref="57239060"/>
 						<reference key="parent" ref="693640014"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -582,7 +576,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">143</int>
-						<reference key="object" ref="149835126"/>
+						<reference key="object" ref="870325140"/>
 						<reference key="parent" ref="999026720"/>
 					</object>
 				</array>
@@ -622,7 +616,7 @@
 				<string key="37.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<array key="37.IBViewMetadataConstraints">
 					<reference ref="61092917"/>
-					<reference ref="588205195"/>
+					<reference ref="57239060"/>
 					<reference ref="837401055"/>
 					<reference ref="375437423"/>
 					<reference ref="202522636"/>
@@ -634,7 +628,7 @@
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<array key="4.IBViewMetadataConstraints">
 					<reference ref="632849562"/>
-					<reference ref="149835126"/>
+					<reference ref="870325140"/>
 				</array>
 				<boolean value="NO" key="4.IBViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
 				<string key="44.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -652,38 +646,7 @@
 			<nil key="sourceID"/>
 			<int key="maxID">144</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">SectionHeaderView</string>
-					<bool key="requiresClassNameFormatting">YES</bool>
-					<string key="superclassName">UITableViewHeaderFooterView</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="disclosureButton">UIButton</string>
-						<string key="stepper">UIStepper</string>
-						<string key="titleLabel">UILabel</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="disclosureButton">
-							<string key="name">disclosureButton</string>
-							<string key="candidateClassName">UIButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="stepper">
-							<string key="name">stepper</string>
-							<string key="candidateClassName">UIStepper</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="titleLabel">
-							<string key="name">titleLabel</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">HackerNews/SectionHeaderView.swift</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.previouslyAttemptedUpgradeToXcode5">YES</bool>

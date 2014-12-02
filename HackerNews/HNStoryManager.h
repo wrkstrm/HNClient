@@ -15,6 +15,10 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleComments
 };
 
+extern NSString * const HNFilterKeyUserHidden;
+extern NSString * const HNFilterKeyComments;
+extern NSString * const HNFilterKeyScore;
+
 @interface HNStoryManager : NSObject
 
 /**
@@ -30,7 +34,6 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 @property (nonatomic, strong, readonly) NSArray *currentTopStories;
 
-
 /**
  A signal that sends all item changes from observed items. 
  */
@@ -40,11 +43,26 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 /**
  The only way to change the sort style of the current top stories. 
  */
+
 @property (nonatomic, readwrite) HNSortStyle sortStyle;
 
 /**
  Shared Instance is the perferred way to get HN State.
  */
+
+#pragma mark - Observable Filter Arrays
+
+/**
+ The custom stories hidden due to a low score.
+ */
+
+@property (nonatomic, strong, readonly) NSArray *scoreFilteredStories;
+
+/**
+ The stories hidden due to low comments.
+ */
+
+@property (nonatomic, strong, readonly) NSArray *commentFilteredStories;
 
 + (instancetype)sharedInstance;
 
@@ -62,6 +80,24 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (void)unhideStory:(NSNumber *)number;
 
+/**
+ The stories hidden by the user.
+ */
+
+- (NSArray *)userHiddenStories;
+
+/** 
+ The preferred way to get the arrays of filtered stories by type. 
+ */
+
+- (void)setObject:(id)object forKeyedSubscript:(id)key;
+
+/** 
+ The preferred way to set the values of story filters by type. 
+ */
+
+- (id)objectForKeyedSubscript:(id)key;
+
 #pragma mark - State Methods.
 
 /**
@@ -78,24 +114,5 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
 
 - (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
                                            callback:(void(^)(UIImage *favicon))favicon;
-
-#pragma mark - User State Access Methods.
-
-/**
- The custom stories hidden by the user.
- */
-- (NSArray *)userHiddenStories;
-
-/**
- The stories hidden due to low comments.
- */
-
-- (NSArray *)commentHiddenStories;
-
-/**
- The stories hidden due to low Points.
- */
-- (NSArray *)pointHiddenStories;
-
 
 @end
