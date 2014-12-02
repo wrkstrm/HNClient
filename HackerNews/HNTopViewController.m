@@ -34,7 +34,9 @@
 #define newsSection 0
 
 - (void)respondToItemUpdates {
-    [[[HNStoryManager sharedInstance] itemUpdates] subscribeNext:^(RACTuple *tuple) {
+    [[[[HNStoryManager sharedInstance] itemUpdates] filter:^BOOL(RACTuple *tuple) {
+        return [self.currentSortedTopStories containsObject:tuple.first];
+    }] subscribeNext:^(RACTuple *tuple) {
         [self updateCellWithTuple:tuple];
     }];
 }
