@@ -92,7 +92,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     [[CBLModelFactory sharedInstance] registerClass:@"HNPollopt" forDocumentType:@"pollopt"];
     //    [[CBLModelFactory sharedInstance] registerClass:@"HNComment" forDocumentType:@"comment"];
     
-    _top100Updates = RACSubject.subject;
+    _top100Updates = [RACSubject subject];
     _itemUpdates = [RACSubject subject];
     
     self.currentTopStories = self.topStoriesWithCurrentFilters;
@@ -151,14 +151,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             [base removeAllObservers];
         }
         for (NSNumber *number in oldStories) {
-            [self addToPurgeQueue:number];
+            [self.purgeSet addObject:number];
         }
         [self updateItemRankings];
     }];
-}
-
-- (void)addToPurgeQueue:(NSNumber *)number {
-    [self.purgeSet addObject:number];
 }
 
 - (void)updateItemRankings {
