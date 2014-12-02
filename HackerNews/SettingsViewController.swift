@@ -38,12 +38,8 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                 return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
                 if this?.sectionStateDictionary[this!.scoreSection] == true {
-                    if let tuple = t as RACTuple! {
-                        let changedCells = UITableViewController.tableView(self.tableView,
-                            updateSection:this!.scoreSection, previous: tuple.first as NSArray,
-                            current: tuple.second as NSArray) as NSArray
-                        this?.updateChangedCells(changedCells, section:this!.scoreSection)
-                    }
+                    this?.tableView.reloadSections(NSIndexSet(index: this!.scoreSection),
+                        withRowAnimation: UITableViewRowAnimation.Automatic)
                 }
         }
         
@@ -53,12 +49,8 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                 return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
                 if this?.sectionStateDictionary[this!.commentSection] == true {
-                    if let tuple = t as RACTuple! {
-                        let changedCells = UITableViewController.tableView(self.tableView,
-                            updateSection:this!.commentSection, previous: tuple.first as NSArray,
-                            current: tuple.second as NSArray) as NSArray
-                        this?.updateChangedCells(changedCells, section:this!.commentSection)
-                    }
+                    this?.tableView.reloadSections(NSIndexSet(index: this!.commentSection),
+                        withRowAnimation: UITableViewRowAnimation.Automatic)
                 }
         }
         
@@ -72,9 +64,8 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        parentViewController?.title = "Current Story Filters"
+        parentViewController?.title = "Filtered Stories"
     }
-    
     
     //MARK:- View Lifecycle Helpers
     
@@ -127,11 +118,11 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         var labelText:String
         switch sectionNumber {
         case SettingsSectionType.Score.rawValue:
-            labelText = "Minimum Score: \(user.minimumScore)"
+            labelText = "Scores less than \(Int(user.minimumScore))"
             headerView.prepareForSection(sectionNumber, type: SectionHeaderType.Stepper,
                 text: labelText, value: Double(user.minimumScore))
         case SettingsSectionType.Comments.rawValue:
-            labelText =  "Minimum Comments: \(user.minimumComments)"
+            labelText =  "Comments less than \(Int(user.minimumComments))"
             headerView.prepareForSection(sectionNumber, type: SectionHeaderType.Stepper,
                 text: labelText, value: Double(user.minimumComments))
         case SettingsSectionType.User.rawValue:
@@ -293,8 +284,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                         }
                     }
             })
-            unhide.backgroundColor = WSMColorPalette.colorGradient(WSMColorGradient.GradientGreen,
-                forIndex: 0, ofCount: 0, reversed: false)
+            unhide.backgroundColor = AppDelegate.hackerOrange()
             rowActions.append(unhide)
             return rowActions
     }

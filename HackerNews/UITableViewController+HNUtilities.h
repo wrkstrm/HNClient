@@ -11,7 +11,7 @@
 @interface UITableViewController (HNUtilities)
 
 /**
- The Update TableView Algo goes like this:
+ The Update TableView Algo works like this and only works for tableViews with 1 section.
  1. If starting out, reload data.
  2. If removing cells, reload data. This will be updated later.
  3. If adding cells:

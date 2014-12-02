@@ -11,9 +11,9 @@
 @implementation UITableViewController (HNUtilities)
 
 + (NSArray *)tableView:(UITableView*)tableView
-    updateSection:(NSInteger)section
-         previous:(NSArray *)previous
-          current:(NSArray *)current {
+         updateSection:(NSInteger)section
+              previous:(NSArray *)previous
+               current:(NSArray *)current {
     NSMutableArray *previouslyUncontainedCells = @[].mutableCopy;
     NSMutableArray *changedCells = @[].mutableCopy;
     if (previous.count == 0 || [tableView numberOfRowsInSection:0] == 0) {
