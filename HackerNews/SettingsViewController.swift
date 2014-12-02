@@ -12,10 +12,13 @@ enum SettingsSectionType:Int {
     case Score = 0, Comments, User
 }
 
-class SettingsViewController : HNSettingsViewController, SectionHeaderDelegate {
+class SettingsViewController : UITableViewController, SectionHeaderDelegate {
+    //MARK:- Constants and Properties
     let headerIdentifier = "headerReuseIdentifier"
+    let commentSection:Int = 1
     let sectionHeaderHeight:CGFloat = 48.0
-    var sectionStateDictionary = [Int:Bool]()
+    
+    var sectionStateDictionary:[Int:Bool] = [0:false, 1:false, 2:false]
     var rowHeightDictionary = [NSNumber:CGFloat]()
     
     //MARK:- View Lifecycle

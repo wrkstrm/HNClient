@@ -31,7 +31,6 @@
 		6E519E961A140AD300B42816 /* right_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E921A140AD300B42816 /* right_black@2x.png */; };
 		6E519E971A140AD300B42816 /* right_black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E519E931A140AD300B42816 /* right_black@3x.png */; };
 		6E519E9A1A140B1100B42816 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E519E991A140B1100B42816 /* WebKit.framework */; };
-		6E5AA0301A230C59005A5E53 /* HNSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */; };
 		6E5AA03D1A246AD4005A5E53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */; };
 		6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5EADC21A0F630700A19DA7 /* TopViewController.swift */; };
 		6E5EADC51A10694D00A19DA7 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5EADC41A10694D00A19DA7 /* TextViewController.swift */; };
@@ -42,6 +41,7 @@
 		6E8B8C561A1D569E008C9B66 /* HNStoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94E81A1C870B00496CD7 /* HNStoryManager.m */; };
 		6E96F2EC1A1F397D00B7693D /* HNItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E96F2EB1A1F397D00B7693D /* HNItems.m */; };
 		6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA970741A095B8A00EFD4E2 /* WebViewController.swift */; };
+		6EA9F5BA1A2D45E3002C97C3 /* LogoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA9F5B91A2D45E3002C97C3 /* LogoViewController.swift */; };
 		6EAE4AFB1A25577B00B73225 /* SectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6EAE4AFA1A25577B00B73225 /* SectionHeader.xib */; };
 		6EAE4B051A25580E00B73225 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAE4B041A25580E00B73225 /* SectionHeaderView.swift */; };
 		6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
@@ -158,8 +158,6 @@
 		6E519E921A140AD300B42816 /* right_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right_black@2x.png"; sourceTree = "<group>"; };
 		6E519E931A140AD300B42816 /* right_black@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right_black@3x.png"; sourceTree = "<group>"; };
 		6E519E991A140B1100B42816 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		6E5AA02E1A230C59005A5E53 /* HNSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNSettingsViewController.h; sourceTree = "<group>"; };
-		6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNSettingsViewController.m; sourceTree = "<group>"; };
 		6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		6E5EADC21A0F630700A19DA7 /* TopViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopViewController.swift; sourceTree = "<group>"; };
 		6E5EADC41A10694D00A19DA7 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
@@ -171,6 +169,7 @@
 		6E96F2EB1A1F397D00B7693D /* HNItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNItems.m; sourceTree = "<group>"; };
 		6EA970731A095B8A00EFD4E2 /* HackerNews-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Bridging-Header.h"; sourceTree = "<group>"; };
 		6EA970741A095B8A00EFD4E2 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		6EA9F5B91A2D45E3002C97C3 /* LogoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogoViewController.swift; sourceTree = "<group>"; };
 		6EAE4AFA1A25577B00B73225 /* SectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SectionHeader.xib; sourceTree = "<group>"; };
 		6EAE4B041A25580E00B73225 /* SectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		6EC8D2F61A16FCA1008A539A /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = vendor/Quick/Quick.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -286,11 +285,10 @@
 				6E5EADC21A0F630700A19DA7 /* TopViewController.swift */,
 				6E4F20BA1A2C332500487F39 /* UITableViewController+HNUtilities.h */,
 				6E4F20BB1A2C332500487F39 /* UITableViewController+HNUtilities.m */,
-				6E5AA02E1A230C59005A5E53 /* HNSettingsViewController.h */,
-				6E5AA02F1A230C59005A5E53 /* HNSettingsViewController.m */,
 				6E5AA03C1A246AD4005A5E53 /* SettingsViewController.swift */,
 				6EA970741A095B8A00EFD4E2 /* WebViewController.swift */,
 				6E5EADC41A10694D00A19DA7 /* TextViewController.swift */,
+				6EA9F5B91A2D45E3002C97C3 /* LogoViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -699,11 +697,11 @@
 				6EA970751A095B8A00EFD4E2 /* WebViewController.swift in Sources */,
 				6E5EADC31A0F630700A19DA7 /* TopViewController.swift in Sources */,
 				6E4F20BC1A2C332500487F39 /* UITableViewController+HNUtilities.m in Sources */,
+				6EA9F5BA1A2D45E3002C97C3 /* LogoViewController.swift in Sources */,
 				6ED106FB19EE5BD200E1F669 /* HNTopViewController.m in Sources */,
 				6ED106F819EE5BD200E1F669 /* AppDelegate.m in Sources */,
 				6E1A94E51A1C81ED00496CD7 /* CBLModel+WSMUtilities.m in Sources */,
 				6E1A94D61A1C810700496CD7 /* HNUser.m in Sources */,
-				6E5AA0301A230C59005A5E53 /* HNSettingsViewController.m in Sources */,
 				6EAE4B051A25580E00B73225 /* SectionHeaderView.swift in Sources */,
 				6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */,
 				6E124FBF1A035CAA00BF9ED5 /* UIView+WSMUtilities.m in Sources */,

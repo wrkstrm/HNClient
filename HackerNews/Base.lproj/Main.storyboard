@@ -63,7 +63,7 @@
             </objects>
             <point key="canvasLocation" x="920" y="375"/>
         </scene>
-        <!--Settings-->
+        <!--Filters-->
         <scene sceneID="0Ux-sr-aWA">
             <objects>
                 <tableViewController id="Bjp-im-0xT" customClass="SettingsViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
@@ -84,7 +84,7 @@
                             <outlet property="delegate" destination="Bjp-im-0xT" id="X8c-yU-WGS"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Settings" id="47A-yR-c1c"/>
+                    <tabBarItem key="tabBarItem" title="Filters" image="filter_black" id="47A-yR-c1c"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aCj-B4-wfW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -126,10 +126,10 @@
             </objects>
             <point key="canvasLocation" x="2333" y="798"/>
         </scene>
-        <!--View Controller-->
+        <!--Logo View Controller-->
         <scene sceneID="qPO-nL-xNY">
             <objects>
-                <viewController id="MiV-XA-Kbq" sceneMemberID="viewController">
+                <viewController id="MiV-XA-Kbq" customClass="LogoViewController" customModule="HackerNews" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1gt-AR-eMx"/>
                         <viewControllerLayoutGuide type="bottom" id="jMD-2E-DjH"/>
@@ -183,6 +183,9 @@
                     </view>
                     <tabBarItem key="tabBarItem" systemItem="more" id="U8p-8S-X3r"/>
                     <navigationItem key="navigationItem" id="q6d-9h-BwN"/>
+                    <connections>
+                        <outlet property="subtitle" destination="rMT-B4-i0M" id="LuK-oo-ohK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k3l-Na-Na4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -279,6 +282,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="filter_black" width="24" height="24"/>
         <image name="left_black.png" width="48" height="48"/>
         <image name="right_black.png" width="48" height="48"/>
     </resources>

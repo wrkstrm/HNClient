@@ -7,7 +7,6 @@
 //My Party
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
-#import "HNSettingsViewController.h"
 #import "HNStoryManager.h"
 #import "HNItems.h"
 
