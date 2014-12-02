@@ -55,9 +55,6 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     }
     
     func stepperValueDidChange(sender: UIStepper) {
-        println("Sender class: \(sender.isKindOfClass(UIStepper))")
-        println("Max Value: \(sender.maximumValue)")
-        println("Stepper Value: \(sender.value)")
         if let sectionDelegate = delegate {
             sectionDelegate.sectionValueDidChange(self, value: sender.value)
         }
