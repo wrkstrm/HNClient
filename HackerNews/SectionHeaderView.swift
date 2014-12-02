@@ -27,6 +27,7 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     override func awakeFromNib() {
         stepper.addTarget(self, action:"stepperValueDidChange:",
             forControlEvents: UIControlEvents.TouchUpInside)
+        stepper.maximumValue = DBL_MAX
         tap = UITapGestureRecognizer(target: self, action: "toggleOpen:")
         addGestureRecognizer(tap!)
         tap?.enabled = true;
@@ -36,12 +37,13 @@ class SectionHeaderView : UITableViewHeaderFooterView {
         text:String, value:Double?) {
             tag = sectionNumber
             //Label
-            titleLabel.text = text;
+            titleLabel.text = text
+            stepper.tag = sectionNumber
             switch type {
             case .Simple:
-                stepper.hidden = true;
+                stepper.hidden = true
             case .Stepper:
-                stepper.tag = sectionNumber
+                stepper.hidden = false
                 stepper.value = value!
             }
     }
@@ -53,8 +55,11 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     }
     
     func stepperValueDidChange(sender: UIStepper) {
+        println("Sender class: \(sender.isKindOfClass(UIStepper))")
+        println("Max Value: \(sender.maximumValue)")
+        println("Stepper Value: \(sender.value)")
         if let sectionDelegate = delegate {
-            sectionDelegate.sectionValueDidChange(self, value: stepper.value)
+            sectionDelegate.sectionValueDidChange(self, value: sender.value)
         }
     }
     
