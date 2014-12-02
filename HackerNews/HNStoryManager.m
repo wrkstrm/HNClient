@@ -76,8 +76,6 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _observationDictionary = @{}.mutableCopy;
     
     _faviconCache = NSCache.new;
-    _faviconCache[webPlaceHolderName] = [UIImage imageNamed:webPlaceHolderName];
-    NSAssert(_faviconCache[webPlaceHolderName],@"Must be true");
     
     _httpManager = [AFHTTPRequestOperationManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
@@ -247,14 +245,15 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         return self.faviconCache[webPlaceHolderName];
     } else {
         HNFavicon *model = [self modelForFaviconKey:hostURL];
+        CBLAttachment *attachment = [model attachmentNamed:model.attachmentNames.firstObject];
+        UIImage *image = [[UIImage alloc] initWithData:attachment.content];
         if (self.faviconCache[hostURL]) {
             completion(nil);
-        } else if (!self.faviconCache[hostURL] && model.attachmentNames) {
-            CBLAttachment *attachment = [model attachmentNamed:model.attachmentNames.firstObject];
+        } else if (!self.faviconCache[hostURL] && image) {
+            self.faviconCache[hostURL] = image;
             completion(nil);
-            self.faviconCache[hostURL] = [[UIImage alloc] initWithData:attachment.content];
         } else {
-            self.faviconCache[hostURL] = self.faviconCache[webPlaceHolderName];
+            self.faviconCache[hostURL] = [UIImage imageNamed:webPlaceHolderName];
             [self getFaviconFrom:[hostURL stringByAppendingString:@"/favicon.ico"]
                       completion:^(UIImage *favicon)
              {
