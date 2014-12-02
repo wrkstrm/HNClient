@@ -12,6 +12,7 @@ class TopViewController: HNTopViewController {
     //MARK:- Constants & Properties
     let NEWS_SECTION = 0
     @IBOutlet var topStoriesBarItem: UITabBarItem!
+    var titleView:UISegmentedControl?
     
     //MARK:- View Lifecycle
     
@@ -72,17 +73,24 @@ class TopViewController: HNTopViewController {
     //MARK:- Lifecycle Helpers
     
     func formatTitleView() {
-        let segmentedControl = UISegmentedControl(items:["Points", "Rank", "Comments"])
-        switch HNStoryManager.sharedInstance().sortStyle {
-        case HNSortStyle.Comments: segmentedControl.selectedSegmentIndex = 2
-        case HNSortStyle.Points: segmentedControl.selectedSegmentIndex = 0
-        default: segmentedControl.selectedSegmentIndex = 1
+        if !(parentViewController?.navigationItem.titleView? is UISegmentedControl) {
+            if let segControl = titleView {
+                parentViewController?.navigationItem.titleView = segControl
+            } else {
+                titleView = UISegmentedControl(items:["Points", "Rank", "Comments"])
+                switch HNStoryManager.sharedInstance().sortStyle {
+                case HNSortStyle.Comments: titleView!.selectedSegmentIndex = 2
+                case HNSortStyle.Points: titleView!.selectedSegmentIndex = 0
+                default: titleView!.selectedSegmentIndex = 1
+                }
+                titleView!.autoresizingMask = UIViewAutoresizing.FlexibleWidth |
+                    UIViewAutoresizing.FlexibleHeight
+                titleView!.frame = CGRectMake(0, 0, self.view.frame.width, 30)
+                titleView!.addTarget(self, action: "sortCategory:",
+                    forControlEvents: UIControlEvents.ValueChanged)
+                parentViewController?.navigationItem.titleView = titleView!
+            }
         }
-        segmentedControl.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-        segmentedControl.frame = CGRectMake(0, 0, 200, 30)
-        segmentedControl.addTarget(self, action: "sortCategory:",
-            forControlEvents: UIControlEvents.ValueChanged)
-        parentViewController?.navigationItem.titleView = segmentedControl
     }
     
     func sortCategory(segmentedControl:UISegmentedControl) {
