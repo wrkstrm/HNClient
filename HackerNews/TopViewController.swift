@@ -9,6 +9,8 @@
 import Foundation
 
 class TopViewController: HNTopViewController {
+    //MARK:- Constants & Properties
+    let NEWS_SECTION = 0
     @IBOutlet var topStoriesBarItem: UITabBarItem!
     
     //MARK:- View Lifecycle
@@ -31,7 +33,6 @@ class TopViewController: HNTopViewController {
                 }
         }
         
-        let NEWS_SECTION = 0
         HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
             .takeUntil(self.rac_willDeallocSignal())
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
@@ -39,7 +40,7 @@ class TopViewController: HNTopViewController {
             }).subscribeNext { (t) -> Void in
                 if let tuple = t as RACTuple! {
                     let changedCells = UITableViewController.tableView(self.tableView,
-                        updateSection: NEWS_SECTION, previous: tuple.first as NSArray,
+                        updateSection: this!.NEWS_SECTION, previous: tuple.first as NSArray,
                         current: tuple.second as NSArray) as NSArray
                     for path in changedCells as [NSIndexPath] {
                         let number = this?.itemNumberForIndexPath(path)
