@@ -27,39 +27,8 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.backgroundColor = AppDelegate.hackerBeige()
-        
         let headerNib = UINib(nibName: "SectionHeader", bundle: nil)
         tableView.registerNib(headerNib, forHeaderFooterViewReuseIdentifier: headerIdentifier)
-        
-        weak var this = self;
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("scoreFilteredStories", observer: self)
-            .takeUntil(self.rac_willDeallocSignal())
-            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return RACTuple(objectsFromArray:[oldArray, newArray])
-            }).subscribeNext { (t) -> Void in
-                if this?.sectionStateDictionary[this!.scoreSection] == true {
-                    this?.tableView.reloadSections(NSIndexSet(index: this!.scoreSection),
-                        withRowAnimation: UITableViewRowAnimation.Automatic)
-                }
-        }
-        
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories", observer:self)
-            .takeUntil(self.rac_willDeallocSignal())
-            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return RACTuple(objectsFromArray:[oldArray, newArray])
-            }).subscribeNext { (t) -> Void in
-                if this?.sectionStateDictionary[this!.commentSection] == true {
-                    this?.tableView.reloadSections(NSIndexSet(index: this!.commentSection),
-                        withRowAnimation: UITableViewRowAnimation.Automatic)
-                }
-        }
-        
-        NSNotificationCenter.defaultCenter()
-            .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
-            .takeUntil(rac_willDeallocSignal()).subscribeNext({ (x) -> Void in
-                this?.rowHeightDictionary = [NSNumber:CGFloat]()
-                this?.tableView.reloadData()
-            })
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -67,6 +36,26 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         parentViewController?.title = "Filtered Stories"
     }
     
+    override func viewDidAppear(animated: Bool) {
+        weak var this = self;
+        RACSignal.merge([HNStoryManager.sharedInstance().rac_valuesForKeyPath("scoreFilteredStories",
+            observer: self),
+            HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories",
+                observer:self)])
+            .takeUntil(self.rac_signalForSelector("viewDidDisappear:"))
+            .throttle(1)
+            .subscribeNext { (t) -> Void in
+                this?.tableView.reloadData()
+                return
+        }
+        NSNotificationCenter.defaultCenter()
+            .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
+            .takeUntil(self.rac_signalForSelector("viewDidDisappear:"))
+            .subscribeNext({ (x) -> Void in
+                this?.rowHeightDictionary = [NSNumber:CGFloat]()
+                this?.tableView.reloadData()
+            })
+    }
     //MARK:- View Lifecycle Helpers
     
     func updateChangedCells(cells:NSArray, section:Int) {
