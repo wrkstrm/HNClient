@@ -6,6 +6,8 @@ The app uses the v0 API which was released in October 2014.
 
 This is a re-imaginging of Hacker News for the consumer, not the producer.
 
+[![Short Demo](http://img.youtube.com/vi/Ik40mgPL8FQ/0.jpg)](http://youtu.be/Ik40mgPL8FQ)
+
 Focal Points (In order of priority)
 - See the news that you want to see and how you want to see it.
 - Take advantage of iOS hardware to enhance the user experience.
