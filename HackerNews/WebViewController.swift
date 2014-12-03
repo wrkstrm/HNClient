@@ -110,7 +110,6 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     //MARK:- Memory
     
     override func didReceiveMemoryWarning() {
-        println("Memory!")
         super.didReceiveMemoryWarning()
         Flurry.logEvent("MemoryWarning")
     }

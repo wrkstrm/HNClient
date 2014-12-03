@@ -83,7 +83,7 @@
             NSLog(@"We get image content!");
             [newUser setAttachmentNamed:@"avatar" withContentType:@"image/jpeg" content:contents];
         } else {
-            NSLog(@"For some reasonwe don't get the contents...");
+            NSLog(@"For some reason we don't get the contents...");
         }
         
         [(CBLModel *)newUser save:nil];
