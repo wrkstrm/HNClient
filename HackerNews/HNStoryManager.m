@@ -79,7 +79,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     
     _httpManager = [AFHTTPRequestOperationManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
-    _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInteractive;
+    _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInitiated;
     
     _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
     _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
@@ -160,7 +160,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 - (void)updateItemRankings {
     if (!self.pendingRankingUpdate) {
         self.pendingRankingUpdate = YES;
-        WSM_DISPATCH_AFTER(2.0f, {
+        WSM_DISPATCH_AFTER(1.0f, {
             for (NSNumber *number in self.purgeSet) {
                 [self unhideStory:number];
                 NSError *error;
@@ -218,14 +218,27 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
         [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
             @strongify(self)
             if (!(snapshot.value == [NSNull null])) {
-                NSError *error;
-                CBLDocument *doc = [self documentForItemNumber:itemNumber];
-                [doc mergeUserProperties:snapshot.value error:&error];
-                WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
-                self.currentTopStories = [self topStoriesWithCurrentFilters];
-                [self updateItemRankings];
-                [(RACSubject*) self.itemUpdates sendNext:
-                 RACTuplePack(itemNumber,[CBLModel modelForDocument:doc])];
+                [[CBLManager sharedInstance] doAsync:^{
+                    NSError *error;
+                    if ([snapshot.value[@"deleted"] boolValue]) {
+                        NSMutableArray *array = [self.topStoriesDocument[@"stories"] mutableCopy];
+                        [array removeObject:snapshot.value[@"id"]];
+                        [self.topStoriesDocument mergeUserProperties:@{@"stories":[NSArray arrayWithArray:array]}
+                                                               error:&error];
+                        WSMLog(error, @"Error deleting doc after Firebase Event: %@", error);
+                        [self.purgeSet addObject:itemNumber];
+                    } else  {
+                        CBLDocument *doc = [self documentForItemNumber:itemNumber];
+                        [doc mergeUserProperties:snapshot.value error:&error];
+                        WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
+                        self.currentTopStories = [self topStoriesWithCurrentFilters];
+                        [(RACSubject*) self.itemUpdates sendNext:
+                         RACTuplePack(itemNumber,[CBLModel modelForDocument:doc])];
+                    }
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self updateItemRankings];
+                    });
+                }];
             }
         }];
     }
