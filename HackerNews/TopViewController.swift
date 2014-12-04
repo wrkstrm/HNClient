@@ -11,6 +11,7 @@ import Foundation
 class TopViewController: HNTopViewController {
     //MARK:- Constants & Properties
     let NEWS_SECTION = 0
+    let CELL_IDENTIFIER = "storyCell"
     @IBOutlet var topStoriesBarItem: UITabBarItem!
     var titleView:UISegmentedControl?
     
@@ -114,8 +115,6 @@ class TopViewController: HNTopViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return HNStoryManager.sharedInstance().currentTopStories.count
     }
-    
-    let CELL_IDENTIFIER = "storyCell"
     
     override func tableView(tableView: UITableView,
         cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
