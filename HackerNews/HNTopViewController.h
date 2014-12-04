@@ -24,6 +24,6 @@
        atIndexPath:(NSIndexPath *)indexPath
            shimmer:(BOOL)shouldShimmer;
 
-- (void)updateCellWithTuple:(RACTuple *)tuple;
+- (NSIndexPath *)updateCellWithTuple:(RACTuple *)tuple;
 
 @end

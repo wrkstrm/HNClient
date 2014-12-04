@@ -41,7 +41,7 @@
     }];
 }
 
-- (void)updateCellWithTuple:(RACTuple *)tuple {
+- (NSIndexPath *)updateCellWithTuple:(RACTuple *)tuple {
     NSNumber *number = (NSNumber *) tuple.first;
     HNStory *story = (HNStory *) tuple.second;
     CGFloat newRowHeight = [UITableViewCell getCellHeightForStory:story
@@ -49,15 +49,16 @@
     CGFloat oldRowHeight = [self.rowHeightDictionary[number] floatValue];
     NSIndexPath *indexPath = [self indexPathForItemNumber:number];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    NSIndexPath *path;
     if (!cell && !oldRowHeight) {
         self.rowHeightDictionary[number] = @(newRowHeight);
     } else if (cell && newRowHeight == oldRowHeight) {
         [self updateCell:cell atIndexPath:indexPath shimmer:YES];
     } else if (newRowHeight != oldRowHeight) {
         self.rowHeightDictionary[number] = @(newRowHeight);
-        [self.tableView reloadRowsAtIndexPaths:@[[self indexPathForItemNumber:number]]
-                              withRowAnimation:UITableViewRowAnimationNone];
+        path = [self indexPathForItemNumber:number];
     }
+    return path;
 }
 
 #pragma mark - TableView DataSource and Delegate methods

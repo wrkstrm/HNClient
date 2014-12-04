@@ -44,10 +44,17 @@ class TopViewController: HNTopViewController {
                     let changedCells = UITableViewController.tableView(self.tableView,
                         updateSection: this!.NEWS_SECTION, previous: tuple.first as NSArray,
                         current: tuple.second as NSArray) as NSArray
+                    var reload = false;
                     for path in changedCells as [NSIndexPath] {
                         let number = this?.itemNumberForIndexPath(path)
                         let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
-                        this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item]))
+                        if let path = this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item])) {
+                            reload = true;
+                        }
+                    }
+                    if  reload {
+                        this?.tableView.reloadSections(NSIndexSet(index: this!.NEWS_SECTION),
+                            withRowAnimation: UITableViewRowAnimation.None)
                     }
                 }
         }
