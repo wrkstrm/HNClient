@@ -24,31 +24,38 @@
         [tableView reloadData];
     } else {
         [Flurry logEvent:@"beginUpdates"];
-        [tableView beginUpdates];
-        for (NSInteger index = 0; index < current.count; index++) {
-            BOOL previouslyContained = [previous containsObject:current[index]];
-            NSUInteger previousItemIndex = [previous indexOfObject:current[index]];
-            //If we have more rows currently than previously, just insert
-            if (previous.count <= index) {
-                NSIndexPath *newCell = [NSIndexPath indexPathForRow:index
-                                                          inSection:section];
-                [tableView insertRowsAtIndexPaths:@[newCell]
-                                 withRowAnimation:UITableViewRowAnimationTop];
-            } else if (!previouslyContained) {
-                [previouslyUncontainedCells addObject:[NSIndexPath indexPathForRow:index
-                                                                         inSection:section]];
-            } else if (previouslyContained) {
-                if (![current[index] isEqualToNumber:previous[index]]) {
-                    NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+        [UIView animateWithDuration:0.5f
+                              delay:0.0f
+             usingSpringWithDamping:0.5f
+              initialSpringVelocity:0.0f
+                            options:UIViewAnimationOptionAllowUserInteraction
+                         animations:^{
+            [tableView beginUpdates];
+            for (NSInteger index = 0; index < current.count; index++) {
+                BOOL previouslyContained = [previous containsObject:current[index]];
+                NSUInteger previousItemIndex = [previous indexOfObject:current[index]];
+                //If we have more rows currently than previously, just insert
+                if (previous.count <= index) {
+                    NSIndexPath *newCell = [NSIndexPath indexPathForRow:index
                                                               inSection:section];
-                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:index
-                                                              inSection:section];
-                    [tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
-                    [changedCells addObject:oldPath];
+                    [tableView insertRowsAtIndexPaths:@[newCell]
+                                     withRowAnimation:UITableViewRowAnimationTop];
+                } else if (!previouslyContained) {
+                    [previouslyUncontainedCells addObject:[NSIndexPath indexPathForRow:index
+                                                                             inSection:section]];
+                } else if (previouslyContained) {
+                    if (![current[index] isEqualToNumber:previous[index]]) {
+                        NSIndexPath *oldPath = [NSIndexPath indexPathForRow:previousItemIndex
+                                                                  inSection:section];
+                        NSIndexPath *newPath = [NSIndexPath indexPathForRow:index
+                                                                  inSection:section];
+                        [tableView moveRowAtIndexPath:oldPath toIndexPath:newPath];
+                        [changedCells addObject:oldPath];
+                    }
                 }
             }
-        }
-        [tableView endUpdates];
+            [tableView endUpdates];
+        } completion:^(BOOL finished) {}];
         [Flurry logEvent:@"endUpdates"];
     }
     return [previouslyUncontainedCells arrayByAddingObjectsFromArray:changedCells];
