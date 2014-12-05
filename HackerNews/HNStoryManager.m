@@ -231,7 +231,6 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
                         CBLDocument *doc = [self documentForItemNumber:itemNumber];
                         [doc mergeUserProperties:snapshot.value error:&error];
                         WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
-                        self.currentTopStories = [self topStoriesWithCurrentFilters];
                         [(RACSubject*) self.itemUpdates sendNext:
                          RACTuplePack(itemNumber,[CBLModel modelForDocument:doc])];
                     }
