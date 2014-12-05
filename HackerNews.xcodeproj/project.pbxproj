@@ -17,7 +17,6 @@
 		6E11DA1219EE675D00A75579 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ED1071A19EE5DA900E1F669 /* libc++.dylib */; };
 		6E11DA1419EE676600A75579 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1319EE676600A75579 /* MobileCoreServices.framework */; };
 		6E11DA1619EE677600A75579 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA1519EE677600A75579 /* libsqlite3.dylib */; };
-		6E124FBF1A035CAA00BF9ED5 /* UIView+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */; };
 		6E124FC21A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */; };
 		6E1A94D61A1C810700496CD7 /* HNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94D31A1C810700496CD7 /* HNUser.m */; };
 		6E1A94D71A1C810700496CD7 /* WSMUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E1A94D51A1C810700496CD7 /* WSMUser.m */; };
@@ -54,7 +53,6 @@
 		6ED106FE19EE5BD200E1F669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6ED106FC19EE5BD200E1F669 /* Main.storyboard */; };
 		6ED1070319EE5BD200E1F669 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ED1070119EE5BD200E1F669 /* LaunchScreen.xib */; };
 		6ED1070F19EE5BD200E1F669 /* HNStoryManagerSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HNStoryManagerSpecs.m */; };
-		6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */; };
 		6EFB719919F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 		6EFB719A19F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 /* End PBXBuildFile section */
@@ -136,8 +134,6 @@
 		6E11DA0F19EE673400A75579 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		6E11DA1319EE676600A75579 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		6E11DA1519EE677600A75579 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		6E124FBD1A035CAA00BF9ED5 /* UIView+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WSMUtilities.h"; sourceTree = "<group>"; };
-		6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WSMUtilities.m"; sourceTree = "<group>"; };
 		6E124FC01A03678F00BF9ED5 /* CBLDocument+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBLDocument+WSMUtilities.h"; sourceTree = "<group>"; };
 		6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBLDocument+WSMUtilities.m"; sourceTree = "<group>"; };
 		6E1A94D21A1C810700496CD7 /* HNUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNUser.h; sourceTree = "<group>"; };
@@ -190,8 +186,6 @@
 		6ED1071A19EE5DA900E1F669 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
-		6EDC46061A02C5A3005E92D0 /* NSCache+WSMUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCache+WSMUtilities.h"; sourceTree = "<group>"; };
-		6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCache+WSMUtilities.m"; sourceTree = "<group>"; };
 		6EFB719819F1CD3600830F79 /* secrets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secrets.json; sourceTree = "<group>"; };
 		84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
@@ -250,10 +244,6 @@
 		6E1A94E61A1C820900496CD7 /* Helper Categories */ = {
 			isa = PBXGroup;
 			children = (
-				6EDC46061A02C5A3005E92D0 /* NSCache+WSMUtilities.h */,
-				6EDC46071A02C5A3005E92D0 /* NSCache+WSMUtilities.m */,
-				6E124FBD1A035CAA00BF9ED5 /* UIView+WSMUtilities.h */,
-				6E124FBE1A035CAA00BF9ED5 /* UIView+WSMUtilities.m */,
 				6E124FC01A03678F00BF9ED5 /* CBLDocument+WSMUtilities.h */,
 				6E124FC11A03678F00BF9ED5 /* CBLDocument+WSMUtilities.m */,
 				6E1A94E31A1C81ED00496CD7 /* CBLModel+WSMUtilities.h */,
@@ -703,8 +693,6 @@
 				6E1A94E51A1C81ED00496CD7 /* CBLModel+WSMUtilities.m in Sources */,
 				6E1A94D61A1C810700496CD7 /* HNUser.m in Sources */,
 				6EAE4B051A25580E00B73225 /* SectionHeaderView.swift in Sources */,
-				6EDC46081A02C5A3005E92D0 /* NSCache+WSMUtilities.m in Sources */,
-				6E124FBF1A035CAA00BF9ED5 /* UIView+WSMUtilities.m in Sources */,
 				6ED106F519EE5BD200E1F669 /* main.m in Sources */,
 				6E730AA219FAFB2500E412C3 /* UITableViewCell+HNHeadline.m in Sources */,
 				6E1A94D71A1C810700496CD7 /* WSMUser.m in Sources */,
@@ -865,7 +853,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				LLVM_LTO = NO;
@@ -906,7 +893,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				LLVM_LTO = YES;

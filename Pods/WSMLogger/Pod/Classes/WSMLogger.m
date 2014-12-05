@@ -518,12 +518,21 @@ static NSArray *colors   = nil;
         calendar = [NSCalendar autoupdatingCurrentCalendar];
         
         calendarUnitFlags = 0;
+#if defined(__IPHONE_8_0) || defined(__MAC_10_10)
+        calendarUnitFlags |= NSCalendarUnitYear;
+        calendarUnitFlags |= NSCalendarUnitMonth;
+        calendarUnitFlags |= NSCalendarUnitDay;
+        calendarUnitFlags |= NSCalendarUnitHour;
+        calendarUnitFlags |= NSCalendarUnitMinute;
+        calendarUnitFlags |= NSCalendarUnitSecond;
+#else
         calendarUnitFlags |= NSYearCalendarUnit;
         calendarUnitFlags |= NSMonthCalendarUnit;
         calendarUnitFlags |= NSDayCalendarUnit;
         calendarUnitFlags |= NSHourCalendarUnit;
         calendarUnitFlags |= NSMinuteCalendarUnit;
         calendarUnitFlags |= NSSecondCalendarUnit;
+#endif
         
         // Initialize formatter
         

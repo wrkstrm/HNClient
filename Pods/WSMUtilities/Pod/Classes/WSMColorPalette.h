@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, WSMColorGradient) {
 
 SKColor* SKColorMakeRGB(CGFloat red, CGFloat green, CGFloat blue);
 
-+ (UIColor *)colorForAgenda:(WSMAgendaType)agendaConstant forIndex:(NSInteger)index ofCount:(NSInteger)count reversed:(BOOL) reversed;
++ (SKColor *)colorForAgenda:(WSMAgendaType)agendaConstant forIndex:(NSInteger)index ofCount:(NSInteger)count reversed:(BOOL) reversed;
 
 + (SKColor *)colorGradient:(WSMColorGradient)colorGradient forIndex:(NSInteger)index ofCount:(NSInteger)count reversed:(BOOL)reversed;
 

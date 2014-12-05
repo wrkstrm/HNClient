@@ -13,7 +13,7 @@
 static NSCalendar * _gregorian;
 
 + (void)load {
-    _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 }
 
 + (NSDate *)now:(NSCalendarUnit)components {
@@ -34,7 +34,7 @@ static NSCalendar * _gregorian;
 }
 
 + (NSTimeInterval)timeIntervalUntilNextMidNight {
-    NSCalendarUnit resolution = (NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit);
+    NSCalendarUnit resolution = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
     NSTimeInterval midnight = [NSDate tomorrow:resolution].timeIntervalSinceReferenceDate;
     return midnight - NSDate.date.timeIntervalSinceReferenceDate;
 }
@@ -42,8 +42,8 @@ static NSCalendar * _gregorian;
 + (NSTimeInterval)timeIntervalUntilNextHour {
     NSDateComponents *nextHourComponents = NSDateComponents.new;
     [nextHourComponents setHour:1];
-    NSCalendarUnit resolution = (NSYearCalendarUnit | NSMonthCalendarUnit
-                                 | NSDayCalendarUnit | NSHourCalendarUnit);
+    NSCalendarUnit resolution = (NSCalendarUnitYear | NSCalendarUnitMonth
+                                 | NSCalendarUnitDay | NSCalendarUnitHour);
     return [_gregorian dateByAddingComponents:nextHourComponents
                                        toDate:[NSDate now:resolution]
                                       options:0].timeIntervalSinceReferenceDate;

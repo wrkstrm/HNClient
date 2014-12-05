@@ -1,11 +1,11 @@
 PODS:
   - AFNetworking (2.5.0):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-    - AFNetworking/UIKit
+    - AFNetworking/NSURLConnection (= 2.5.0)
+    - AFNetworking/NSURLSession (= 2.5.0)
+    - AFNetworking/Reachability (= 2.5.0)
+    - AFNetworking/Security (= 2.5.0)
+    - AFNetworking/Serialization (= 2.5.0)
+    - AFNetworking/UIKit (= 2.5.0)
   - AFNetworking/NSURLConnection (2.5.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
@@ -21,29 +21,28 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - CocoaLumberjack (2.0.0-beta3):
-    - CocoaLumberjack/Default
-    - CocoaLumberjack/Extensions
+    - CocoaLumberjack/Default (= 2.0.0-beta3)
+    - CocoaLumberjack/Extensions (= 2.0.0-beta3)
   - CocoaLumberjack/Core (2.0.0-beta3)
   - CocoaLumberjack/Default (2.0.0-beta3):
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.0.0-beta3):
     - CocoaLumberjack/Default
   - DateTools (1.4.3)
-  - Firebase (2.0.2)
+  - Firebase (2.0.3)
   - ReactiveCocoa (2.3.1):
-    - ReactiveCocoa/UI
+    - ReactiveCocoa/UI (= 2.3.1)
   - ReactiveCocoa/Core (2.3.1):
     - ReactiveCocoa/no-arc
   - ReactiveCocoa/no-arc (2.3.1)
   - ReactiveCocoa/UI (2.3.1):
     - ReactiveCocoa/Core
-  - WSMLogger (0.1.0):
-    - CocoaLumberjack
-  - WSMUtilities (0.0.3)
+  - WSMLogger (0.1.1):
+    - CocoaLumberjack (= 2.0.0-beta3)
+  - WSMUtilities (0.0.4)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
-  - CocoaLumberjack (= 2.0.0-beta3)
   - DateTools
   - Firebase (>= 1.2.2)
   - ReactiveCocoa
@@ -54,9 +53,9 @@ SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   CocoaLumberjack: 55c22a2b8bde7a29c568ab4015b5874216524d70
   DateTools: 7c2d233ea2d4bda3a717d0cd5f58da926a5998d0
-  Firebase: 793a4581e4f4d9cb1e156cab89ca367f3d02b473
+  Firebase: bb958f1328ab902972d4419cbec232a989b5c613
   ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
-  WSMLogger: a465b61ada79c02f5d6e8734d7e4ad6c330a6aa4
-  WSMUtilities: 65c4257a427a15fe10445ac03670ce345403dcf7
+  WSMLogger: ee73623f39f3355340bbd1edea91e0fcbef26420
+  WSMUtilities: b7099f137c24a3bf3f4ec49d5b08998845804c3c
 
-COCOAPODS: 0.34.4
+COCOAPODS: 0.35.0

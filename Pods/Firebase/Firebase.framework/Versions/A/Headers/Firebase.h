@@ -34,6 +34,7 @@
 #import "FTransactionResult.h"
 #import "FAuthData.h"
 #import "FAuthType.h"
+#import "FirebaseServerValue.h"
 
 /**
  * A Firebase reference represents a particular location in your Firebase
