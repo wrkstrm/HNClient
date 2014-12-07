@@ -24,7 +24,7 @@ Based on these focuses, I am working / planning on these features.
 
 #Why create another HN Client?
 
-Hacker News too often gets clogged up by what everyone agrees is awesome. On the web, I rarely, scroll past the top 30.
+Too often, Hacker News gets clogged up by what everyone agrees is awesome. On top of that, I rarely scroll past the top 30.
 That means 70 of the best stories are hidden from me at any given time.
 This app is meant to expose the consumers of Hacker News to the larger library of interesting articles at any given time.
 More over, it is meant to streamline the experience for the constant consumers of Hacker News.
