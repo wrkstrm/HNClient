@@ -2,7 +2,7 @@ Helvetica Neue
 ==========
 [![Available on the App Store](https://devimages.apple.com.edgekey.net/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg)](https://itunes.apple.com/us/app/helvetica-neue-native-open/id931789125?mt=8)
 
-This is a re-imaginging of Hacker News for the consumer, not the producer. This iOS app shows the top 100 HN stories... live.
+This is a re-imaginging of Hacker News for the consumer, not the producer. This iOS app shows the top 500 HN stories... live.
 No need to refresh as the stories just update on their own. You can also filter and sort stories how you want to see them. The app uses the v0 API which was released in October 2014.
 
 [![Short Demo](http://img.youtube.com/vi/Ik40mgPL8FQ/0.jpg)](http://youtu.be/Ik40mgPL8FQ)
