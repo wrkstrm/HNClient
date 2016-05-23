@@ -19,7 +19,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     @IBOutlet var forwardButton: UIBarButtonItem!
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder:aDecoder)
+        super.init(coder:aDecoder)!
     }
     
     //MARK:- View Lifecyle
@@ -30,7 +30,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
         view.insertSubview(webView, belowSubview: toolbar)
         webView.frame = CGRectMake(0, 0,
             CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
-        webView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+        webView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         webView.navigationDelegate = self
         if let urlString = self.story?.url {
             let url = NSURL(string: urlString)
@@ -41,19 +41,19 @@ class WebViewController : UIViewController, WKNavigationDelegate {
         webView.rac_valuesForKeyPath("canGoForward", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (enabled) -> Void in
-                let bool = (enabled as NSNumber).boolValue
+                let bool = (enabled as! NSNumber).boolValue
                 that?.forwardButton.enabled = bool
         }
         webView.rac_valuesForKeyPath("canGoBack", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (enabled) -> Void in
-                let bool = (enabled as NSNumber).boolValue
+                let bool = (enabled as! NSNumber).boolValue
                 that?.backButton.enabled = bool
         }
         webView.rac_valuesForKeyPath("estimatedProgress", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (progress) -> Void in
-                if  progress as Float == 1 {
+                if  progress as! Float == 1 {
                     that?.toolbar.stopShimmering()
                 } else if that?.toolbar.layer.mask == nil {
                     that?.toolbar.startShimmeringAtInterval(1.0)
@@ -92,7 +92,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     }
     
     @IBAction func actionTapped(sender: UIBarButtonItem) {
-        var itemsToShare:NSMutableArray = []
+        let itemsToShare:NSMutableArray = NSMutableArray()
         let title = story?.title
         itemsToShare.addObject(title!)
         if let urlString = story?.url {
@@ -100,7 +100,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
             itemsToShare.addObject(url!)
         }
         
-        let activityController = UIActivityViewController(activityItems:itemsToShare,
+        let activityController = UIActivityViewController(activityItems:itemsToShare as [AnyObject],
             applicationActivities: nil)
         let excludeActivities = [UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypePostToVimeo, UIActivityTypePostToFlickr, UIActivityTypeAirDrop]
         activityController.excludedActivityTypes = excludeActivities;

@@ -13,7 +13,7 @@ class TextViewController: UIViewController {
     var story:HNStory?
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder:aDecoder)
+        super.init(coder:aDecoder)!
     }
     
     override func viewDidLoad() {
@@ -23,7 +23,8 @@ class TextViewController: UIViewController {
         let text = story?.text
         let htmlString = "<style> body {font-family:\"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> \(text!) </body>"
         let optionsDictionary = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-        textView.attributedText = NSAttributedString(data: htmlString.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion:true)!, options: optionsDictionary, documentAttributes: nil, error: nil)
+        let data = htmlString.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)
+        textView.attributedText = try! NSAttributedString(data: data!, options: optionsDictionary, documentAttributes: nil)
     }
     
     func hackerBeige() -> UIColor  {

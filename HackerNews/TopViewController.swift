@@ -30,7 +30,7 @@ class TopViewController: HNTopViewController {
             .rac_valuesForKeyPath("currentTopStories", observer: self)
             .takeUntil(rac_willDeallocSignal())
             .subscribeNext { (stories) -> Void in
-                if let s = stories as NSArray! {
+                if let s = stories as! NSArray! {
                     this?.topStoriesBarItem.badgeValue = "\(s.count)"
                 }
         }
@@ -40,15 +40,17 @@ class TopViewController: HNTopViewController {
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
                 return RACTuple(objectsFromArray:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
-                if let tuple = t as RACTuple! {
+                if let tuple = t as! RACTuple! {
+                    tuple.first as! NSArray
+                    let first = tuple.first as! NSArray
+                    let second = tuple.second as! NSArray
                     let changedCells = UITableViewController.tableView(self.tableView,
-                        updateSection: this!.NEWS_SECTION, previous: tuple.first as NSArray,
-                        current: tuple.second as NSArray) as NSArray
+                        updateSection: this!.NEWS_SECTION, previous: first as [AnyObject], current: second as [AnyObject]) as NSArray
                     var reload = false;
-                    for path in changedCells as [NSIndexPath] {
+                    for path in changedCells as! [NSIndexPath] {
                         let number = this?.itemNumberForIndexPath(path)
-                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as HNItem
-                        if let path = this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item])) {
+                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as! HNItem
+                        if let _ = this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item])) {
                             reload = true;
                         }
                     }
@@ -82,7 +84,7 @@ class TopViewController: HNTopViewController {
     
     func formatTitleView() {
         parentViewController?.title = "Top Stories"
-        if !(parentViewController?.navigationItem.titleView? is UISegmentedControl) {
+        if !(parentViewController?.navigationItem.titleView is UISegmentedControl) {
             if let segControl = titleView {
                 parentViewController?.navigationItem.titleView = segControl
             } else {
@@ -92,10 +94,9 @@ class TopViewController: HNTopViewController {
                 case HNSortStyle.Points: titleView!.selectedSegmentIndex = 0
                 default: titleView!.selectedSegmentIndex = 1
                 }
-                titleView!.autoresizingMask = UIViewAutoresizing.FlexibleWidth |
-                    UIViewAutoresizing.FlexibleHeight
+                titleView!.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
                 titleView!.frame = CGRectMake(0, 0, self.view.frame.width, 30)
-                titleView!.addTarget(self, action: "sortCategory:",
+                titleView!.addTarget(self, action: #selector(self.sortCategory(_:)),
                     forControlEvents: UIControlEvents.ValueChanged)
                 parentViewController?.navigationItem.titleView = titleView!
                 titleView!.sizeToFit()
@@ -104,7 +105,7 @@ class TopViewController: HNTopViewController {
     }
     
     func sortCategory(segmentedControl:UISegmentedControl) {
-        let previousSorted = currentSortedTopStories
+        _ = currentSortedTopStories
         switch (segmentedControl.selectedSegmentIndex) {
         case 0: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Points
         case 1: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Rank
@@ -137,12 +138,12 @@ class TopViewController: HNTopViewController {
     override func tableView(tableView: UITableView,
         didSelectRowAtIndexPath indexPath: NSIndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNItem
+            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as! HNItem
             if  story.type as NSString == "story" {
                 if !(story.url as NSString == "")  {
                     let controller = storyboard?
                         .instantiateViewControllerWithIdentifier("WebViewController")
-                        as WebViewController
+                        as! WebViewController
                     controller.story = story
                     parentViewController?.navigationController?
                         .pushViewController(controller, animated: true)
@@ -155,7 +156,7 @@ class TopViewController: HNTopViewController {
                 } else if !(story.url as NSString == "")  {
                     let controller = storyboard?
                         .instantiateViewControllerWithIdentifier("WebViewController")
-                        as WebViewController
+                        as! WebViewController
                     controller.story = story
                     parentViewController?.navigationController?
                         .pushViewController(controller, animated: true)
@@ -188,11 +189,11 @@ class TopViewController: HNTopViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "textViewSegue" {
-            let controller = segue.destinationViewController as TextViewController
-            controller.story = sender as HNStory!;
+            let controller = segue.destinationViewController as! TextViewController
+            controller.story = sender as? HNStory;
         }
     }
-    
+
     //MARK:- Memory Management
     
     override func didReceiveMemoryWarning() {

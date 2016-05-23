@@ -16,7 +16,7 @@ class DynamicLogo: UILabel {
     }
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder)!
         self.commonInit()
     }
     

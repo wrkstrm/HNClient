@@ -1,0 +1,51 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "349FC0279855145585ED3963DC057AFB6E09A510+++12DDEA6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++6F43773" : 0,
+    "349FC0279855145585ED3963DC057AFB6E09A510+++12DDEA6" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++ADEEC61" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++CEAF59D" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++513E976" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D686A1D6-2B20-4E4A-84F9-C24C7F129194",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++6F43773" : "HelveticaNeue\/vendor\/Quick\/",
+    "349FC0279855145585ED3963DC057AFB6E09A510+++12DDEA6" : "HelveticaNeue\/",
+    "95438028B10BBB846574013D29F154A00556A9D1+++ADEEC61" : "HelveticaNeue\/vendor\/Nimble\/",
+    "95438028B10BBB846574013D29F154A00556A9D1+++CEAF59D" : "HelveticaNeue\/vendor\/Quick\/Externals\/Nimble\/",
+    "95438028B10BBB846574013D29F154A00556A9D1+++513E976" : "HelveticaNeue\/vendor\/Quick\/Externals\/Nimble\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "HackerNews",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "HackerNews.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/wrkstrm\/HelveticaNeue.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "349FC0279855145585ED3963DC057AFB6E09A510+++12DDEA6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++513E976"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++ADEEC61"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++CEAF59D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Quick.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++6F43773"
+    }
+  ]
+}

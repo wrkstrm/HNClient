@@ -50,7 +50,7 @@
     NSIndexPath *indexPath = [self indexPathForItemNumber:number];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSIndexPath *path;
-    if (!cell && !oldRowHeight) {
+    if (!cell && oldRowHeight != 0) {
         self.rowHeightDictionary[number] = @(newRowHeight);
     } else if (cell && newRowHeight == oldRowHeight) {
         [self updateCell:cell atIndexPath:indexPath shimmer:YES];

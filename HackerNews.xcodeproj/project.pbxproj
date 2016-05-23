@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		50715148D34F3DD84DCBFE92 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */; };
-		57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */; };
+		2559A7A17319D5C0C5A00CA4 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DF469F1345AB7155600058B /* libPods-HackerNews.a */; };
 		6E0A542C1A258B1D004B966B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0A542B1A258B1D004B966B /* Images.xcassets */; };
 		6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */; };
@@ -55,6 +54,7 @@
 		6ED1070F19EE5BD200E1F669 /* HNStoryManagerSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HNStoryManagerSpecs.m */; };
 		6EFB719919F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 		6EFB719A19F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
+		C50611C16BC49BE8E6312F29 /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,10 +124,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1749091DAE37B3D4B3DEFF1E /* Pods-HackerNews.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.debug.xcconfig"; sourceTree = "<group>"; };
-		48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		591A035AA7E80899E62C60B9 /* Pods-HackerNewsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6028C4209F00A205B7FFD67D /* Pods-HackerNewsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.release.xcconfig"; sourceTree = "<group>"; };
+		001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E416D4043532D9E1426E680 /* Pods-HackerNews.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.debug.xcconfig"; sourceTree = "<group>"; };
+		61FBB1165D2B66D8B52D692E /* Pods-HackerNewsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.release.xcconfig"; sourceTree = "<group>"; };
 		6E0A542B1A258B1D004B966B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6E11DA0B19EE672100A75579 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -187,8 +186,9 @@
 		6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
 		6EFB719819F1CD3600830F79 /* secrets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secrets.json; sourceTree = "<group>"; };
-		84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
+		7CD153593C442AE7C630A5DE /* Pods-HackerNewsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7DF469F1345AB7155600058B /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC50E33BA515AA333988ECBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,7 +206,7 @@
 				6E11DA1019EE673400A75579 /* Security.framework in Frameworks */,
 				6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */,
 				6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */,
-				50715148D34F3DD84DCBFE92 /* libPods-HackerNews.a in Frameworks */,
+				2559A7A17319D5C0C5A00CA4 /* libPods-HackerNews.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +219,7 @@
 				6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */,
 				6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */,
 				6EC8D31D1A16FD9A008A539A /* CouchbaseLite.framework in Frameworks */,
-				57E5A44C182C9A8C9874C1CF /* libPods-HackerNewsTests.a in Frameworks */,
+				C50611C16BC49BE8E6312F29 /* libPods-HackerNewsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,8 +332,8 @@
 				6ED106F119EE5BD200E1F669 /* HackerNews */,
 				6ED1070B19EE5BD200E1F669 /* HackerNewsTests */,
 				6ED106F019EE5BD200E1F669 /* Products */,
-				8D3D144C0167EB48B3DCB436 /* Pods */,
 				A8F0BE3B291D393CF1C701C6 /* Frameworks */,
+				D0FE880829008747E10ED6D3 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -392,17 +392,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		8D3D144C0167EB48B3DCB436 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				1749091DAE37B3D4B3DEFF1E /* Pods-HackerNews.debug.xcconfig */,
-				E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */,
-				591A035AA7E80899E62C60B9 /* Pods-HackerNewsTests.debug.xcconfig */,
-				6028C4209F00A205B7FFD67D /* Pods-HackerNewsTests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		A8F0BE3B291D393CF1C701C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,10 +407,21 @@
 				6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */,
 				6ED1071A19EE5DA900E1F669 /* libc++.dylib */,
 				6ED1071819EE5D9F00E1F669 /* libicucore.dylib */,
-				84F760F72ADC1DBF0D222370 /* libPods-HackerNews.a */,
-				48746723D5B08E8978414CA7 /* libPods-HackerNewsTests.a */,
+				7DF469F1345AB7155600058B /* libPods-HackerNews.a */,
+				001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0FE880829008747E10ED6D3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4E416D4043532D9E1426E680 /* Pods-HackerNews.debug.xcconfig */,
+				FC50E33BA515AA333988ECBC /* Pods-HackerNews.release.xcconfig */,
+				7CD153593C442AE7C630A5DE /* Pods-HackerNewsTests.debug.xcconfig */,
+				61FBB1165D2B66D8B52D692E /* Pods-HackerNewsTests.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -431,12 +431,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6ED1071219EE5BD200E1F669 /* Build configuration list for PBXNativeTarget "HackerNews" */;
 			buildPhases = (
-				3F72ACD18130E3205785DDA7 /* Check Pods Manifest.lock */,
+				4B476E549BCF49CA081F5FC6 /* 📦 Check Pods Manifest.lock */,
 				6ED106EB19EE5BD200E1F669 /* Sources */,
 				6ED106EC19EE5BD200E1F669 /* Frameworks */,
 				6ED106ED19EE5BD200E1F669 /* Resources */,
-				FD1C5E65A8DB1E3AAF37183A /* Copy Pods Resources */,
 				6E730AA319FAFBE300E412C3 /* ShellScript */,
+				58BEDAB53286F49DB2AAE840 /* 📦 Embed Pods Frameworks */,
+				9E6A1F81F4EAD26923044E34 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -451,11 +452,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6ED1071519EE5BD200E1F669 /* Build configuration list for PBXNativeTarget "HackerNewsTests" */;
 			buildPhases = (
-				CDED1F2C28A75D93C29D46AB /* Check Pods Manifest.lock */,
+				338900A197435FACCA62CFD0 /* 📦 Check Pods Manifest.lock */,
 				6ED1070419EE5BD200E1F669 /* Sources */,
 				6ED1070519EE5BD200E1F669 /* Frameworks */,
 				6ED1070619EE5BD200E1F669 /* Resources */,
-				B44070CEB5BC5B087B000C58 /* Copy Pods Resources */,
+				87A949ABC2E3F3A7C2A5A6DD /* 📦 Embed Pods Frameworks */,
+				E62F0A68BEDF0AD56159F06C /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -473,7 +475,8 @@
 		6ED106E719EE5BD200E1F669 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = wrkstrm;
 				TargetAttributes = {
 					6ED106EE19EE5BD200E1F669 = {
@@ -602,19 +605,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3F72ACD18130E3205785DDA7 /* Check Pods Manifest.lock */ = {
+		338900A197435FACCA62CFD0 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4B476E549BCF49CA081F5FC6 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		58BEDAB53286F49DB2AAE840 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6E730AA319FAFBE300E412C3 /* ShellScript */ = {
@@ -630,49 +663,49 @@
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/bash\nif [ -n \"$(find \"$PROJECT_DIR\" \\! -path \"*xcuserdata*\" \\! -path \"*.git\" -newer \"$INFOPLIST_FILE\")\" ]; then\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi";
 		};
-		B44070CEB5BC5B087B000C58 /* Copy Pods Resources */ = {
+		87A949ABC2E3F3A7C2A5A6DD /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CDED1F2C28A75D93C29D46AB /* Check Pods Manifest.lock */ = {
+		9E6A1F81F4EAD26923044E34 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		FD1C5E65A8DB1E3AAF37183A /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E62F0A68BEDF0AD56159F06C /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -763,6 +796,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -825,7 +859,7 @@
 		};
 		6ED1071319EE5BD200E1F669 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1749091DAE37B3D4B3DEFF1E /* Pods-HackerNews.debug.xcconfig */;
+			baseConfigurationReference = 4E416D4043532D9E1426E680 /* Pods-HackerNews.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -856,6 +890,7 @@
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				LLVM_LTO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wrkstrm.ios.app.hackernews;
 				PRODUCT_NAME = "Hacker News";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";
@@ -865,7 +900,7 @@
 		};
 		6ED1071419EE5BD200E1F669 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E399C2BC9F636EE909A15CBC /* Pods-HackerNews.release.xcconfig */;
+			baseConfigurationReference = FC50E33BA515AA333988ECBC /* Pods-HackerNews.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -896,6 +931,7 @@
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				LLVM_LTO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wrkstrm.ios.app.hackernews;
 				PRODUCT_NAME = "Hacker News";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";
@@ -905,7 +941,7 @@
 		};
 		6ED1071619EE5BD200E1F669 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 591A035AA7E80899E62C60B9 /* Pods-HackerNewsTests.debug.xcconfig */;
+			baseConfigurationReference = 7CD153593C442AE7C630A5DE /* Pods-HackerNewsTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
@@ -930,6 +966,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wrkstrm.ios.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -939,7 +976,7 @@
 		};
 		6ED1071719EE5BD200E1F669 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6028C4209F00A205B7FFD67D /* Pods-HackerNewsTests.release.xcconfig */;
+			baseConfigurationReference = 61FBB1165D2B66D8B52D692E /* Pods-HackerNewsTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
@@ -960,6 +997,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wrkstrm.ios.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hacker News.app/Hacker News";
