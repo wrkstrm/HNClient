@@ -1,24 +1,18 @@
 PODS:
-  - AFNetworking (2.5.0):
-    - AFNetworking/NSURLConnection (= 2.5.0)
-    - AFNetworking/NSURLSession (= 2.5.0)
-    - AFNetworking/Reachability (= 2.5.0)
-    - AFNetworking/Security (= 2.5.0)
-    - AFNetworking/Serialization (= 2.5.0)
-    - AFNetworking/UIKit (= 2.5.0)
-  - AFNetworking/NSURLConnection (2.5.0):
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.0):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.0)
-  - AFNetworking/Security (2.5.0)
-  - AFNetworking/Serialization (2.5.0)
-  - AFNetworking/UIKit (2.5.0):
-    - AFNetworking/NSURLConnection
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - CocoaLumberjack (2.0.0-beta3):
     - CocoaLumberjack/Default (= 2.0.0-beta3)
@@ -28,7 +22,7 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.0.0-beta3):
     - CocoaLumberjack/Default
-  - DateTools (1.4.3)
+  - DateTools (1.7.0)
   - Firebase (2.0.3)
   - ReactiveCocoa (2.3.1):
     - ReactiveCocoa/UI (= 2.3.1)
@@ -42,22 +36,22 @@ PODS:
   - WSMUtilities (0.0.4)
 
 DEPENDENCIES:
-  - AFNetworking (~> 2.0)
+  - AFNetworking
   - DateTools
-  - Firebase (>= 1.2.2)
-  - ReactiveCocoa
+  - Firebase (= 2.0.3)
+  - ReactiveCocoa (= 2.3.1)
   - WSMLogger
   - WSMUtilities
 
 SPEC CHECKSUMS:
-  AFNetworking: 96ac9bf3eda33582701cb1fcc5b896aa1e20311e
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   CocoaLumberjack: acb01143f5888200e8a949a117bc21102204f080
-  DateTools: c3d055af2c4d039c1791b5bffb1444ad1db32219
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
   Firebase: 01e1ef7f66b3837e1d2bf7d5d1d70facf9a17c1c
   ReactiveCocoa: 3fe9b233ca6db810e86681b5749488564c1179a1
   WSMLogger: f52999f65cc1a90e432d19e3be175778928e9e16
   WSMUtilities: 8dc5834bb808c3fb8980a0be34faf3d4fc64ece6
 
-PODFILE CHECKSUM: 0301a37f681f8cdc4ef8557d3c8a54fe33aa3b45
+PODFILE CHECKSUM: 586d58489f6d2a2cd719fa3551ef38f0eba2f8e1
 
 COCOAPODS: 1.0.0

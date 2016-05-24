@@ -17,7 +17,7 @@ NSString * const HNFilterKeyScore = @"HNFilterKeyScore";
 
 @interface HNStoryManager ()
 
-@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
+@property (nonatomic, strong) AFHTTPSessionManager *httpManager;
 @property (nonatomic, strong) Firebase *hackerAPI;
 @property (nonatomic, strong) Firebase *topStoriesAPI;
 @property (nonatomic, strong) Firebase *itemsAPI;
@@ -77,7 +77,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     
     _faviconCache = NSCache.new;
     
-    _httpManager = [AFHTTPRequestOperationManager manager];
+    _httpManager = [AFHTTPSessionManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInitiated;
     
@@ -291,14 +291,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     NSURL *faviconURL = [NSURL URLWithString:hostURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:faviconURL];
     self.httpManager.responseSerializer = [AFImageResponseSerializer serializer];
-    [[self.httpManager HTTPRequestOperationWithRequest:request
-                                               success:^(AFHTTPRequestOperation *operation,
-                                                         id responseObject) {
-                                                   completion(responseObject);
-                                               } failure:^(AFHTTPRequestOperation *operation,
-                                                           NSError *error) {
-                                                   completion(nil);
-                                               }] start];
+    [self.httpManager dataTaskWithRequest:request
+                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                            completion(responseObject);
+    }];
 }
 
 - (void)saveFavicon:(UIImage *)image onDisk:(HNFavicon *)fModel inMemory:(NSString *)hostURL {

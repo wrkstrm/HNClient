@@ -5,16 +5,12 @@ source 'https://github.com/CocoaPods/Specs.git'
 target 'HackerNews' do
   pod 'WSMUtilities'
   pod 'WSMLogger'
-  pod 'ReactiveCocoa'
-  pod 'AFNetworking', '~> 2.0'
+  pod 'ReactiveCocoa', '2.3.1'
+  pod 'AFNetworking'
   pod 'DateTools'
-  pod 'Firebase', '>= 1.2.2'
+  pod 'Firebase', '2.0.3'
 end
 
 target 'HackerNewsTests' do
-  pod 'WSMUtilities'
-  pod 'WSMLogger'
-  pod 'ReactiveCocoa'
-  pod 'Firebase', '>= 1.2.2'
-  pod 'DateTools'
+  
 end
