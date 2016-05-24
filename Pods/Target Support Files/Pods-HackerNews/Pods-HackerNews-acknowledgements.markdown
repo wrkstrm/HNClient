@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## AFNetworking
 
-Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com/)
+Copyright (c) 2011–2016 Alamofire Software Foundation (http://alamofire.org/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,31 @@ SOFTWARE.
 
 ## Firebase
 
-https://www.firebase.com/terms/terms-of-service.html
+Copyright 2016 Google Inc.
+
+## FirebaseAnalytics
+
+Copyright 2016 Google Inc.
+
+## FirebaseDatabase
+
+Copyright 2016 Google
+
+## FirebaseInstanceID
+
+Copyright 2016 Google Inc.
+
+## GoogleInterchangeUtilities
+
+Copyright 2015 Google Inc.
+
+## GoogleSymbolUtilities
+
+Copyright 2015 Google Inc.
+
+## GoogleUtilities
+
+Copyright 2015 Google Inc.
 
 ## ReactiveCocoa
 

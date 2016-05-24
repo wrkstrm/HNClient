@@ -17,10 +17,10 @@ NSString * const HNFilterKeyScore = @"HNFilterKeyScore";
 
 @interface HNStoryManager ()
 
-@property (nonatomic, strong) AFHTTPRequestOperationManager *httpManager;
-@property (nonatomic, strong) Firebase *hackerAPI;
-@property (nonatomic, strong) Firebase *topStoriesAPI;
-@property (nonatomic, strong) Firebase *itemsAPI;
+@property (nonatomic, strong) AFHTTPSessionManager *httpManager;
+@property (nonatomic, strong) FIRDatabaseReference *hackerAPI;
+@property (nonatomic, strong) FIRDatabaseReference *topStoriesAPI;
+@property (nonatomic, strong) FIRDatabaseReference *itemsAPI;
 
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 @property (nonatomic, strong) NSMutableSet *purgeSet;
@@ -77,13 +77,14 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     
     _faviconCache = NSCache.new;
     
-    _httpManager = [AFHTTPRequestOperationManager manager];
+    _httpManager = [AFHTTPSessionManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInitiated;
-    
-    _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
-    _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
-    _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
+
+//    @"https://hacker-news.FIRDatabaseReferenceio.com/v0/"];
+    _hackerAPI = [[FIRDatabase database] reference];
+    _topStoriesAPI = [_hackerAPI child:@"topstories"];
+    _itemsAPI = [_hackerAPI child:@"item"];
     
     [[CBLModelFactory sharedInstance] registerClass:@"HNFavicon" forDocumentType:@"HNFavicon"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNStory" forDocumentType:@"story"];
@@ -100,7 +101,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _purgeSet = [NSMutableSet set];
     
     @weakify(self);
-    [_topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [_topStoriesAPI observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
         @strongify(self);
         if (!(snapshot.value == [NSNull null])) {
             NSError *error;
@@ -147,7 +148,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
                                               notFoundMarker:null] mutableCopy];
         [staleObservations removeObject:null];
         [self.observationDictionary removeObjectsForKeys:staleObservations];
-        for (Firebase *base in staleObservations) {
+        for (FIRDatabaseReference *base in staleObservations) {
             [base removeAllObservers];
         }
         for (NSNumber *number in oldStories) {
@@ -210,12 +211,12 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
              }]];
 }
 
-- (Firebase *)observationForItemNumber:(NSNumber *)itemNumber {
-    Firebase *base = self.observationDictionary[itemNumber];
+- (FIRDatabaseReference *)observationForItemNumber:(NSNumber *)itemNumber {
+    FIRDatabaseReference *base = self.observationDictionary[itemNumber];
     if (!base) {
-        base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
+        base = [self.itemsAPI child:[itemNumber stringValue]];
         @weakify(self)
-        [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        [base observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
             @strongify(self)
             if (!(snapshot.value == [NSNull null])) {
                 [[CBLManager sharedInstance] doAsync:^{
@@ -225,12 +226,12 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
                         [array removeObject:snapshot.value[@"id"]];
                         [self.topStoriesDocument mergeUserProperties:@{@"stories":[NSArray arrayWithArray:array]}
                                                                error:&error];
-                        WSMLog(error, @"Error deleting doc after Firebase Event: %@", error);
+                        WSMLog(error, @"Error deleting doc after FIRDatabaseReference Event: %@", error);
                         [self.purgeSet addObject:itemNumber];
                     } else  {
                         CBLDocument *doc = [self documentForItemNumber:itemNumber];
                         [doc mergeUserProperties:snapshot.value error:&error];
-                        WSMLog(error, @"Error merging doc after Firebase Event: %@", error);
+                        WSMLog(error, @"Error merging doc after FIRDatabaseReference Event: %@", error);
                         [(RACSubject*) self.itemUpdates sendNext:
                          RACTuplePack(itemNumber,[CBLModel modelForDocument:doc])];
                     }
@@ -291,14 +292,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     NSURL *faviconURL = [NSURL URLWithString:hostURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:faviconURL];
     self.httpManager.responseSerializer = [AFImageResponseSerializer serializer];
-    [[self.httpManager HTTPRequestOperationWithRequest:request
-                                               success:^(AFHTTPRequestOperation *operation,
-                                                         id responseObject) {
-                                                   completion(responseObject);
-                                               } failure:^(AFHTTPRequestOperation *operation,
-                                                           NSError *error) {
-                                                   completion(nil);
-                                               }] start];
+    [self.httpManager dataTaskWithRequest:request
+                        completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        completion(responseObject);
+    }];
 }
 
 - (void)saveFavicon:(UIImage *)image onDisk:(HNFavicon *)fModel inMemory:(NSString *)hostURL {

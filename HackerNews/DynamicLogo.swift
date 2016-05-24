@@ -45,6 +45,7 @@ class DynamicLogo: UILabel {
     }
     
     func hackerOrange() -> UIColor {
-        return SKColorMakeRGB(255.0, 102.0, 0.0)
+        return UIColor.blackColor()
+//        return SKColorMakeRGB(255.0, 102.0, 0.0)
     }
 }

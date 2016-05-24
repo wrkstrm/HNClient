@@ -21,10 +21,10 @@
 
 //Third party
 #import <Firebase/Firebase.h>
+#import <AFNetworking/AFNetworking.h>
 #import <CouchbaseLite/CouchbaseLite.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <ReactiveCocoa/RACEXTScope.h>
-#import <AFNetworking/AFNetworking.h>
 #import "Flurry.h"
 
 //My Party
@@ -32,7 +32,7 @@
 #import <WSMUtilities/WSMUtilities.h>
 
 //My Categories
-#import "UIView+WSMUtilities.h"
+#import <WSMUtilities/UIView+WSMUtilities.h>
 #import "CBLDocument+WSMUtilities.h"
 
 #endif

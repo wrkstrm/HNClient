@@ -31,9 +31,8 @@
     return YES;
 }
 
-- (Firebase *)hackerAPI {
-    return WSM_LAZY(_hackerAPI,
-                    [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
+- (FIRDatabaseReference *)hackerAPI {
+    return WSM_LAZY(_hackerAPI, [[FIRDatabase database] reference]);
 }
 
 - (NSDictionary *)secrets {

@@ -34,23 +34,30 @@ class TopViewController: HNTopViewController {
                     this?.topStoriesBarItem.badgeValue = "\(s.count)"
                 }
         }
-        
+//
+//        HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
+//        .takeUntil(self.rac_willDeallocSignal())
+//
+//        .combinePreviousWithStart(NSArray()) { (oldA, newA) -> AnyObject! in
+//            return NSArray(array: [oldA, newA])
+//        }
+
+
         HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
             .takeUntil(self.rac_willDeallocSignal())
             .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return RACTuple(objectsFromArray:[oldArray, newArray])
+                return NSArray(array:[oldArray, newArray])
             }).subscribeNext { (t) -> Void in
-                if let tuple = t as! RACTuple! {
-                    tuple.first as! NSArray
-                    let first = tuple.first as! NSArray
-                    let second = tuple.second as! NSArray
+                if let tuple = t as! NSArray! {
+                    let first = tuple.firstObject as! NSArray
+                    let second = tuple.lastObject as! NSArray
                     let changedCells = UITableViewController.tableView(self.tableView,
                         updateSection: this!.NEWS_SECTION, previous: first as [AnyObject], current: second as [AnyObject]) as NSArray
                     var reload = false;
                     for path in changedCells as! [NSIndexPath] {
                         let number = this?.itemNumberForIndexPath(path)
                         let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as! HNItem
-                        if let _ = this?.updateCellWithTuple(RACTuple(objectsFromArray:[number!, item])) {
+                        if let _ = this?.updateCellWithTuple(NSArray(array:[number!, item]) as [AnyObject]) {
                             reload = true;
                         }
                     }

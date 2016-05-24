@@ -74,7 +74,8 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     }
     
     func hackerBeige() -> UIColor  {
-        return SKColorMakeRGB(245.0, 245.0, 238.0)
+        return UIColor.blackColor()
+//        return SKColorMakeRGB(245.0, 245.0, 238.0)
     }
     
     //MARK:- IBActions

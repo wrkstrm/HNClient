@@ -37,13 +37,13 @@
     [[[[HNStoryManager sharedInstance] itemUpdates] filter:^BOOL(RACTuple *tuple) {
         return [self.currentSortedTopStories containsObject:tuple.first];
     }] subscribeNext:^(RACTuple *tuple) {
-        [self updateCellWithTuple:tuple];
+        [self updateCellWithTuple:@[tuple.first, tuple.second]];
     }];
 }
 
-- (NSIndexPath *)updateCellWithTuple:(RACTuple *)tuple {
-    NSNumber *number = (NSNumber *) tuple.first;
-    HNStory *story = (HNStory *) tuple.second;
+- (NSIndexPath *)updateCellWithTuple:(NSArray *)tuple {
+    NSNumber *number = (NSNumber *) tuple.firstObject;
+    HNStory *story = (HNStory *) tuple.lastObject;
     CGFloat newRowHeight = [UITableViewCell getCellHeightForStory:story
                                                              view:self.view];
     CGFloat oldRowHeight = [self.rowHeightDictionary[number] floatValue];

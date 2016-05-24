@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2559A7A17319D5C0C5A00CA4 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DF469F1345AB7155600058B /* libPods-HackerNews.a */; };
+		37E7AD3DAB7481531ED839D4 /* libPods-HackerNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B3105AA94849F8122F7991C /* libPods-HackerNews.a */; };
+		63FC3AFFBF0A8DE9320A1ED1 /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 525F7DEFE58AEC1D079298C7 /* libPods-HackerNewsTests.a */; };
 		6E0A542C1A258B1D004B966B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E0A542B1A258B1D004B966B /* Images.xcassets */; };
 		6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0B19EE672100A75579 /* libz.dylib */; };
 		6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E11DA0D19EE672B00A75579 /* SystemConfiguration.framework */; };
@@ -54,7 +55,6 @@
 		6ED1070F19EE5BD200E1F669 /* HNStoryManagerSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1070E19EE5BD200E1F669 /* HNStoryManagerSpecs.m */; };
 		6EFB719919F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
 		6EFB719A19F1CD3600830F79 /* secrets.json in Resources */ = {isa = PBXBuildFile; fileRef = 6EFB719819F1CD3600830F79 /* secrets.json */; };
-		C50611C16BC49BE8E6312F29 /* libPods-HackerNewsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,8 +124,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E416D4043532D9E1426E680 /* Pods-HackerNews.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.debug.xcconfig"; sourceTree = "<group>"; };
+		525F7DEFE58AEC1D079298C7 /* libPods-HackerNewsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNewsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		61FBB1165D2B66D8B52D692E /* Pods-HackerNewsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.release.xcconfig"; sourceTree = "<group>"; };
 		6E0A542B1A258B1D004B966B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6E11DA0B19EE672100A75579 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -187,7 +187,7 @@
 		6ED1071E19EE5EAE00E1F669 /* HackerNews-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HackerNews-Prefix.pch"; sourceTree = "<group>"; };
 		6EFB719819F1CD3600830F79 /* secrets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secrets.json; sourceTree = "<group>"; };
 		7CD153593C442AE7C630A5DE /* Pods-HackerNewsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNewsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNewsTests/Pods-HackerNewsTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7DF469F1345AB7155600058B /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B3105AA94849F8122F7991C /* libPods-HackerNews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HackerNews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC50E33BA515AA333988ECBC /* Pods-HackerNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HackerNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-HackerNews/Pods-HackerNews.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -206,7 +206,7 @@
 				6E11DA1019EE673400A75579 /* Security.framework in Frameworks */,
 				6E11DA0E19EE672B00A75579 /* SystemConfiguration.framework in Frameworks */,
 				6E11DA0C19EE672100A75579 /* libz.dylib in Frameworks */,
-				2559A7A17319D5C0C5A00CA4 /* libPods-HackerNews.a in Frameworks */,
+				37E7AD3DAB7481531ED839D4 /* libPods-HackerNews.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +219,7 @@
 				6EC8D3161A16FCD8008A539A /* libsqlite3.dylib in Frameworks */,
 				6EC8D3151A16FCD3008A539A /* libz.dylib in Frameworks */,
 				6EC8D31D1A16FD9A008A539A /* CouchbaseLite.framework in Frameworks */,
-				C50611C16BC49BE8E6312F29 /* libPods-HackerNewsTests.a in Frameworks */,
+				63FC3AFFBF0A8DE9320A1ED1 /* libPods-HackerNewsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,8 +407,8 @@
 				6ED1071C19EE5DB400E1F669 /* CFNetwork.framework */,
 				6ED1071A19EE5DA900E1F669 /* libc++.dylib */,
 				6ED1071819EE5D9F00E1F669 /* libicucore.dylib */,
-				7DF469F1345AB7155600058B /* libPods-HackerNews.a */,
-				001913FF9E6D6CD91B82A30C /* libPods-HackerNewsTests.a */,
+				8B3105AA94849F8122F7991C /* libPods-HackerNews.a */,
+				525F7DEFE58AEC1D079298C7 /* libPods-HackerNewsTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -868,6 +868,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -890,6 +891,7 @@
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
 				LLVM_LTO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wrkstrm.ios.app.hackernews;
 				PRODUCT_NAME = "Hacker News";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -909,6 +911,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -966,6 +969,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wrkstrm.ios.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";
@@ -997,6 +1001,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vendor/Flurry",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wrkstrm.ios.app.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HackerNews/HackerNews-Bridging-Header.h";

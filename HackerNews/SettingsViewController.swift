@@ -69,11 +69,11 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     func respondToItemUpdates() {
         weak var this = self
         HNStoryManager.sharedInstance().itemUpdates.filter { (tuple) -> Bool in
-            return !self.currentSortedTopStories().containsObject((tuple as! RACTuple).first)
+            return !self.currentSortedTopStories().containsObject((tuple as! NSArray).firstObject!)
             }.subscribeNext { (tupleObject) -> Void in
-                if let tuple = tupleObject as? RACTuple {
-                    let number = tuple.first as! NSNumber
-                    let item = tuple.second as! HNItem
+                if let tuple = tupleObject as? NSArray {
+                    let number = tuple.firstObject as! NSNumber
+                    let item = tuple.lastObject as! HNItem
                     for index in 0..<self.tableView.numberOfSections {
                         if (this?.cellArrayForSection(index).containsObject(number) == true) {
                             this?.updateCell(number, item: item, section: index)

@@ -25,10 +25,10 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     var tap:UITapGestureRecognizer?
     
     override func awakeFromNib() {
-        stepper.addTarget(self, action:"stepperValueDidChange:",
+        stepper.addTarget(self, action:#selector(SectionHeaderView.stepperValueDidChange(_:)),
             forControlEvents: UIControlEvents.TouchUpInside)
         stepper.maximumValue = DBL_MAX
-        tap = UITapGestureRecognizer(target: self, action: "toggleOpen:")
+        tap = UITapGestureRecognizer(target: self, action:#selector(SectionHeaderView.toggleOpen(_:)))
         addGestureRecognizer(tap!)
         tap?.enabled = true;
     }

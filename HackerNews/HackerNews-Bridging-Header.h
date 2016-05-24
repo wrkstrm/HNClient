@@ -12,5 +12,4 @@
 
 #import "UITableViewCell+HNHeadline.h"
 
-#import "UIView+WSMUtilities.h"
 #import "CBLDocument+WSMUtilities.h"
