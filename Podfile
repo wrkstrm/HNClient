@@ -8,7 +8,8 @@ target 'HackerNews' do
   pod 'ReactiveCocoa', '2.3.1'
   pod 'AFNetworking'
   pod 'DateTools'
-  pod 'Firebase', '2.0.3'
+  pod 'Firebase/Core'
+  pod 'Firebase/Database'
 end
 
 target 'HackerNewsTests' do

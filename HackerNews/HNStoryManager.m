@@ -18,9 +18,9 @@ NSString * const HNFilterKeyScore = @"HNFilterKeyScore";
 @interface HNStoryManager ()
 
 @property (nonatomic, strong) AFHTTPSessionManager *httpManager;
-@property (nonatomic, strong) Firebase *hackerAPI;
-@property (nonatomic, strong) Firebase *topStoriesAPI;
-@property (nonatomic, strong) Firebase *itemsAPI;
+@property (nonatomic, strong) FIRDatabaseReference *hackerAPI;
+@property (nonatomic, strong) FIRDatabaseReference *topStoriesAPI;
+@property (nonatomic, strong) FIRDatabaseReference *itemsAPI;
 
 @property (nonatomic, strong) NSMutableDictionary *observationDictionary;
 @property (nonatomic, strong) NSMutableSet *purgeSet;
@@ -80,10 +80,10 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _httpManager = [AFHTTPSessionManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInitiated;
-    
-    _hackerAPI = [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"];
-    _topStoriesAPI = [_hackerAPI childByAppendingPath:@"topstories"];
-    _itemsAPI = [_hackerAPI childByAppendingPath:@"item"];
+
+    _hackerAPI = [FIRDatabase.database.reference child:@"v0"];
+    _topStoriesAPI = [_hackerAPI child:@"topstories"];
+    _itemsAPI = [_hackerAPI child:@"item"];
     
     [[CBLModelFactory sharedInstance] registerClass:@"HNFavicon" forDocumentType:@"HNFavicon"];
     [[CBLModelFactory sharedInstance] registerClass:@"HNStory" forDocumentType:@"story"];
@@ -100,7 +100,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _purgeSet = [NSMutableSet set];
     
     @weakify(self);
-    [_topStoriesAPI observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [_topStoriesAPI observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
         @strongify(self);
         if (!(snapshot.value == [NSNull null])) {
             NSError *error;
@@ -147,7 +147,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
                                               notFoundMarker:null] mutableCopy];
         [staleObservations removeObject:null];
         [self.observationDictionary removeObjectsForKeys:staleObservations];
-        for (Firebase *base in staleObservations) {
+        for (FIRDatabaseReference *base in staleObservations) {
             [base removeAllObservers];
         }
         for (NSNumber *number in oldStories) {
@@ -210,12 +210,12 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
              }]];
 }
 
-- (Firebase *)observationForItemNumber:(NSNumber *)itemNumber {
-    Firebase *base = self.observationDictionary[itemNumber];
+- (FIRDatabaseReference *)observationForItemNumber:(NSNumber *)itemNumber {
+    FIRDatabaseReference *base = self.observationDictionary[itemNumber];
     if (!base) {
-        base = [self.itemsAPI childByAppendingPath:[itemNumber stringValue]];
+        base = [self.itemsAPI child:[itemNumber stringValue]];
         @weakify(self)
-        [base observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        [base observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
             @strongify(self)
             if (!(snapshot.value == [NSNull null])) {
                 [[CBLManager sharedInstance] doAsync:^{

@@ -254,7 +254,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
             weak var this = self
             let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
                 title: "Unhide", handler: { (rowAction, indexPath) -> Void in
-                    Flurry.logEvent("Unhide")
+                    FIRAnalytics.logEventWithName("Unhide", parameters:nil)
                     if let number:NSNumber = this?.itemNumberForIndexPath(indexPath) {
                         this?.tableView.deselectRowAtIndexPath(indexPath, animated: true)
                         this?.tableView.beginUpdates()

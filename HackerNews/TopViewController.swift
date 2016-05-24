@@ -197,7 +197,7 @@ class TopViewController: HNTopViewController {
     //MARK:- Memory Management
     
     override func didReceiveMemoryWarning() {
-        Flurry.logEvent("MemoryWarning")
+        FIRAnalytics.logEventWithName("MemoryWarning", parameters: nil)
         super.didReceiveMemoryWarning()
     }
 }

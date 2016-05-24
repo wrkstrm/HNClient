@@ -75,12 +75,13 @@
 - (NSArray *)tableView:(UITableView *)tableView
 editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *rowActions = @[];
+
     UITableViewRowAction *hide = [UITableViewRowAction
                                   rowActionWithStyle:UITableViewRowActionStyleNormal
                                   title:@"Hide"
                                   handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                   {
-                                      [Flurry logEvent:@"Hide"];
+                                      [FIRAnalytics logEventWithName:@"Hide" parameters:nil];
                                       NSNumber *iNumber = [self itemNumberForIndexPath:indexPath];
                                       [self.tableView deselectRowAtIndexPath:indexPath
                                                                     animated:YES];

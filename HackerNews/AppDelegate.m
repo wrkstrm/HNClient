@@ -23,17 +23,16 @@
     [DDLog addLogger:logger];
 }
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window.tintColor = SKColorMakeRGB(245.0f, 245.0f, 238.0f);
-    //Analytics
-    [Flurry startSession:self.secrets[@"flurryKey"]];
+
+    [FIRApp configure];
+
     return YES;
 }
 
-- (Firebase *)hackerAPI {
-    return WSM_LAZY(_hackerAPI,
-                    [[Firebase alloc] initWithUrl:@"https://hacker-news.firebaseio.com/v0/"]);
+- (FIRDatabaseReference *)hackerAPI {
+    return WSM_LAZY(_hackerAPI, [[FIRDatabase database] reference]);
 }
 
 - (NSDictionary *)secrets {

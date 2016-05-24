@@ -25,7 +25,6 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <ReactiveCocoa/RACEXTScope.h>
 #import <AFNetworking/AFNetworking.h>
-#import "Flurry.h"
 
 //My Party
 #import <WSMLogger/WSMLogger.h>
