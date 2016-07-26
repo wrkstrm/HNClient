@@ -92,8 +92,7 @@ class TopViewController: HNTopViewController {
                 case HNSortStyle.Points: titleView!.selectedSegmentIndex = 0
                 default: titleView!.selectedSegmentIndex = 1
                 }
-                titleView!.autoresizingMask = UIViewAutoresizing.FlexibleWidth |
-                    UIViewAutoresizing.FlexibleHeight
+                titleView!.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
                 titleView!.frame = CGRectMake(0, 0, self.view.frame.width, 30)
                 titleView!.addTarget(self, action: "sortCategory:",
                     forControlEvents: UIControlEvents.ValueChanged)
@@ -134,36 +133,32 @@ class TopViewController: HNTopViewController {
             return cell!
     }
     
-    override func tableView(tableView: UITableView,
-        didSelectRowAtIndexPath indexPath: NSIndexPath) {
-            let itemNumber = itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNItem
-            if  story.type as NSString == "story" {
-                if !(story.url as NSString == "")  {
-                    let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
-                        as WebViewController
-                    controller.story = story
-                    parentViewController?.navigationController?
-                        .pushViewController(controller, animated: true)
-                } else if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
-                }
-            } else if  story.type as NSString == "job" {
-                if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
-                } else if !(story.url as NSString == "")  {
-                    let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
-                        as WebViewController
-                    controller.story = story
-                    parentViewController?.navigationController?
-                        .pushViewController(controller, animated: true)
-                }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let itemNumber = itemNumberForIndexPath(indexPath)
+        let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as HNItem
+        if  story.type as NSString == "story" {
+            if !(story.url as NSString == "")  {
+                let controller = storyboard?
+                    .instantiateViewControllerWithIdentifier("WebViewController")
+                    as WebViewController
+                controller.story = story
+                parentViewController?.navigationController?
+                    .pushViewController(controller, animated: true)
+            } else if !(story.text as NSString == "") {
+                performSegueWithIdentifier("textViewSegue", sender: story)
             }
-            tableView .deselectRowAtIndexPath(indexPath, animated: true);
+        } else if story.type as NSString == "job" {
+            if !(story.text as NSString == "") {
+                performSegueWithIdentifier("textViewSegue", sender: story)
+            } else if !(story.url as NSString == "")  {
+                let controller = storyboard?.instantiateViewControllerWithIdentifier("WebViewController") as WebViewController
+                controller.story = story
+                parentViewController?.navigationController?.pushViewController(controller, animated: true)
+            }
+        }
+        tableView .deselectRowAtIndexPath(indexPath, animated: true);
     }
-    
+
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
         forRowAtIndexPath indexPath: NSIndexPath) {
             cell.backgroundColor = AppDelegate.hackerBeige()

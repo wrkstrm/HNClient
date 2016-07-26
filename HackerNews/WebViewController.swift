@@ -17,7 +17,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     @IBOutlet var toolbar: UIToolbar!
     @IBOutlet var backButton: UIBarButtonItem!
     @IBOutlet var forwardButton: UIBarButtonItem!
-    
+
     required init(coder aDecoder: NSCoder) {
         super.init(coder:aDecoder)
     }
@@ -30,7 +30,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
         view.insertSubview(webView, belowSubview: toolbar)
         webView.frame = CGRectMake(0, 0,
             CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
-        webView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+        webView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth];
         webView.navigationDelegate = self
         if let urlString = self.story?.url {
             let url = NSURL(string: urlString)
@@ -100,7 +100,7 @@ class WebViewController : UIViewController, WKNavigationDelegate {
             itemsToShare.addObject(url!)
         }
         
-        let activityController = UIActivityViewController(activityItems:itemsToShare,
+        let activityController = UIActivityViewController(activityItems:itemsToShare as [AnyObject],
             applicationActivities: nil)
         let excludeActivities = [UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypePostToVimeo, UIActivityTypePostToFlickr, UIActivityTypeAirDrop]
         activityController.excludedActivityTypes = excludeActivities;

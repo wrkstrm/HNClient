@@ -59,7 +59,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     //MARK:- View Lifecycle Helpers
     
     func updateChangedCells(cells:NSArray, section:Int) {
-        for path in cells as [NSIndexPath] {
+        for path in cells as! [NSIndexPath] {
             let num = itemNumberForIndexPath(path)
             let item = HNStoryManager.sharedInstance().modelForItemNumber(num) as HNItem
             updateCell(num, item: item, section:section)
@@ -252,7 +252,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath
-        indexPath: NSIndexPath) -> [AnyObject]? {
+        indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             var rowActions = [AnyObject]()
             weak var this = self
             let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
@@ -265,7 +265,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                         this?.tableView.deleteRowsAtIndexPaths([indexPath],
                             withRowAnimation: UITableViewRowAnimation.Automatic)
                         this?.tableView.endUpdates()
-                        let rows = this?.tableView.indexPathsForVisibleRows()!
+                        let rows = this?.tableView.indexPathsForVisibleRows!
                         for path:NSIndexPath! in rows as [NSIndexPath] {
                             if let cell = this?.tableView.cellForRowAtIndexPath(path) {
                                 this?.updateCell(cell, indexPath: path, shimmer: false)
@@ -311,7 +311,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     //MARK:- Helpers
     
     func itemNumberForIndexPath(path:NSIndexPath) -> NSNumber {
-        return cellArrayForSection(path.section).objectAtIndex(path.row) as NSNumber;
+        return cellArrayForSection(path.section).objectAtIndex(path.row) as! NSNumber;
     }
     
     func indexPathForItemNumber(itemNumber:NSNumber, section:Int) -> NSIndexPath {

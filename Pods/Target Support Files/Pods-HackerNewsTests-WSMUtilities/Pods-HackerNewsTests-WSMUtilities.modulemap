@@ -1,0 +1,6 @@
+framework module WSMUtilities {
+  umbrella header "Pods-HackerNewsTests-WSMUtilities-umbrella.h"
+
+  export *
+  module * { export * }
+}

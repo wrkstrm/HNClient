@@ -1,0 +1,12 @@
+framework module ReactiveCocoa {
+  umbrella header "Pods-HackerNewsTests-ReactiveCocoa-umbrella.h"
+
+  export *
+  module * { export * }
+
+  private header "RACMulticastConnection+Private.h"
+  private header "RACScheduler+Private.h"
+  private header "RACStream+Private.h"
+  private header "RACSubscriber+Private.h"
+  private header "RACEXTRuntimeExtensions.h"
+}

@@ -1,0 +1,6 @@
+framework module WSMLogger {
+  umbrella header "Pods-HackerNews-WSMLogger-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,63 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "349FC0279855145585ED3963DC057AFB6E09A510+++52CADE7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "349FC0279855145585ED3963DC057AFB6E09A510+++52CADE7" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++E83019F" : 0,
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++38D69C2" : 0,
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++7A90262" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++EF8F7AD" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++89E6313" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3670FDEC-2A22-4CEE-8CE8-D02D4FEC4D1C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "349FC0279855145585ED3963DC057AFB6E09A510+++52CADE7" : "HelveticaNeue",
+    "95438028B10BBB846574013D29F154A00556A9D1+++E83019F" : "HelveticaNeue\/vendor\/Quick\/Externals\/Nimble\/",
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++38D69C2" : "HelveticaNeuevendor\/Quick",
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++7A90262" : "HelveticaNeue\/vendor\/Quick\/",
+    "95438028B10BBB846574013D29F154A00556A9D1+++EF8F7AD" : "HelveticaNeuevendor\/Nimble",
+    "95438028B10BBB846574013D29F154A00556A9D1+++89E6313" : "HelveticaNeue\/vendor\/Nimble\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "HackerNews",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "HackerNews.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/wrkstrm\/HelveticaNeue.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "349FC0279855145585ED3963DC057AFB6E09A510+++52CADE7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++89E6313"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++E83019F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++EF8F7AD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++EF8F7AD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Quick.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++38D69C2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Quick.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++7A90262"
+    }
+  ]
+}

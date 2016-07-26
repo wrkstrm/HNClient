@@ -35,4 +35,6 @@
 #import "UIView+WSMUtilities.h"
 #import "CBLDocument+WSMUtilities.h"
 
+#import "HackerNews-Swift.h"
+
 #endif
