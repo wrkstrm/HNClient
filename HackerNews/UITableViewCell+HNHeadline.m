@@ -70,7 +70,7 @@
     CGFloat labelWidth = CGRectGetWidth(tableView.frame) - 55;
     CGFloat titleHeight = [UITableViewCell getTitleHeight:item.title forWidth:labelWidth];
     CGFloat infoHeight = [UITableViewCell getInfoHeight:item.document forWidth:labelWidth];
-    CGFloat final = ceil(titleHeight + infoHeight);
+    CGFloat final = ceilf(titleHeight + infoHeight);
     return final;
 }
 

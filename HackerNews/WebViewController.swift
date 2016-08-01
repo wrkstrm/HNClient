@@ -112,6 +112,6 @@ class WebViewController : UIViewController, WKNavigationDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        Flurry.logEvent("MemoryWarning")
+        FIRAnalytics.logEventWithName("MemoryWanring", parameters: nil)
     }
 }

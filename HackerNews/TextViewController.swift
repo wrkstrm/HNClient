@@ -21,7 +21,7 @@ class TextViewController: UIViewController {
         view.backgroundColor = hackerBeige()
         textView.backgroundColor = hackerBeige()
         let text = story?.text
-        let htmlString = "<style> body {font-family:\"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> \(text!) </body>"
+        let htmlString = "<style> body {font-family: -apple-system, \"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> \(text!) </body>"
         let optionsDictionary = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
         let data = htmlString.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)
         textView.attributedText = try! NSAttributedString(data: data!, options: optionsDictionary, documentAttributes: nil)

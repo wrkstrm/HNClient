@@ -80,9 +80,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _httpManager = [AFHTTPSessionManager manager];
     _httpManager.operationQueue.maxConcurrentOperationCount = 1;
     _httpManager.operationQueue.qualityOfService = NSQualityOfServiceUserInitiated;
-
-//    @"https://hacker-news.FIRDatabaseReferenceio.com/v0/"];
-    _hackerAPI = [[FIRDatabase database] reference];
+    _hackerAPI = [FIRDatabase.database.reference child:@"v0"];
     _topStoriesAPI = [_hackerAPI child:@"topstories"];
     _itemsAPI = [_hackerAPI child:@"item"];
     
@@ -101,7 +99,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     _purgeSet = [NSMutableSet set];
     
     @weakify(self);
-    [_topStoriesAPI observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+    [_topStoriesAPI observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot *snapshot) {
         @strongify(self);
         if (!(snapshot.value == [NSNull null])) {
             NSError *error;
@@ -294,8 +292,8 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
     self.httpManager.responseSerializer = [AFImageResponseSerializer serializer];
     [self.httpManager dataTaskWithRequest:request
                         completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        completion(responseObject);
-    }];
+                            completion(responseObject);
+                        }];
 }
 
 - (void)saveFavicon:(UIImage *)image onDisk:(HNFavicon *)fModel inMemory:(NSString *)hostURL {

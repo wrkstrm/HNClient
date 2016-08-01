@@ -602,10 +602,10 @@
 		AC35C454682419BA3FAD07C4B2709221 /* UIControl+RACSignalSupportPrivate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIControl+RACSignalSupportPrivate.h"; path = "ReactiveCocoaFramework/ReactiveCocoa/UIControl+RACSignalSupportPrivate.h"; sourceTree = "<group>"; };
 		AD8ED050DF1E05C1D97279883637647A /* DDLog+LOGV.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "DDLog+LOGV.h"; path = "Classes/DDLog+LOGV.h"; sourceTree = "<group>"; };
 		AE6BB35B388E7336E62ACD2818BA0B6B /* UIGestureRecognizer+RACSignalSupport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIGestureRecognizer+RACSignalSupport.m"; path = "ReactiveCocoaFramework/ReactiveCocoa/UIGestureRecognizer+RACSignalSupport.m"; sourceTree = "<group>"; };
-		AEFBC55FD5122C1AB5C84750F8E672A7 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAnalytics.framework; path = Frameworks/FirebaseAnalytics.framework; sourceTree = "<group>"; };
 		AF2DBC110C73E0B0E610C7B2E35A3156 /* DDContextFilterLogFormatter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDContextFilterLogFormatter.h; path = Classes/Extensions/DDContextFilterLogFormatter.h; sourceTree = "<group>"; };
 		B021F35850E350ACB8440039873A7130 /* RACDisposable.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RACDisposable.m; path = ReactiveCocoaFramework/ReactiveCocoa/RACDisposable.m; sourceTree = "<group>"; };
 		B0EDC24EE48066AE9FA658D3588E20F0 /* ReactiveCocoa-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ReactiveCocoa-prefix.pch"; sourceTree = "<group>"; };
+		B25BB96132C613DC02675251CC0671C8 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAnalytics.framework; path = Frameworks/frameworks/FirebaseAnalytics.framework; sourceTree = "<group>"; };
 		B28CC1385791B6FBAD2A66AF5557E6E0 /* RACCommand.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RACCommand.h; path = ReactiveCocoaFramework/ReactiveCocoa/RACCommand.h; sourceTree = "<group>"; };
 		B2B9FC09BC10236DB41D1A701AEA4A81 /* DTTimePeriodGroup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DTTimePeriodGroup.m; path = DateTools/DTTimePeriodGroup.m; sourceTree = "<group>"; };
 		B380A54FFB96568B8B40060D2FE28FBB /* RACValueTransformer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RACValueTransformer.m; path = ReactiveCocoaFramework/ReactiveCocoa/RACValueTransformer.m; sourceTree = "<group>"; };
@@ -1035,6 +1035,14 @@
 			);
 			sourceTree = "<group>";
 		};
+		82BAC070B16E60A44F1950557154A1B5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B25BB96132C613DC02675251CC0671C8 /* FirebaseAnalytics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		85474896414E7D0C972CA3F11EC2FE05 /* GoogleSymbolUtilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1061,7 +1069,7 @@
 		887E659745D058322C8657BA5BC41DF1 /* FirebaseAnalytics */ = {
 			isa = PBXGroup;
 			children = (
-				BCFBB51846541E1AF14602EE3DEDBE8C /* Frameworks */,
+				82BAC070B16E60A44F1950557154A1B5 /* Frameworks */,
 			);
 			path = FirebaseAnalytics;
 			sourceTree = "<group>";
@@ -1364,14 +1372,6 @@
 				C5518E5ABEA505AFAA376F7AA5CE5D12 /* Support Files */,
 			);
 			path = CocoaLumberjack;
-			sourceTree = "<group>";
-		};
-		BCFBB51846541E1AF14602EE3DEDBE8C /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AEFBC55FD5122C1AB5C84750F8E672A7 /* FirebaseAnalytics.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C046E558DC3AD7C904556BE92220BDEC /* Pods */ = {

@@ -23,7 +23,7 @@
                (unsigned long)previous.count, (unsigned long)current.count);
         [tableView reloadData];
     } else {
-        [Flurry logEvent:@"beginUpdates"];
+        [FIRAnalytics logEventWithName:@"beginUpdates" parameters:nil];
         [UIView animateWithDuration:0.5f
                               delay:0.0f
              usingSpringWithDamping:0.5f
@@ -56,7 +56,7 @@
             }
             [tableView endUpdates];
         } completion:^(BOOL finished) {}];
-        [Flurry logEvent:@"endUpdates"];
+        [FIRAnalytics logEventWithName:@"endUpdates" parameters:nil];
     }
     return [previouslyUncontainedCells arrayByAddingObjectsFromArray:changedCells];
 }

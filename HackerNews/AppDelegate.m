@@ -23,11 +23,11 @@
     [DDLog addLogger:logger];
 }
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window.tintColor = SKColorMakeRGB(245.0f, 245.0f, 238.0f);
-    //Analytics
-    [Flurry startSession:self.secrets[@"flurryKey"]];
+
+    [FIRApp configure];
+
     return YES;
 }
 
