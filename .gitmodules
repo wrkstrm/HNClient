@@ -1,6 +1,0 @@
-[submodule "vendor/Nimble"]
-	path = vendor/Nimble
-	url = https://github.com/Quick/Nimble.git
-[submodule "vendor/Quick"]
-	path = vendor/Quick
-	url = https://github.com/Quick/Quick.git
