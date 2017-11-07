@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, WSMAgendaType) {
     kWSMAgendaTypeSocial,
     kWSMAgendaTypeExercise,
     kWSMAgendaTypeDeadTime,
-} WSAgendaType;
+};
 
 typedef NS_ENUM(NSUInteger, WSMColorGradient) {
     kWSMGradientUncategorized = 0,

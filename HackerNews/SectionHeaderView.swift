@@ -9,12 +9,12 @@
 import Foundation
 
 enum SectionHeaderType {
-    case Simple, Stepper
+    case simple, stepper
 }
 
 protocol SectionHeaderDelegate {
-    func sectionStateDidChange(section:SectionHeaderView, open:Bool)
-    func sectionValueDidChange(section:SectionHeaderView, value:Double)
+    func sectionStateDidChange(_ section:SectionHeaderView, open:Bool)
+    func sectionValueDidChange(_ section:SectionHeaderView, value:Double)
 }
 
 class SectionHeaderView : UITableViewHeaderFooterView {
@@ -26,46 +26,46 @@ class SectionHeaderView : UITableViewHeaderFooterView {
     
     override func awakeFromNib() {
         stepper.addTarget(self, action:#selector(SectionHeaderView.stepperValueDidChange(_:)),
-            forControlEvents: UIControlEvents.TouchUpInside)
+            for: UIControlEvents.touchUpInside)
         stepper.maximumValue = DBL_MAX
         tap = UITapGestureRecognizer(target: self, action:#selector(SectionHeaderView.toggleOpen(_:)))
         addGestureRecognizer(tap!)
-        tap?.enabled = true;
+        tap?.isEnabled = true;
     }
     
-    func prepareForSection(sectionNumber:Int!, type:SectionHeaderType,
+    func prepareForSection(_ sectionNumber:Int!, type:SectionHeaderType,
         text:String, value:Double?) {
             tag = sectionNumber
             //Label
             titleLabel.text = text
             stepper.tag = sectionNumber
             switch type {
-            case .Simple:
-                stepper.hidden = true
-            case .Stepper:
-                stepper.hidden = false
+            case .simple:
+                stepper.isHidden = true
+            case .stepper:
+                stepper.isHidden = false
                 stepper.value = value!
             }
     }
     
-    func setState(open:Bool) {
-        self.disclosureButton.selected = open;
-        let newTransform = CGAffineTransformMakeRotation(open ? 0 : CGFloat(-M_PI_2))
+    func setState(_ open:Bool) {
+        self.disclosureButton.isSelected = open;
+        let newTransform = CGAffineTransform(rotationAngle: open ? 0 : CGFloat(-M_PI_2))
         self.disclosureButton.imageView?.transform = newTransform;
     }
     
-    func stepperValueDidChange(sender: UIStepper) {
+    func stepperValueDidChange(_ sender: UIStepper) {
         if let sectionDelegate = delegate {
             sectionDelegate.sectionValueDidChange(self, value: sender.value)
         }
     }
     
-    func toggleOpen(sender:AnyObject!) {
-        UIView.animateWithDuration(0.3) {
-            self.setState(!self.disclosureButton.selected)
-        }
+    func toggleOpen(_ sender:AnyObject!) {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.setState(!self.disclosureButton.isSelected)
+        }) 
         if let sectionDelegate = delegate {
-            sectionDelegate.sectionStateDidChange(self, open: disclosureButton.selected)
+            sectionDelegate.sectionStateDidChange(self, open: disclosureButton.isSelected)
         }
     }
 }

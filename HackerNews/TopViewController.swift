@@ -20,22 +20,21 @@ class TopViewController: HNTopViewController {
     override func viewDidLoad() {
         tableView.backgroundColor = AppDelegate.hackerBeige()
         weak var this = self
-        NSNotificationCenter.defaultCenter()
-            .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
-            .takeUntil(rac_willDeallocSignal()).subscribeNext({ (x) -> Void in
+        NotificationCenter.default
+            .rac_addObserver(forName: NSNotification.Name.UIContentSizeCategoryDidChange.rawValue, object: nil)
+            .take(until: rac_willDeallocSignal()).subscribeNext({ (x) -> Void in
                 this?.rowHeightDictionary = nil
                 this?.tableView.reloadData()
             })
-        HNStoryManager.sharedInstance()
-            .rac_valuesForKeyPath("currentTopStories", observer: self)
-            .takeUntil(rac_willDeallocSignal())
+        HNStoryManager.shared.rac_values(forKeyPath: "currentTopStories", observer: self)
+            .take(until: rac_willDeallocSignal())
             .subscribeNext { (stories) -> Void in
                 if let s = stories as! NSArray! {
                     this?.topStoriesBarItem.badgeValue = "\(s.count)"
                 }
         }
-//
-//        HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
+        //
+//        HNStoryManager.shared.rac_valuesForKeyPath("currentTopStories", observer: self)
 //        .takeUntil(self.rac_willDeallocSignal())
 //
 //        .combinePreviousWithStart(NSArray()) { (oldA, newA) -> AnyObject! in
@@ -43,10 +42,10 @@ class TopViewController: HNTopViewController {
 //        }
 
 
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("currentTopStories", observer: self)
-            .takeUntil(self.rac_willDeallocSignal())
-            .combinePreviousWithStart(NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
-                return NSArray(array:[oldArray, newArray])
+        HNStoryManager.shared.rac_values(forKeyPath: "currentTopStories", observer: self)
+            .take(until: self.rac_willDeallocSignal())
+            .combinePrevious(withStart: NSArray(), reduce: { (oldArray, newArray) -> AnyObject! in
+                return NSArray(array:[oldArray ?? [], newArray ?? []])
             }).subscribeNext { (t) -> Void in
                 if let tuple = t as! NSArray! {
                     let first = tuple.firstObject as! NSArray
@@ -54,139 +53,141 @@ class TopViewController: HNTopViewController {
                     let changedCells = UITableViewController.tableView(self.tableView,
                         updateSection: this!.NEWS_SECTION, previous: first as [AnyObject], current: second as [AnyObject]) as NSArray
                     var reload = false;
-                    for path in changedCells as! [NSIndexPath] {
-                        let number = this?.itemNumberForIndexPath(path)
-                        let item = HNStoryManager.sharedInstance().modelForItemNumber(number) as! HNItem
-                        if let _ = this?.updateCellWithTuple(NSArray(array:[number!, item]) as [AnyObject]) {
+                    for path in changedCells as! [IndexPath] {
+                        let number = this?.itemNumber(for: path)
+                        let item = HNStoryManager.shared.model(forItemNumber: number!) as! HNItem
+                        if let _ = this?.updateCell(withTuple: NSArray(array:[number!, item]) as [AnyObject]) {
                             reload = true;
                         }
                     }
                     if  reload {
-                        this?.tableView.reloadSections(NSIndexSet(index: this!.NEWS_SECTION),
-                            withRowAnimation: UITableViewRowAnimation.None)
+                        this?.tableView.reloadSections(IndexSet(integer: this!.NEWS_SECTION),
+                            with: UITableViewRowAnimation.none)
                     }
                 }
         }
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         formatTitleView()
-        parentViewController?.navigationController?.hidesBarsOnSwipe = false
-        parentViewController?.navigationController?.hidesBarsOnTap = false
+        parent?.navigationController?.hidesBarsOnSwipe = false
+        parent?.navigationController?.hidesBarsOnTap = false
         respondToItemUpdates()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        parentViewController?.navigationItem.titleView = nil;
+    override func viewWillDisappear(_ animated: Bool) {
+        parent?.navigationItem.titleView = nil;
         super.viewWillDisappear(animated)
     }
     
     //MARK:- Lifecycle Helpers
     
     func formatTitleView() {
-        parentViewController?.title = "Top Stories"
-        if !(parentViewController?.navigationItem.titleView is UISegmentedControl) {
+        parent?.title = "Top Stories"
+        if !(parent?.navigationItem.titleView is UISegmentedControl) {
             if let segControl = titleView {
-                parentViewController?.navigationItem.titleView = segControl
+                parent?.navigationItem.titleView = segControl
             } else {
                 titleView = UISegmentedControl(items:["Points", "Rank", "Comments"])
-                switch HNStoryManager.sharedInstance().sortStyle {
-                case HNSortStyle.Comments: titleView!.selectedSegmentIndex = 2
-                case HNSortStyle.Points: titleView!.selectedSegmentIndex = 0
+                switch HNStoryManager.shared.sortStyle {
+                case HNSortStyle.comments: titleView!.selectedSegmentIndex = 2
+                case HNSortStyle.points: titleView!.selectedSegmentIndex = 0
                 default: titleView!.selectedSegmentIndex = 1
                 }
-                titleView!.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
-                titleView!.frame = CGRectMake(0, 0, self.view.frame.width, 30)
+                titleView!.autoresizingMask = [.flexibleWidth , .flexibleHeight]
+                titleView!.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 30)
                 titleView!.addTarget(self, action: #selector(self.sortCategory(_:)),
-                    forControlEvents: UIControlEvents.ValueChanged)
-                parentViewController?.navigationItem.titleView = titleView!
+                    for: UIControlEvents.valueChanged)
+                parent?.navigationItem.titleView = titleView!
                 titleView!.sizeToFit()
             }
         }
     }
     
-    func sortCategory(segmentedControl:UISegmentedControl) {
+    func sortCategory(_ segmentedControl:UISegmentedControl) {
         _ = currentSortedTopStories
         switch (segmentedControl.selectedSegmentIndex) {
-        case 0: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Points
-        case 1: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Rank
-        case 2: HNStoryManager.sharedInstance().sortStyle = HNSortStyle.Comments
+        case 0: HNStoryManager.shared.sortStyle = HNSortStyle.points
+        case 1: HNStoryManager.shared.sortStyle = HNSortStyle.rank
+        case 2: HNStoryManager.shared.sortStyle = HNSortStyle.comments
         default: assert(false, "Incorrect Sorting State")
         }
     }
     
     //MARK:- TableView Delegate Methods
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return HNStoryManager.sharedInstance().currentTopStories.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return HNStoryManager.shared.currentTopStories.count
     }
     
-    override func tableView(tableView: UITableView,
-        cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-            var cell = tableView.dequeueReusableCellWithIdentifier(CELL_IDENTIFIER) as UITableViewCell?
-            if (cell == nil) {
-                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,
-                    reuseIdentifier: CELL_IDENTIFIER)
-            }
-            updateCell(cell, atIndexPath: indexPath, shimmer: false)
-            return cell!
+    override func tableView(_ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER) as UITableViewCell? {
+            update(cell, at: indexPath, shimmer: false)
+            return cell
+        } else {
+            let cell = UITableViewCell(style: UITableViewCellStyle.subtitle,
+                                   reuseIdentifier: CELL_IDENTIFIER)
+            update(cell, at: indexPath, shimmer: false)
+            return cell
+        }
     }
     
-    override func tableView(tableView: UITableView,
-        didSelectRowAtIndexPath indexPath: NSIndexPath) {
-            let itemNumber = itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as! HNItem
+    override func tableView(_ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath) {
+            let itemNumber = self.itemNumber(for: indexPath)
+            let story = HNStoryManager.shared.model(forItemNumber: itemNumber) as! HNItem
             if  story.type as NSString == "story" {
                 if !(story.url as NSString == "")  {
                     let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        .instantiateViewController(withIdentifier: "WebViewController")
                         as! WebViewController
                     controller.story = story
-                    parentViewController?.navigationController?
+                    parent?.navigationController?
                         .pushViewController(controller, animated: true)
                 } else if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
+                    performSegue(withIdentifier: "textViewSegue", sender: story)
                 }
             } else if  story.type as NSString == "job" {
                 if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
+                    performSegue(withIdentifier: "textViewSegue", sender: story)
                 } else if !(story.url as NSString == "")  {
                     let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        .instantiateViewController(withIdentifier: "WebViewController")
                         as! WebViewController
                     controller.story = story
-                    parentViewController?.navigationController?
+                    parent?.navigationController?
                         .pushViewController(controller, animated: true)
                 }
             }
-            tableView .deselectRowAtIndexPath(indexPath, animated: true);
+            tableView .deselectRow(at: indexPath, animated: true);
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
-        forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath) {
             cell.backgroundColor = AppDelegate.hackerBeige()
     }
     
-    override func tableView(tableView: UITableView, commitEditingStyle
-        editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, commit
+        editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     }
     
     //MARK:- Rotation
     
-    override func willTransitionToTraitCollection(newCollection: UITraitCollection,
-        withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func willTransition(to newCollection: UITraitCollection,
+        with coordinator: UIViewControllerTransitionCoordinator) {
             weak var this = self
-            coordinator.animateAlongsideTransition({ ( context) -> Void in
+            coordinator.animate(alongsideTransition: { ( context) -> Void in
                 this?.rowHeightDictionary = nil
                 this?.tableView.reloadData()
                 }, completion: { (context) -> Void in })
@@ -194,9 +195,9 @@ class TopViewController: HNTopViewController {
     
     //MARK:- Transition
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "textViewSegue" {
-            let controller = segue.destinationViewController as! TextViewController
+            let controller = segue.destination as! TextViewController
             controller.story = sender as? HNStory;
         }
     }
@@ -204,7 +205,7 @@ class TopViewController: HNTopViewController {
     //MARK:- Memory Management
     
     override func didReceiveMemoryWarning() {
-        FIRAnalytics.logEventWithName("MemoryWarning", parameters: nil)
+        FIRAnalytics.logEvent(withName: "MemoryWarning", parameters: nil)
         super.didReceiveMemoryWarning()
     }
 }

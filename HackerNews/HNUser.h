@@ -11,7 +11,7 @@
 
 @interface HNUser : WSMUser
 
-@property (nonatomic, strong) NSArray *hiddenStories;
+@property (nonatomic, strong, nullable) NSArray <NSNumber *>* hiddenStories;
 @property (nonatomic) CGFloat minimumScore;
 @property (nonatomic) CGFloat minimumComments;
 

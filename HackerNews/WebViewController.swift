@@ -28,90 +28,90 @@ class WebViewController : UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         self.title = story?.title
         view.insertSubview(webView, belowSubview: toolbar)
-        webView.frame = CGRectMake(0, 0,
-            CGRectGetWidth(view.frame), CGRectGetHeight(view.frame) - 44)
-        webView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+        webView.frame = CGRect(x: 0, y: 0,
+            width: view.frame.width, height: view.frame.height - 44)
+        webView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         webView.navigationDelegate = self
         if let urlString = self.story?.url {
-            let url = NSURL(string: urlString)
-            let urlRequest = NSURLRequest(URL: url!)
-            webView.loadRequest(urlRequest)
+            let url = URL(string: urlString)
+            let urlRequest = URLRequest(url: url!)
+            webView.load(urlRequest)
         }
         weak var that = self;
-        webView.rac_valuesForKeyPath("canGoForward", observer: self)
-            .takeUntil(rac_willDeallocSignal())
+        webView.rac_values(forKeyPath: "canGoForward", observer: self)
+            .take(until: rac_willDeallocSignal())
             .subscribeNext { (enabled) -> Void in
                 let bool = (enabled as! NSNumber).boolValue
-                that?.forwardButton.enabled = bool
+                that?.forwardButton.isEnabled = bool
         }
-        webView.rac_valuesForKeyPath("canGoBack", observer: self)
-            .takeUntil(rac_willDeallocSignal())
+        webView.rac_values(forKeyPath: "canGoBack", observer: self)
+            .take(until: rac_willDeallocSignal())
             .subscribeNext { (enabled) -> Void in
                 let bool = (enabled as! NSNumber).boolValue
-                that?.backButton.enabled = bool
+                that?.backButton.isEnabled = bool
         }
-        webView.rac_valuesForKeyPath("estimatedProgress", observer: self)
-            .takeUntil(rac_willDeallocSignal())
+        webView.rac_values(forKeyPath: "estimatedProgress", observer: self)
+            .take(until: rac_willDeallocSignal())
             .subscribeNext { (progress) -> Void in
                 if  progress as! Float == 1 {
                     that?.toolbar.stopShimmering()
                 } else if that?.toolbar.layer.mask == nil {
-                    that?.toolbar.startShimmeringAtInterval(1.0)
+                    that?.toolbar.startShimmering(atInterval: 1.0)
                 }
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.hidesBarsOnSwipe = true
     }
     
     //MARK:- Lifecycle Helpers
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest,
+    func webView(_ webView: UIWebView, shouldStartLoadWithRequest request: URLRequest,
         navigationType: UIWebViewNavigationType) -> Bool {
             return true;
     }
     
     func hackerBeige() -> UIColor  {
-        return UIColor.blackColor()
+        return UIColor.black
 //        return SKColorMakeRGB(245.0, 245.0, 238.0)
     }
     
     //MARK:- IBActions
     
-    @IBAction func backButtonTapped(sender: UIBarButtonItem) {
+    @IBAction func backButtonTapped(_ sender: UIBarButtonItem) {
         webView.goBack()
     }
     
-    @IBAction func forwardButtonTapped(sender: UIBarButtonItem) {
+    @IBAction func forwardButtonTapped(_ sender: UIBarButtonItem) {
         webView.goForward()
     }
     
-    @IBAction func refreshTapped(sender: UIBarButtonItem) {
+    @IBAction func refreshTapped(_ sender: UIBarButtonItem) {
         webView.reload()
     }
     
-    @IBAction func actionTapped(sender: UIBarButtonItem) {
+    @IBAction func actionTapped(_ sender: UIBarButtonItem) {
         let itemsToShare:NSMutableArray = NSMutableArray()
         let title = story?.title
-        itemsToShare.addObject(title!)
+        itemsToShare.add(title!)
         if let urlString = story?.url {
-            let url = NSURL(string: urlString)
-            itemsToShare.addObject(url!)
+            let url = URL(string: urlString)
+            itemsToShare.add(url!)
         }
         
         let activityController = UIActivityViewController(activityItems:itemsToShare as [AnyObject],
             applicationActivities: nil)
-        let excludeActivities = [UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypePostToVimeo, UIActivityTypePostToFlickr, UIActivityTypeAirDrop]
+        let excludeActivities = [UIActivityType.assignToContact, UIActivityType.saveToCameraRoll, UIActivityType.postToVimeo, UIActivityType.postToFlickr, UIActivityType.airDrop]
         activityController.excludedActivityTypes = excludeActivities;
-        self.presentViewController(activityController, animated: true) { () -> Void in }
+        self.present(activityController, animated: true) { () -> Void in }
     }
     
     //MARK:- Memory
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        FIRAnalytics.logEventWithName("MemoryWanring", parameters: nil)
+        FIRAnalytics.logEvent(withName: "MemoryWanring", parameters: nil)
     }
 }

@@ -34,7 +34,7 @@
 #define newsSection 0
 
 - (void)respondToItemUpdates {
-    [[[[HNStoryManager sharedInstance] itemUpdates] filter:^BOOL(RACTuple *tuple) {
+    [[HNStoryManager.sharedManager.itemUpdates filter:^BOOL(RACTuple *tuple) {
         return [self.currentSortedTopStories containsObject:tuple.first];
     }] subscribeNext:^(RACTuple *tuple) {
         [self updateCellWithTuple:@[tuple.first, tuple.second]];
@@ -65,7 +65,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber *itemNumber = [self itemNumberForIndexPath:indexPath];
-    CBLModel *story = [HNStoryManager.sharedInstance modelForItemNumber:itemNumber];
+    CBLModel *story = [HNStoryManager.sharedManager modelForItemNumber:itemNumber];
     NSNumber *rowHeight = WSM_LAZY(self.rowHeightDictionary[itemNumber],
                                    @([UITableViewCell getCellHeightForStory:(HNStory *)story
                                                                        view:self.view]));
@@ -88,7 +88,7 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
                                       [self.tableView beginUpdates];
                                       [self.tableView deleteRowsAtIndexPaths:@[indexPath]
                                                             withRowAnimation:UITableViewRowAnimationRight];
-                                      [[HNStoryManager sharedInstance] hideStory:iNumber];
+                                      [HNStoryManager.sharedManager hideStory:iNumber];
                                       [self.tableView endUpdates];
                                       for (NSIndexPath *path in self.tableView.indexPathsForVisibleRows) {
                                           [self updateCell:[self.tableView cellForRowAtIndexPath:path]
@@ -106,21 +106,18 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 #define cellIdentifier @"storyCell"
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-           shimmer:(BOOL)shouldShimmer {
+- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath shimmer:(BOOL)shouldShimmer {
     NSNumber *number = [self itemNumberForIndexPath:indexPath];
-    HNStory *story = (HNStory *) [HNStoryManager.sharedInstance modelForItemNumber:number];
+    HNStory *story = (HNStory *) [HNStoryManager.sharedManager modelForItemNumber:number];
     [cell prepareForHeadline:story.document.userProperties path:indexPath];
-    UIImage *image = [HNStoryManager.sharedInstance
-                      getPlaceholderAndFaviconForItemNumber:number
-                      callback:^(UIImage *favicon) {
-                          if (favicon) {
-                              UITableViewCell *currentCell =
-                              [self.tableView cellForRowAtIndexPath:
-                               [self indexPathForItemNumber:number]];
-                              [currentCell setFavicon:favicon];
-                          }
-                      }];
+    UIImage *image = [HNStoryManager.sharedManager getPlaceholderAndFaviconForItemNumber:number callback:^(UIImage *favicon) {
+        if (favicon) {
+            UITableViewCell *currentCell =
+            [self.tableView cellForRowAtIndexPath:
+             [self indexPathForItemNumber:number]];
+            [currentCell setFavicon:favicon];
+        }
+    }];
     [cell setFavicon:image];
     if (shouldShimmer) {
         [cell shimmerFor:1.0f];
@@ -137,7 +134,7 @@ editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (NSArray *)currentSortedTopStories {
-    return HNStoryManager.sharedInstance.currentTopStories;
+    return HNStoryManager.sharedManager.currentTopStories;
 }
 
 @end

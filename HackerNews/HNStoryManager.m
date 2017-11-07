@@ -1,4 +1,4 @@
-//
+    //
 //  HNStoryManager.m
 //  HackerNews
 //
@@ -47,17 +47,16 @@ NSString * const HNFilterKeyScore = @"HNFilterKeyScore";
 
 @implementation HNStoryManager
 
-WSM_SINGLETON_WITH_NAME(sharedInstance)
+WSM_SINGLETON_WITH_NAME(sharedManager)
 
 #define topStoriesDocID @"topstories"
 #define webPlaceHolderName @"web_black"
 
 - (instancetype)init {
     if (!(self = [super init])) return nil;
-    _currentUser = [HNUser defaultUser] ?:
-    [HNUser createDefaultUserWithProperties:@{@"hiddenStories":@[],
-                                              @"minimumScore":@0,
-                                              @"minimumComments":@0}];
+    _currentUser = [HNUser defaultUser] ?: [HNUser createDefaultUserWithProperties:@{@"hiddenStories" : @[],
+                                                                                     @"minimumScore" : @0,
+                                                                                     @"minimumComments" : @0}];
     
     _newsDatabase = [_currentUser userDatabase];
     _newsDatabase.maxRevTreeDepth = 1;
@@ -417,7 +416,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
             [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject,
                                                   NSDictionary *bindings) {
         return [self.topStoriesDocument[@"stories"] containsObject:evaluatedObject];
-    }]];
+    }]] ?: @[];
 }
 
 - (NSArray *)scoreFilteredStories {
@@ -429,7 +428,7 @@ WSM_SINGLETON_WITH_NAME(sharedInstance)
 }
 
 - (NSArray *)filteredArrayForKey:(NSString *)key {
-    NSArray *filteredArrayForKey;
+    NSArray *filteredArrayForKey; 
     if ([key isEqualToString:HNFilterKeyScore]) {
         CGFloat currentMinimumScore = self.currentUser.minimumScore;
         filteredArrayForKey = [self.topStoriesDocument[@"stories"] filteredArrayUsingPredicate:

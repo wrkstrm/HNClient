@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 wrkstrm. All rights reserved.
 //
 
-#import "HNItems.h"
+@class HNItem;
 
 @interface UITableViewCell (HNHeadline)
 

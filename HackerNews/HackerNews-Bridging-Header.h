@@ -8,6 +8,7 @@
 #import "AppDelegate.h"
 #import "HNTopViewController.h"
 #import "HNStoryManager.h"
+#import "HNUser.h"
 #import "HNItems.h"
 
 #import "UITableViewCell+HNHeadline.h"

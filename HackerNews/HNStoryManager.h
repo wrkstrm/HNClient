@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "HNUser.h"
+
+@class HNUser;
 
 typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleRank,
@@ -15,11 +16,15 @@ typedef NS_ENUM(NSInteger, HNSortStyle) {
     kHNSortStyleComments
 };
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString * const HNFilterKeyUserHidden;
 extern NSString * const HNFilterKeyComments;
 extern NSString * const HNFilterKeyScore;
 
 @interface HNStoryManager : NSObject
+
+@property (class, nonatomic, strong, readonly) HNStoryManager *sharedManager;
 
 /**
  The current user. This allows you to access his settings.
@@ -64,8 +69,6 @@ extern NSString * const HNFilterKeyScore;
 
 @property (nonatomic, strong, readonly) NSArray *commentFilteredStories;
 
-+ (instancetype)sharedInstance;
-
 #pragma mark - User Initiated Actions
 
 /**
@@ -86,16 +89,16 @@ extern NSString * const HNFilterKeyScore;
 
 - (NSArray *)userHiddenStories;
 
-/** 
- The preferred way to get the arrays of filtered stories by type. 
+
+/**
+ The preferred way to set the values of story filters by type.
  */
 
 - (void)setObject:(id)object forKeyedSubscript:(id)key;
 
-/** 
- The preferred way to set the values of story filters by type. 
+/**
+ The preferred way to get the arrays of filtered stories by type.
  */
-
 - (id)objectForKeyedSubscript:(id)key;
 
 #pragma mark - State Methods.
@@ -112,7 +115,9 @@ extern NSString * const HNFilterKeyScore;
  This gives you a key that can be observed on the FaviconCache.
  */
 
-- (UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber *)itemNumber
-                                           callback:(void(^)(UIImage *favicon))favicon;
+- (nonnull UIImage *)getPlaceholderAndFaviconForItemNumber:(NSNumber * _Nonnull)itemNumber
+                                                  callback:(void(^)(UIImage * _Nullable favicon))favicon;
 
 @end
+
+NS_ASSUME_NONNULL_END

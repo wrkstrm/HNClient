@@ -9,7 +9,7 @@
 import Foundation
 
 enum SettingsSectionType:Int {
-    case Score = 0, Comments, User
+    case score = 0, comments, user
 }
 
 class SettingsViewController : UITableViewController, SectionHeaderDelegate {
@@ -28,19 +28,19 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         super.viewDidLoad()
         tableView.backgroundColor = AppDelegate.hackerBeige()
         let headerNib = UINib(nibName: "SectionHeader", bundle: nil)
-        tableView.registerNib(headerNib, forHeaderFooterViewReuseIdentifier: headerIdentifier)
+        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: headerIdentifier)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        parentViewController?.title = "Filtered Stories"
+        parent?.title = "Filtered Stories"
 
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         weak var this = self;
-        HNStoryManager.sharedInstance().rac_valuesForKeyPath("commentFilteredStories", observer:self)
-            .takeUntil(self.rac_signalForSelector(#selector(UIViewController.viewDidDisappear(_:))))
+        HNStoryManager.shared.rac_values(forKeyPath: "commentFilteredStories", observer:self)
+            .take(until: self.rac_signal(for: #selector(UIViewController.viewDidDisappear(_:))))
             .throttle(1)
             .subscribeNext { (t) -> Void in
                 this?.tableView.reloadData()
@@ -48,9 +48,9 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
                 }
 
 
-        NSNotificationCenter.defaultCenter()
-            .rac_addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil)
-            .takeUntil(self.rac_signalForSelector(#selector(UIViewController.viewDidDisappear(_:))))
+        NotificationCenter.default
+            .rac_addObserver(forName: NSNotification.Name.UIContentSizeCategoryDidChange.rawValue, object: nil)
+            .take(until: self.rac_signal(for: #selector(UIViewController.viewDidDisappear(_:))))
             .subscribeNext({ (x) -> Void in
                 this?.rowHeightDictionary = [NSNumber:CGFloat]()
                 this?.tableView.reloadData()
@@ -58,24 +58,24 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     }
     //MARK:- View Lifecycle Helpers
     
-    func updateChangedCells(cells:NSArray, section:Int) {
-        for path in cells as! [NSIndexPath] {
+    func updateChangedCells(_ cells:NSArray, section:Int) {
+        for path in cells as! [IndexPath] {
             let num = itemNumberForIndexPath(path)
-            let item = HNStoryManager.sharedInstance().modelForItemNumber(num) as! HNItem
+            let item = HNStoryManager.shared.model(forItemNumber: num) as! HNItem
             updateCell(num, item: item, section:section)
         }
     }
     
     func respondToItemUpdates() {
         weak var this = self
-        HNStoryManager.sharedInstance().itemUpdates.filter { (tuple) -> Bool in
-            return !self.currentSortedTopStories().containsObject((tuple as! NSArray).firstObject!)
+        HNStoryManager.shared.itemUpdates.filter { (tuple) -> Bool in
+            return !self.currentSortedTopStories().contains((tuple as! NSArray).firstObject!)
             }.subscribeNext { (tupleObject) -> Void in
                 if let tuple = tupleObject as? NSArray {
                     let number = tuple.firstObject as! NSNumber
                     let item = tuple.lastObject as! HNItem
                     for index in 0..<self.tableView.numberOfSections {
-                        if (this?.cellArrayForSection(index).containsObject(number) == true) {
+                        if (this?.cellArrayForSection(index).contains(number) == true) {
                             this?.updateCell(number, item: item, section: index)
                         }
                     }
@@ -85,38 +85,38 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     
     //MARK:- TableView Section Delegate Methods
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 3;
     }
     
-    override func tableView(tableView: UITableView,
+    override func tableView(_ tableView: UITableView,
         heightForHeaderInSection section: Int) -> CGFloat {
             return sectionHeaderHeight;
     }
     
-    override func tableView(tableView: UITableView,
+    override func tableView(_ tableView: UITableView,
         viewForHeaderInSection section: Int) -> UIView? {
-            let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! SectionHeaderView
+            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerIdentifier) as! SectionHeaderView
             configureSectionHeader(header, sectionNumber: section)
             return header
     }
     
-    func configureSectionHeader(headerView:SectionHeaderView, sectionNumber:Int) {
-        let  user = HNStoryManager.sharedInstance().currentUser
+    func configureSectionHeader(_ headerView:SectionHeaderView, sectionNumber:Int) {
+        let  user = HNStoryManager.shared.currentUser
         var labelText:String
         switch sectionNumber {
-        case SettingsSectionType.Score.rawValue:
-            labelText = "Scores less than \(Int(user.minimumScore))"
-            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.Stepper,
+        case SettingsSectionType.score.rawValue:
+            labelText = "Scores less than \(Int((user.minimumScore)))"
+            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.stepper,
                 text: labelText, value: Double(user.minimumScore))
-        case SettingsSectionType.Comments.rawValue:
-            labelText =  "Comments less than \(Int(user.minimumComments))"
-            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.Stepper,
+        case SettingsSectionType.comments.rawValue:
+            labelText =  "Comments less than \(Int((user.minimumComments)))"
+            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.stepper,
                 text: labelText, value: Double(user.minimumComments))
-        case SettingsSectionType.User.rawValue:
+        case SettingsSectionType.user.rawValue:
             labelText =  "User Hidden Stories"
-            let hiddenStories = HNStoryManager.sharedInstance().userHiddenStories() as NSArray
-            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.Simple,
+            let hiddenStories = HNStoryManager.shared.userHiddenStories()
+            headerView.prepareForSection(sectionNumber, type: SectionHeaderType.simple,
                 text: labelText, value: Double(hiddenStories.count));
         default:
             assert(false, "There is a problem with the number of sections expected.")
@@ -130,7 +130,7 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     
     //MARK:- TableView Row Delegate Methods
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if  sectionStateDictionary[section] == true {
             return cellArrayForSection(section).count
         } else {
@@ -138,133 +138,133 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView,
-        heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView,
+        heightForRowAt indexPath: IndexPath) -> CGFloat {
             let number = self.itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(number) as! HNItem
+            let story = HNStoryManager.shared.model(forItemNumber: number) as! HNItem
             var rowHeight:CGFloat? = rowHeightDictionary[number]
             if rowHeight == nil {
-                rowHeight = UITableViewCell.getCellHeightForStory(story, view: view)
+                rowHeight = UITableViewCell.getHeightForStory(story, view: view)
             }
             return rowHeight!;
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath
-        indexPath: NSIndexPath) -> UITableViewCell {
-            var cell = tableView.dequeueReusableCellWithIdentifier("") as UITableViewCell?
+    override func tableView(_ tableView: UITableView, cellForRowAt
+        indexPath: IndexPath) -> UITableViewCell {
+            var cell = tableView.dequeueReusableCell(withIdentifier: "") as UITableViewCell?
             if  (cell == nil) {
-                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "")
+                cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "")
             }
             updateCell(cell!, indexPath: indexPath, shimmer: false)
             return cell!
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell
-        cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay
+        cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             cell.backgroundColor = AppDelegate.hackerBeige()
     }
     
     //MARK:- Update Cell Methods
     
-    func updateCell(number:NSNumber,item:HNItem, section:Int) {
-        let newRowHeight = UITableViewCell.getCellHeightForStory(item, view: self.view)
+    func updateCell(_ number:NSNumber,item:HNItem, section:Int) {
+        let newRowHeight = UITableViewCell.getHeightForStory(item, view: self.view)
         let oldRowHeight:CGFloat? = self.rowHeightDictionary[number];
         let indexPath = indexPathForItemNumber(number, section: section)
-        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+        let cell = self.tableView.cellForRow(at: indexPath)
         if  cell == nil && oldRowHeight == nil {
             rowHeightDictionary[number] = newRowHeight;
         } else if (cell != nil) && (newRowHeight == oldRowHeight) {
             updateCell(cell!, indexPath: indexPath, shimmer: true)
         } else if (newRowHeight != oldRowHeight) {
             rowHeightDictionary[number] = newRowHeight;
-            self.tableView.reloadRowsAtIndexPaths([indexPathForItemNumber(number, section: section)],
-                withRowAnimation: UITableViewRowAnimation.None)
+            self.tableView.reloadRows(at: [indexPathForItemNumber(number, section: section)],
+                with: UITableViewRowAnimation.none)
         }
     }
     
-    func updateCell(cell:UITableViewCell, indexPath:NSIndexPath, shimmer:Bool) {
+    func updateCell(_ cell:UITableViewCell, indexPath:IndexPath, shimmer:Bool) {
         let number = itemNumberForIndexPath(indexPath)
-        let story = HNStoryManager.sharedInstance().modelForItemNumber(number)
-        cell.prepareForHeadline(story.document.properties, path: indexPath)
-        let placeholder = HNStoryManager.sharedInstance()
-            .getPlaceholderAndFaviconForItemNumber(number) { (favicon) -> Void in
+        let story = HNStoryManager.shared.model(forItemNumber: number)
+        cell.prepare(forHeadline: story.document.properties, path: indexPath)
+        let placeholder = HNStoryManager.shared
+            .getPlaceholderAndFavicon(forItemNumber: number) { (favicon) -> Void in
                 if (favicon != nil) {
-                    let indexPath = self.indexPathForItemNumber(number, section:indexPath.section)
-                    let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+                    let indexPath = self.indexPathForItemNumber(number, section:(indexPath as NSIndexPath).section)
+                    let cell = self.tableView.cellForRow(at: indexPath)
                     cell?.setFavicon(favicon)
                 }
         }
         cell.setFavicon(placeholder)
         if shimmer {
-            cell.shimmerFor(1.0)
+            cell.shimmer(for: 1.0)
         }
     }
     
     //MARK:- SectionView Delegate Method
     
-    func sectionStateDidChange(section: SectionHeaderView, open: Bool) {
+    func sectionStateDidChange(_ section: SectionHeaderView, open: Bool) {
         sectionStateDictionary[section.tag] = open
         if open {
-            var indexPathsToInsert = Array<NSIndexPath>()
+            var indexPathsToInsert = Array<IndexPath>()
             for index in 0..<cellArrayForSection(section.tag).count {
-                indexPathsToInsert.append(NSIndexPath(forRow: index, inSection: section.tag))
+                indexPathsToInsert.append(IndexPath(row: index, section: section.tag))
             }
             self.tableView.beginUpdates()
-            self.tableView.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: .Top)
+            self.tableView.insertRows(at: indexPathsToInsert, with: .top)
             self.tableView.endUpdates()
         } else {
-            var indexPathsToDelete = [NSIndexPath]()
+            var indexPathsToDelete = [IndexPath]()
             for index in 0..<cellArrayForSection(section.tag).count {
-                indexPathsToDelete.append(NSIndexPath(forRow: index, inSection: section.tag))
+                indexPathsToDelete.append(IndexPath(row: index, section: section.tag))
             }
             self.tableView.beginUpdates()
-            self.tableView.deleteRowsAtIndexPaths(indexPathsToDelete,
-                withRowAnimation: UITableViewRowAnimation.Top)
+            self.tableView.deleteRows(at: indexPathsToDelete,
+                with: UITableViewRowAnimation.top)
             self.tableView.endUpdates()
         }
     }
     
-    func sectionValueDidChange(section: SectionHeaderView, value: Double) {
+    func sectionValueDidChange(_ section: SectionHeaderView, value: Double) {
         switch section.tag {
-        case SettingsSectionType.Score.rawValue:
-            HNStoryManager.sharedInstance()[HNFilterKeyScore] = NSNumber(double:value)
+        case SettingsSectionType.score.rawValue:
+            HNStoryManager.shared[HNFilterKeyScore] = NSNumber(value: value as Double)
             
-        case SettingsSectionType.Comments.rawValue:
-            HNStoryManager.sharedInstance()[HNFilterKeyComments] = NSNumber(double:value)
+        case SettingsSectionType.comments.rawValue:
+            HNStoryManager.shared[HNFilterKeyComments] = NSNumber(value: value as Double)
         default:
             assert(false, "We should not have a switch higher thatn Score or Comments....")
         }
-        let indexSet = NSIndexSet(index: section.tag)
-        tableView.reloadSections(indexSet, withRowAnimation: UITableViewRowAnimation.None)
+        let indexSet = IndexSet(integer: section.tag)
+        tableView.reloadSections(indexSet, with: UITableViewRowAnimation.none)
     }
     
     //MARK:- UITableViewCell Editing
     
-    override func tableView(tableView: UITableView, commitEditingStyle
-        editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, commit
+        editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     }
     
-    override func tableView(tableView: UITableView,
-        canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-            return indexPath.section == SettingsSectionType.User.rawValue
+    override func tableView(_ tableView: UITableView,
+        canEditRowAt indexPath: IndexPath) -> Bool {
+            return (indexPath as NSIndexPath).section == SettingsSectionType.user.rawValue
     }
 
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
             var rowActions = [UITableViewRowAction]()
             weak var this = self
-            let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.Normal,
+            let unhide = UITableViewRowAction(style: UITableViewRowActionStyle.normal,
                 title: "Unhide", handler: { (rowAction, indexPath) -> Void in
-                    FIRAnalytics.logEventWithName("Unhide", parameters:nil)
+                    FIRAnalytics.logEvent(withName: "Unhide", parameters:nil)
                     if let number:NSNumber = this?.itemNumberForIndexPath(indexPath) {
-                        this?.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                        this?.tableView.deselectRow(at: indexPath, animated: true)
                         this?.tableView.beginUpdates()
-                        HNStoryManager.sharedInstance().unhideStory(number)
-                        this?.tableView.deleteRowsAtIndexPaths([indexPath],
-                            withRowAnimation: UITableViewRowAnimation.Automatic)
+                        HNStoryManager.shared.unhideStory(number)
+                        this?.tableView.deleteRows(at: [indexPath],
+                            with: UITableViewRowAnimation.automatic)
                         this?.tableView.endUpdates()
                         let rows = this?.tableView.indexPathsForVisibleRows
-                        for path:NSIndexPath! in rows! {
-                            if let cell = this?.tableView.cellForRowAtIndexPath(path) {
+                        for path:IndexPath! in rows! {
+                            if let cell = this?.tableView.cellForRow(at: path) {
                                 this?.updateCell(cell, indexPath: path, shimmer: false)
                             }
                         }
@@ -275,54 +275,54 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
             return rowActions
     }
     
-    override func tableView(tableView: UITableView,
-        didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath) {
             let itemNumber = itemNumberForIndexPath(indexPath)
-            let story = HNStoryManager.sharedInstance().modelForItemNumber(itemNumber) as! HNItem
+            let story = HNStoryManager.shared.model(forItemNumber: itemNumber) as! HNItem
             if  story.type as NSString == "story" {
                 if !(story.url as NSString == "")  {
                     let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        .instantiateViewController(withIdentifier: "WebViewController")
                         as! WebViewController
                     controller.story = story
-                    parentViewController?.navigationController?
+                    parent?.navigationController?
                         .pushViewController(controller, animated: true)
                 } else if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
+                    performSegue(withIdentifier: "textViewSegue", sender: story)
                 }
             } else if  story.type as NSString == "job" {
                 if !(story.text as NSString == "") {
-                    performSegueWithIdentifier("textViewSegue", sender: story)
+                    performSegue(withIdentifier: "textViewSegue", sender: story)
                 } else if !(story.url as NSString == "")  {
                     let controller = storyboard?
-                        .instantiateViewControllerWithIdentifier("WebViewController")
+                        .instantiateViewController(withIdentifier: "WebViewController")
                         as! WebViewController
                     controller.story = story
-                    parentViewController?.navigationController?
+                    parent?.navigationController?
                         .pushViewController(controller, animated: true)
                 }
             }
-            tableView .deselectRowAtIndexPath(indexPath, animated: true);
+            tableView .deselectRow(at: indexPath, animated: true);
     }
     
     //MARK:- Helpers
     
-    func itemNumberForIndexPath(path:NSIndexPath) -> NSNumber {
-        return cellArrayForSection(path.section).objectAtIndex(path.row) as! NSNumber;
+    func itemNumberForIndexPath(_ path:IndexPath) -> NSNumber {
+        return cellArrayForSection((path as NSIndexPath).section).object(at: (path as NSIndexPath).row) as! NSNumber;
     }
     
-    func indexPathForItemNumber(itemNumber:NSNumber, section:Int) -> NSIndexPath {
-        return NSIndexPath(forRow: cellArrayForSection(section).indexOfObject(itemNumber),
-            inSection: section);
+    func indexPathForItemNumber(_ itemNumber:NSNumber, section:Int) -> IndexPath {
+        return IndexPath(row: cellArrayForSection(section).index(of: itemNumber),
+            section: section);
     }
     
-    func cellArrayForSection(section:Int)-> NSArray {
+    func cellArrayForSection(_ section:Int)-> NSArray {
         switch section {
-        case SettingsSectionType.Score.rawValue:
+        case SettingsSectionType.score.rawValue:
             return scoreFilteredStories()
-        case SettingsSectionType.Comments.rawValue:
+        case SettingsSectionType.comments.rawValue:
             return commmentFilteredStories()
-        case SettingsSectionType.User.rawValue:
+        case SettingsSectionType.user.rawValue:
             return userHiddenStories()
         default:
             assert(false, "something is horribly wrong. Why are you asking for an unknown filter?")
@@ -331,24 +331,24 @@ class SettingsViewController : UITableViewController, SectionHeaderDelegate {
     }
     
     func userHiddenStories() -> NSArray {
-        return HNStoryManager.sharedInstance().userHiddenStories() as NSArray
+        return HNStoryManager.shared.userHiddenStories() as NSArray
     }
     
     func scoreFilteredStories() -> NSArray {
-        return HNStoryManager.sharedInstance().scoreFilteredStories as NSArray
+        return HNStoryManager.shared.scoreFilteredStories as NSArray
     }
     
     func commmentFilteredStories() -> NSArray {
-        return HNStoryManager.sharedInstance().commentFilteredStories as NSArray
+        return HNStoryManager.shared.commentFilteredStories as NSArray
     }
     
     func currentSortedTopStories() -> NSArray {
-        return HNStoryManager.sharedInstance().currentTopStories;
+        return HNStoryManager.shared.currentTopStories as NSArray;
     }
     
     //MARK:- Other
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     }
     
     //MARK:- Memory Management

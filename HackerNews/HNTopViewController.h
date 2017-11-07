@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UITableViewController+HNUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface HNTopViewController : UITableViewController
 
-@property (nonatomic, strong) NSMutableDictionary *rowHeightDictionary;
+@property (nonatomic, strong, nullable) NSMutableDictionary *rowHeightDictionary;
 @property (nonatomic, strong, readonly) NSArray *currentSortedTopStories;
 
 - (NSNumber *)itemNumberForIndexPath:(NSIndexPath *)path;
@@ -24,6 +26,8 @@
        atIndexPath:(NSIndexPath *)indexPath
            shimmer:(BOOL)shouldShimmer;
 
-- (NSIndexPath *)updateCellWithTuple:(NSArray *)tuple;
+- (NSIndexPath * _Nullable)updateCellWithTuple:(NSArray *)tuple;
 
 @end
+
+NS_ASSUME_NONNULL_END

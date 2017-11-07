@@ -23,12 +23,12 @@ class TextViewController: UIViewController {
         let text = story?.text
         let htmlString = "<style> body {font-family: -apple-system, \"Helvetica Neue\", Helvetica, Arial, \"Lucida Grande\", sans-serif; font-weight: 300; font-size:20 } </style> <body> \(text!) </body>"
         let optionsDictionary = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType]
-        let data = htmlString.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)
+        let data = htmlString.data(using: String.Encoding.unicode, allowLossyConversion: true)
         textView.attributedText = try! NSAttributedString(data: data!, options: optionsDictionary, documentAttributes: nil)
     }
     
     func hackerBeige() -> UIColor  {
-        return UIColor.blackColor()
+        return UIColor.black
 //        return SKColorMakeRGB(245.0, 245.0, 238.0)
     }
 }

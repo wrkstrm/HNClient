@@ -11,10 +11,11 @@ import Foundation
 
 class LogoViewController: UIViewController {
     @IBOutlet var subtitle: UILabel!
-    
-    override func viewWillAppear(animated: Bool) {
+    @IBOutlet weak var newImage: UIImageView!
+
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        parentViewController?.title = "A Hacker News Client"
+        parent?.title = "A Hacker News Client"
         subtitle.text = ""
     }
 }
